@@ -11,8 +11,9 @@ config :logger, level: :warn
 
 # Configure your database
 config :ksp_maps, KSPMaps.Repo,
+  hostname: "127.0.0.1",
+  port:     "5432",
   username: "postgres",
-  password: "postgres",
+  password: "",
   database: "ksp_maps_test",
-  hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
