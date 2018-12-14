@@ -7,3 +7,4 @@ ESpec.configure fn(config) ->
     :ok
   end
 end
+Code.require_file("spec/phoenix_helper.exs")
