@@ -11,6 +11,7 @@ defmodule KSPMaps.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
+      preferred_cli_env: [espec: :test],
       aliases: aliases(),
       deps: deps()
     ]
@@ -37,8 +38,13 @@ defmodule KSPMaps.MixProject do
     [
       {:credo, "~> 0.10.2", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.0"},
+      {:espec_phoenix, "~> 0.6.10", only: :test},
+      {:espec, "~> 1.6", only: :test},
+      {:ex_machina, "~> 2.2"},
+      {:faker, "~> 0.11.0", only: [:dev, :test], runtime: false},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
+      {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false},
       {:phoenix_ecto, "~> 4.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -59,7 +65,7 @@ defmodule KSPMaps.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "espec"]
     ]
   end
 end

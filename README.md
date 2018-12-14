@@ -2,6 +2,8 @@
 
 > A Google Maps-like UI for Kerbal Space Program (KSP) celestial bodies.
 
+[![CircleCI](https://img.shields.io/circleci/project/github/FiniteMonkeys/ksp-maps.svg?style=flat)](https://circleci.com/gh/FiniteMonkeys/ksp-maps)
+
 ## QUICK START
 
 1. Clone the repository.
@@ -34,8 +36,8 @@ Execute the specs by running `mix espec`.
 
 > this should probably be broken out to a separate document
 
-  * Add `credo`
   * Convert tests to specs using ESpec
+  * Add badges to README.md
 
 ## COPYRIGHT
 
