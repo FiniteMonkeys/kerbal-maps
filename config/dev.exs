@@ -69,7 +69,7 @@ config :phoenix, :plug_init_mode, :runtime
 # Configure your database
 config :ksp_maps, KSPMaps.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "",
   database: "ksp_maps_dev",
   hostname: "localhost",
   pool_size: 10
