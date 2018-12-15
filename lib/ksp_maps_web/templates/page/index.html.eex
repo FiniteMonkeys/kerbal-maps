@@ -1,35 +1,97 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>A productive web framework that<br/>does not compromise speed and maintainability.</p>
-</section>
 
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.4/CHANGELOG.md">v1.4 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-    </ul>
-  </article>
-</section>
+<div id="mapid" style="width: 100vw; height: 100vh; position: relative;"></div>
+<script>
+
+  var mymap = L.map('mapid', {
+    // preferCanvas: false,
+    // attributionControl: true,
+    // zoomControl: true,
+    // closePopupOnClick: true,
+    // boxZoom: true,
+    // doubleClickZoom: true,
+    // dragging: true,
+    // zoomSnap: 1,
+    // zoomDelta: 1,
+    // trackResize: true,
+    // inertia
+    // inertiaDeceleration: 3000,
+    // inertiaMaxSpeed: Infinity,
+    // easeLinearity: 0.2,
+    // worldCopyJump: false,
+    // maxBoundsViscosity: 0.0,
+    // keyboard: true,
+    // keyboardPanDelta: 80,
+    // scrollWheelZoom: true,
+    // wheelDebounceTime: 40,
+    // wheelPxPerZoomLevel: 60,
+    // tap: true,
+    // tapTolerance: 15,
+    // touchZoom
+    // bounceAtZoomLimits: true,
+    crs: L.CRS.EPSG4326,
+    center: [-0.1027, -74.5754],  // KSC
+    zoom: 5,
+    // minZoom
+    // maxZoom
+    // layers: [],
+    // maxBounds: null,
+    // renderer
+    // zoomAnimation: true,
+    // zoomAnimationThreshold: 4,
+    // fadeAnimation: true,
+    // markerZoomAnimation: true,
+    // transform3DLimit: 2^23,
+  })
+
+  L.tileLayer('https://ksp-maps.s3.amazonaws.com/tiles/{body}/{style}/{z}/{x}/{y}.png', {
+    // *** TileLayer options
+    // minZoom: 0,
+    maxZoom: 5,
+    // subdomains
+    // errorTileUrl
+    // zoomOffset: 0,
+    tms: true,
+    // zoomReverse: false,
+    // detectRetina: false,
+    // crossOrigin: false,
+
+    // *** GridLayer options
+    // tileSize: 256,
+    // opacity: 1.0,
+    // updateWhenIdle
+    // updateWhenZooming: true,
+    // updateInterval: 200,
+    // zIndex: 1,
+    // latLngBounds
+    maxNativeZoom: 5,
+    minNativeZoom: 5, // 0,
+    // noWrap: false,
+    // pane
+    // className
+    // keepBuffer: 2,
+
+    // *** Layer options
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+      'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+
+    // *** other options
+    body: 'bop',
+    style: 'sat'
+  }).addTo(mymap);
+
+  L.marker([35.332031, -175.297852]).addTo(mymap).bindPopup("<strong>City</strong><br />Home");
+  L.marker([0.102329810251359, -74.568421012228896]).addTo(mymap).bindPopup("<strong>Monolith</strong><br />KSC Monolith")
+
+  var popup = L.popup();
+
+  function onMapClick(e) {
+    popup
+      .setLatLng(e.latlng)
+      .setContent("You clicked the map at " + e.latlng.toString())
+      .openOn(mymap);
+  }
+
+  mymap.on('click', onMapClick);
+
+</script>

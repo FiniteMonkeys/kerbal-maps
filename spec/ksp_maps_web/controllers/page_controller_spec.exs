@@ -9,7 +9,7 @@ defmodule KSPMapsWeb.PageController.Spec do
     let :request, do: build_conn() |> get("/")
 
     it "returns all package names" do
-      expect(html_response(request(), 200)) |> to(match("Welcome to Phoenix!"))
+      expect(html_response(request(), 200)) |> to(match("KSPMaps"))
     end
   end
 end
