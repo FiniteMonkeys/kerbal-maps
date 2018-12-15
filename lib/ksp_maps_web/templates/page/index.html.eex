@@ -76,9 +76,10 @@
       'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 
     // *** other options
-    body: 'bop',
+    body: 'kerbin',
     style: 'sat'
   }).addTo(mymap);
+
 
   L.marker([35.332031, -175.297852]).addTo(mymap).bindPopup("<strong>City</strong><br />Home");
   L.marker([0.102329810251359, -74.568421012228896]).addTo(mymap).bindPopup("<strong>Monolith</strong><br />KSC Monolith")
