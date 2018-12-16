@@ -3,6 +3,9 @@
 > A Google Maps-like UI for Kerbal Space Program (KSP) celestial bodies.
 
 [![CircleCI](https://img.shields.io/circleci/project/github/FiniteMonkeys/ksp-maps.svg?style=flat)](https://circleci.com/gh/FiniteMonkeys/ksp-maps)
+[![Github open issues](https://img.shields.io/github/issues/FiniteMonkeys/ksp-maps.svg?style=flat)](https://github.com/FiniteMonkeys/ksp-maps/issues)
+[![Github open PRs](https://img.shields.io/github/issues-pr/FiniteMonkeys/ksp-maps.svg?style=flat)](https://github.com/FiniteMonkeys/ksp-maps/pulls)
+[![License](https://img.shields.io/github/license/FiniteMonkeys/ksp-maps.svg)](https://github.com/FiniteMonkeys/ksp-maps/blob/master/LICENSE)
 
 ## QUICK START
 
@@ -36,7 +39,6 @@ Execute the specs by running `mix espec`.
 
 > this should probably be broken out to a separate document
 
-  * Add badges to README.md
   * Accept uploading Waypoint Manager files
 
 ## ACKNOWLEDGEMENTS
