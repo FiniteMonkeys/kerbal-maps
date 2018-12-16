@@ -1,8 +1,9 @@
 
 <div id="mapid" style="width: 100vw; height: 100vh; position: relative;"></div>
+<script type="text/javascript" src="https://ksp-maps.s3.amazonaws.com/js/leaflet.latlng-graticule.js"></script>
 <script>
 
-  var mymap = L.map('mapid', {
+  var map = L.map('mapid', {
     // preferCanvas: false,
     // attributionControl: true,
     // zoomControl: true,
@@ -64,25 +65,35 @@
     // zIndex: 1,
     // latLngBounds
     maxNativeZoom: 5,
-    minNativeZoom: 5, // 0,
+    minNativeZoom: 0,
     // noWrap: false,
     // pane
     // className
     // keepBuffer: 2,
 
     // *** Layer options
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-      'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    attribution: 'Map data: source unknown' +
+      ' ' +
+      'Imagery: source unknown',
 
     // *** other options
     body: 'kerbin',
     style: 'sat'
-  }).addTo(mymap);
+  }).addTo(map);
 
+  L.latlngGraticule({
+      showLabel: true,
+      dashArray: [5, 5],
+      zoomInterval: [
+          {start: 2, end: 3, interval: 30},
+          {start: 4, end: 4, interval: 10},
+          {start: 5, end: 7, interval: 5},
+          {start: 8, end: 10, interval: 1}
+      ]
+  }).addTo(map);
 
-  L.marker([35.332031, -175.297852]).addTo(mymap).bindPopup("<strong>City</strong><br />Home");
-  L.marker([0.102329810251359, -74.568421012228896]).addTo(mymap).bindPopup("<strong>Monolith</strong><br />KSC Monolith")
+  L.marker([35.332031, -175.297852]).addTo(map).bindPopup("<strong>City</strong><br />Home");
+  L.marker([0.102329810251359, -74.568421012228896]).addTo(map).bindPopup("<strong>Monolith</strong><br />KSC Monolith")
 
   var popup = L.popup();
 
@@ -90,9 +101,9 @@
     popup
       .setLatLng(e.latlng)
       .setContent("You clicked the map at " + e.latlng.toString())
-      .openOn(mymap);
+      .openOn(map);
   }
 
-  mymap.on('click', onMapClick);
+  map.on('click', onMapClick);
 
 </script>
