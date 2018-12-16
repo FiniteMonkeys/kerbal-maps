@@ -36,8 +36,8 @@ Execute the specs by running `mix espec`.
 
 > this should probably be broken out to a separate document
 
-  * Convert tests to specs using ESpec
   * Add badges to README.md
+  * Accept uploading Waypoint Manager files
 
 ## ACKNOWLEDGEMENTS
 

@@ -45,6 +45,7 @@ defmodule KSPMaps.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false},
+      {:nimble_parsec, "~> 0.5.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
