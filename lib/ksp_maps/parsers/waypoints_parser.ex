@@ -12,18 +12,20 @@ defmodule KSPMaps.WaypointsParser do
       "//" <> remaining ->
         {:ok, data, remaining, stream}
         |> strip_comment
+        |> parse
       "WAYPOINT" <> remaining ->
         {:ok, data, remaining, stream}
         |> parse_waypoint
+        |> parse
     end
   end
+  def parse({:eof, data, "", stream}), do: {:ok, List.flatten(data), "", stream}
 
   def strip_comment({:ok, data, <<10, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
   def strip_comment({:ok, data, <<13, 10, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
   def strip_comment({:ok, data, <<13, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
   def strip_comment({:ok, _, "", _} = state), do: reload_buffer(state) |> strip_comment
   def strip_comment({:ok, data, <<_::bytes-size(1), remaining::binary>>, stream}), do: strip_comment({:ok, data, remaining, stream})
-
 
   # nul, \t, \n, \f, \r, space respectively
   whitespace_values = [0, 9, 10, 12, 13, 32]
@@ -43,9 +45,9 @@ defmodule KSPMaps.WaypointsParser do
           |> reduce({List, :to_string, []})
           |> map({String, :trim, []})
           |> unwrap_and_tag(:value)
+          |> ignore(repeat(whitespace_char))
 
-  # [name: "Name", value: "value"]
-  def resolve_pair([{:name, name}, {:value, value}]), do: [{:name, name}, {:value, value}]
+  def resolve_pair([{:name, name}, {:value, value}]), do: [{name, value}]
 
   defcombinatorp :pair,
     name
@@ -54,17 +56,6 @@ defmodule KSPMaps.WaypointsParser do
     |> concat(value)
     |> reduce(:resolve_pair)
 
-  # {
-  # 	name = The Great Desert
-  # 	celestialName = Kerbin
-  # 	latitude = 2.4902494069446099
-  # 	longitude = 218.604135349567
-  # 	navigationId = 87b0c496-500d-426f-b9b3-dbf75c2320e4
-  # 	icon = eva
-  # 	altitude = 3.4106051316484809E-13
-  # 	index = 0
-  # 	seed = 173
-  # }
   defparsec :waypoint,
     ignore(repeat(whitespace_char))
     |> ignore(utf8_char([?{]))
@@ -75,14 +66,13 @@ defmodule KSPMaps.WaypointsParser do
 
   def parse_waypoint({:ok, _, "", _} = state), do: reload_buffer(state) |> parse_waypoint
   def parse_waypoint({:ok, data, buffer, stream}) do
-    # Logger.warn fn -> inspect(waypoint(buffer)) end
-    # {:ok, [waypoint: [[name: "name ", value: " foo "]]], "remainder", %{}, {1, 0}, 15}
     case waypoint(buffer) do
-      {:ok, [waypoint: [[name: name, value: value]]], remainder, _, _, _} ->
-        {:ok, [data, %{name => value}], remainder, stream}
+      {:ok, [waypoint: pairs_list], remainder, _, _, _} ->
+        {:ok, [data, Enum.reduce(List.flatten(pairs_list), %{}, fn {key, value}, acc -> Map.put(acc, key, value) end)], remainder, stream}
+      {:error, error_message, remainder, _, _, _} ->
+        {:error, error_message, remainder, stream}
     end
   end
-
 
   defp reload_buffer({_, data, buffer, stream}) do
     case IO.binread(stream, 1024) do
