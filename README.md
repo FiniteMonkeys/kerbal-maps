@@ -39,6 +39,14 @@ Execute the specs by running `mix espec`.
   * Convert tests to specs using ESpec
   * Add badges to README.md
 
+## ACKNOWLEDGEMENTS
+
+Made possible by:
+
+* [Leaflet](https://leafletjs.com)
+  * [leaflet.latlng-graticule plugin](https://github.com/cloudybay/leaflet.latlng-graticule) from [CloudyBay](https://github.com/cloudybay)
+* The tiles used for map imagery came from http://ksp.deringenieur.net/, and http://www.kerbalmaps.com/ before it.
+
 ## COPYRIGHT
 
 Copyright (c) 2018-2019 Craig S. Cottingham, except where stated otherwise.
