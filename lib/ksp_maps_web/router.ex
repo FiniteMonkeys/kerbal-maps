@@ -21,16 +21,17 @@ defmodule KSPMapsWeb.Router do
       error_handler: Pow.Phoenix.PlugErrorHandler
   end
 
-  scope "/" do
+  scope "/", KSPMapsWeb do
     pipe_through :browser
 
     pow_routes()
+
+    get "/", PageController, :index
   end
 
   scope "/", KSPMapsWeb do
     pipe_through [:browser, :protected]
 
-    get "/", PageController, :index
   end
 
   # Other scopes may use custom stacks.
