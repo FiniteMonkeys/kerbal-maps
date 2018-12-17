@@ -3,6 +3,7 @@ defmodule KSPMapsWeb.Router do
 
   use KSPMapsWeb, :router
   use Pow.Phoenix.Router
+  use Pow.Extension.Phoenix.Router, otp_app: :ksp_maps
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -25,6 +26,7 @@ defmodule KSPMapsWeb.Router do
     pipe_through :browser
 
     pow_routes()
+    pow_extension_routes()
 
     get "/", KSPMapsWeb.PageController, :index
   end

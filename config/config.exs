@@ -23,7 +23,9 @@ config :ksp_maps, :pow,
   repo: KSPMaps.Repo,
   user: KSPMaps.Users.User,
   routes_backend: KSPMapsWeb.Pow.Routes,
-  web_module: KSPMapsWeb
+  web_module: KSPMapsWeb,
+  extensions: [PowResetPassword, PowEmailConfirmation, PowPersistentSession],
+  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks
 
 # Configures Elixir's Logger
 config :logger, :console,
