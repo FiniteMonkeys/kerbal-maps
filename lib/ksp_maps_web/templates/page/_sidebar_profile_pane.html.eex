@@ -1,12 +1,21 @@
 <div id="sidebar-profile" class="sidebar-pane">
   <h1 class="sidebar-header">
-    Profile
+    <%= if @current_user do %>
+      <%= @current_user.email %>
+    <% else %>
+      Profile
+    <% end %>
     <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
-  <p>You do not need an account to use Kerbal Maps.</p>
-  <p>However, if you have an account, you will be able to:</p>
-  <ul>
-    <li>Upload points of interest (such as from Waypoint Manager)</li>
-    <li>Add points of interest manually</li>
-  </ul>
+
+  <%= if @current_user do %>
+    <p>
+      <%= link "Log out", to: Routes.pow_session_path(@conn, :delete), method: :delete %>
+  <% else %>
+    <p>
+      <%= link "Log in", to: Routes.pow_session_path(@conn, :new) %>
+      or
+      <%= link "register", to: Routes.pow_registration_path(@conn, :new) %>
+    </p>
+  <% end %>
 </div>

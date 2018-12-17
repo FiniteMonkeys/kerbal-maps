@@ -21,7 +21,8 @@ config :ksp_maps, KSPMapsWeb.Endpoint,
 # Configures Pow for user authentication and management
 config :ksp_maps, :pow,
   user: KSPMaps.Users.User,
-  repo: KSPMaps.Repo
+  repo: KSPMaps.Repo,
+  routes_backend: KSPMapsWeb.Pow.Routes
 
 # Configures Elixir's Logger
 config :logger, :console,
