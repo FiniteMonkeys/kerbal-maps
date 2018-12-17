@@ -92,9 +92,6 @@
       ]
   }).addTo(map);
 
-  L.marker([35.332031, -175.297852]).addTo(map).bindPopup("<strong>City</strong><br />Home");
-  L.marker([0.102329810251359, -74.568421012228896]).addTo(map).bindPopup("<strong>Monolith</strong><br />KSC Monolith")
-
   var popup = L.popup();
 
   function onMapClick(e) {
@@ -105,5 +102,19 @@
   }
 
   map.on('click', onMapClick);
+
+  channel.push("get_data")
+    .receive("ok", resp => {
+      for (let i = 0, size = resp.data.length; i < size; ++i) {
+        marker_data = resp.data[i]
+        var latitude = marker_data.latitude
+        var longitude = marker_data.longitude
+        var label = marker_data.label
+        L.marker([latitude, longitude]).addTo(map).bindPopup(label);
+      }
+    })
+    .receive("error", resp => {
+      console.log("Got an error", resp)
+    })
 
 </script>
