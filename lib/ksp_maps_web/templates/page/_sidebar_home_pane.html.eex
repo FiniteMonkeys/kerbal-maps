@@ -1,0 +1,11 @@
+<div id="sidebar-home" class="sidebar-pane">
+  <h1 class="sidebar-header">
+    Kerbal Maps
+    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+  </h1>
+  <p>
+    Maps of celestial bodies in
+    <a href="https://www.kerbalspaceprogram.com/">Kerbal Space Program</a>,
+    with a Google Maps-like interface.
+  </p>
+</div>
