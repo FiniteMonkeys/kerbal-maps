@@ -3,6 +3,7 @@ defmodule KSPMapsWeb.UserSocket do
 
   ## Channels
   # channel "room:*", KSPMapsWeb.RoomChannel
+  channel "data:*", KSPMapsWeb.DataChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
