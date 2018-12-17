@@ -42,5 +42,7 @@ defmodule KSPMapsWeb.Endpoint do
     key: "_ksp_maps_key",
     signing_salt: "N+MY5Ul7"
 
+  plug Pow.Plug.Session, otp_app: :ksp_maps
+
   plug KSPMapsWeb.Router
 end

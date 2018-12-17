@@ -1,5 +1,8 @@
 defmodule KSPMapsWeb.Router do
+  @moduledoc false
+
   use KSPMapsWeb, :router
+  use Pow.Phoenix.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,8 +16,19 @@ defmodule KSPMapsWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", KSPMapsWeb do
+  pipeline :protected do
+    plug Pow.Plug.RequireAuthenticated,
+      error_handler: Pow.Phoenix.PlugErrorHandler
+  end
+
+  scope "/" do
     pipe_through :browser
+
+    pow_routes()
+  end
+
+  scope "/", KSPMapsWeb do
+    pipe_through [:browser, :protected]
 
     get "/", PageController, :index
   end
