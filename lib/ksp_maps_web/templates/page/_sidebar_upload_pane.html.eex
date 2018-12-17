@@ -1,0 +1,6 @@
+<div id="sidebar-upload" class="sidebar-pane">
+  <h1 class="sidebar-header">
+    Upload
+    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+  </h1>
+</div>

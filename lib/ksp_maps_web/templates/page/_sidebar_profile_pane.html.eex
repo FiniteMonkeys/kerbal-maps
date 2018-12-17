@@ -1,0 +1,12 @@
+<div id="sidebar-profile" class="sidebar-pane">
+  <h1 class="sidebar-header">
+    Profile
+    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+  </h1>
+  <p>You do not need an account to use Kerbal Maps.</p>
+  <p>However, if you have an account, you will be able to:</p>
+  <ul>
+    <li>Upload points of interest (such as from Waypoint Manager)</li>
+    <li>Add points of interest manually</li>
+  </ul>
+</div>
