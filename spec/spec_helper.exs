@@ -1,10 +1,10 @@
 ESpec.configure fn(config) ->
   config.before fn(_tags) ->
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(KSPMaps.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(KerbalMaps.Repo)
   end
 
   config.finally fn(_shared) ->
-    Ecto.Adapters.SQL.Sandbox.checkin(KSPMaps.Repo, [])
+    Ecto.Adapters.SQL.Sandbox.checkin(KerbalMaps.Repo, [])
   end
 end
 

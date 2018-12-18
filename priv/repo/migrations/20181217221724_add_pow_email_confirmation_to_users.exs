@@ -1,4 +1,4 @@
-defmodule KSPMaps.Repo.Migrations.AddPowEmailConfirmationToUsers do
+defmodule KerbalMaps.Repo.Migrations.AddPowEmailConfirmationToUsers do
   use Ecto.Migration
 
   def change do

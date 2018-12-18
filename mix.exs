@@ -1,11 +1,11 @@
-defmodule KSPMaps.MixProject do
+defmodule KerbalMaps.MixProject do
   @moduledoc false
 
   use Mix.Project
 
   def project do
     [
-      app: :ksp_maps,
+      app: :kerbal_maps,
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -22,7 +22,7 @@ defmodule KSPMaps.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {KSPMaps.Application, []},
+      mod: {KerbalMaps.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

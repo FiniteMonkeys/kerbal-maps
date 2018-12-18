@@ -3,30 +3,30 @@ defmodule ESpec.Phoenix.Extend do
 
   def model do
     quote do
-      alias KSPMaps.Repo
+      alias KerbalMaps.Repo
     end
   end
 
   def controller do
     quote do
-      alias KSPMaps
-      # import KSPMaps.Router.Helpers
+      alias KerbalMaps
+      # import KerbalMaps.Router.Helpers
 
-      @endpoint KSPMapsWeb.Endpoint
+      @endpoint KerbalMapsWeb.Endpoint
     end
   end
 
   def view do
     quote do
-      # import KSPMaps.Router.Helpers
+      # import KerbalMaps.Router.Helpers
     end
   end
 
   def channel do
     quote do
-      alias KSPMaps.Repo
+      alias KerbalMaps.Repo
 
-      @endpoint KSPMapsWeb.Endpoint
+      @endpoint KerbalMapsWeb.Endpoint
     end
   end
 
