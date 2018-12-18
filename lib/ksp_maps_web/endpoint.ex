@@ -43,6 +43,7 @@ defmodule KSPMapsWeb.Endpoint do
     signing_salt: "N+MY5Ul7"
 
   plug Pow.Plug.Session, otp_app: :ksp_maps
+  plug PowPersistentSession.Plug.Cookie
 
   plug KSPMapsWeb.Router
 end
