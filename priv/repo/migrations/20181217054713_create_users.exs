@@ -1,4 +1,4 @@
-defmodule KSPMaps.Repo.Migrations.CreateUsers do
+defmodule KerbalMaps.Repo.Migrations.CreateUsers do
   @moduledoc false
 
   use Ecto.Migration

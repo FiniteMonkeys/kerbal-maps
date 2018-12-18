@@ -6,7 +6,7 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :ksp_maps, KSPMapsWeb.Endpoint,
+config :kerbal_maps, KerbalMapsWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -46,13 +46,13 @@ config :ksp_maps, KSPMapsWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :ksp_maps, KSPMapsWeb.Endpoint,
+config :kerbal_maps, KerbalMapsWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{lib/ksp_maps_web/views/.*(ex)$},
-      ~r{lib/ksp_maps_web/templates/.*(eex)$}
+      ~r{lib/kerbal_maps_web/views/.*(ex)$},
+      ~r{lib/kerbal_maps_web/templates/.*(eex)$}
     ]
   ]
 
@@ -67,9 +67,9 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 # Configure your database
-config :ksp_maps, KSPMaps.Repo,
+config :kerbal_maps, KerbalMaps.Repo,
   username: "postgres",
   password: "",
-  database: "ksp_maps_dev",
+  database: "kerbal_maps_dev",
   hostname: "localhost",
   pool_size: 10

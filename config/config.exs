@@ -7,26 +7,26 @@
 # General application configuration
 use Mix.Config
 
-config :ksp_maps,
-  namespace: KSPMaps,
-  ecto_repos: [KSPMaps.Repo]
+config :kerbal_maps,
+  namespace: KerbalMaps,
+  ecto_repos: [KerbalMaps.Repo]
 
 # Configures the endpoint
-config :ksp_maps, KSPMapsWeb.Endpoint,
+config :kerbal_maps, KerbalMapsWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "x12IOaIt5hO6FI2MfjUzthOK/RrD77R/loxo4f4cEGKAaWmbbudcGjv/zzgoTk+I",
-  render_errors: [view: KSPMapsWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: KSPMaps.PubSub, adapter: Phoenix.PubSub.PG2]
+  render_errors: [view: KerbalMapsWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: KerbalMaps.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Pow for user authentication and management
-config :ksp_maps, :pow,
-  repo: KSPMaps.Repo,
-  user: KSPMaps.Users.User,
-  routes_backend: KSPMapsWeb.Pow.Routes,
-  web_module: KSPMapsWeb,
+config :kerbal_maps, :pow,
+  repo: KerbalMaps.Repo,
+  user: KerbalMaps.Users.User,
+  routes_backend: KerbalMapsWeb.Pow.Routes,
+  web_module: KerbalMapsWeb,
   extensions: [PowResetPassword, PowEmailConfirmation, PowPersistentSession],
   controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
-  mailer_backend: KSPMapsWeb.PowMailer
+  mailer_backend: KerbalMapsWeb.PowMailer
 
 # Configures Elixir's Logger
 config :logger, :console,

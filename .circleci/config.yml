@@ -9,7 +9,7 @@ jobs:
       - image: circleci/postgres:11-alpine-ram
         environment:
           POSTGRES_USER: postgres
-          POSTGRES_DB: ksp_maps_test
+          POSTGRES_DB: kerbal_maps_test
 
     working_directory: ~/repo
     steps:
