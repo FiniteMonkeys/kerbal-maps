@@ -108,18 +108,28 @@
 
   var sidebar = L.control.sidebar('sidebar').addTo(map);
 
-  channel.push("get_data")
-    .receive("ok", resp => {
-      for (let i = 0, size = resp.data.length; i < size; ++i) {
-        marker_data = resp.data[i]
-        var latitude = marker_data.latitude
-        var longitude = marker_data.longitude
-        var label = marker_data.label
-        L.marker([latitude, longitude]).addTo(map).bindPopup(label);
-      }
-    })
-    .receive("error", resp => {
-      console.log("Got an error", resp)
-    })
+  <%= if @current_user do %>
 
+    let username = "<%= @current_user.email %>";
+    let channel = socket.channel(`data:${username}`, {})
+    channel.join()
+      .receive("ok", resp => {
+        console.log("Joined successfully", resp);
+        channel.push("get_data")
+          .receive("ok", resp => {
+            for (let i = 0, size = resp.data.length; i < size; ++i) {
+              marker_data = resp.data[i]
+              var latitude = marker_data.latitude
+              var longitude = marker_data.longitude
+              var label = marker_data.label
+              L.marker([latitude, longitude]).addTo(map).bindPopup(label);
+            }
+          })
+          .receive("error", resp => {
+            console.log("push_data returned an error", resp)
+          })
+      })
+      .receive("error", resp => { console.log("Unable to join", resp) })
+
+  <% end %>
 </script>
