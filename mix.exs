@@ -53,6 +53,7 @@ defmodule KSPMaps.MixProject do
       {:phoenix, "~> 1.4.0"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
+      {:pow, "~> 1.0"},
     ]
   end
 

@@ -2,7 +2,15 @@
   <div class="sidebar-tabs">
     <ul role="tablist">
       <li><a href="#sidebar-home" role="tab"><i class="fa fa-bars"></i></a></li>
-      <li><a href="#sidebar-profile" role="tab" title="Profile"><i class="fa fa-user"></i></a></li>
+      <li>
+        <a href="#sidebar-profile" role="tab" title="Profile">
+          <%= if @current_user do %>
+            <i class="fas fa-user-check"></i>
+          <% else %>
+            <i class="fa fa-user"></i>
+          <% end %>
+        </a>
+      </li>
       <li><a href="#sidebar-search" role="tab" title="Search"><i class="fas fa-search-location"></i></a></li>
       <li disabled="true"><a href="#sidebar-upload" role="tab" title="Upload"><i class="fas fa-upload"></i></a></li>
     </ul>

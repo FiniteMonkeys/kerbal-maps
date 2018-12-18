@@ -18,6 +18,16 @@ config :ksp_maps, KSPMapsWeb.Endpoint,
   render_errors: [view: KSPMapsWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: KSPMaps.PubSub, adapter: Phoenix.PubSub.PG2]
 
+# Configures Pow for user authentication and management
+config :ksp_maps, :pow,
+  repo: KSPMaps.Repo,
+  user: KSPMaps.Users.User,
+  routes_backend: KSPMapsWeb.Pow.Routes,
+  web_module: KSPMapsWeb,
+  extensions: [PowResetPassword, PowEmailConfirmation, PowPersistentSession],
+  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks,
+  mailer_backend: KSPMapsWeb.PowMailer
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
