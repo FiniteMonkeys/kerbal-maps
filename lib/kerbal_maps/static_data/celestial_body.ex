@@ -1,5 +1,7 @@
 defmodule KerbalMaps.StaticData.CelestialBody do
-  @moduledoc false
+  @moduledoc """
+  CelestialBody schema.
+  """
 
   use Ecto.Schema
 

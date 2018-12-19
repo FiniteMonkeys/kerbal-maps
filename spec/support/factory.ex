@@ -8,4 +8,10 @@ defmodule KerbalMaps.Factory do
       name: Faker.Name.first_name(),
     }
   end
+
+  def user_factory do
+    %KerbalMaps.Users.User{
+      email: Faker.Internet.email(),
+    }
+  end
 end
