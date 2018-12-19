@@ -1,6 +1,7 @@
 ESpec.configure fn(config) ->
   config.before fn(_tags) ->
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(KerbalMaps.Repo)
+    Faker.start()
   end
 
   config.finally fn(_shared) ->

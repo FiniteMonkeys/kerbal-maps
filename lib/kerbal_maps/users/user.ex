@@ -19,6 +19,7 @@ defmodule KerbalMaps.Users.User do
     |> pow_extension_changeset(attrs)
   end
 
+  ## this will get its own table/schema/etc.
   def markers(_user) do
     [
       %{latitude: 35.332031, longitude: -175.297852, label: "<strong>City</strong><br />Home"},

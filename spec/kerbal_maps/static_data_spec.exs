@@ -3,10 +3,25 @@ defmodule KerbalMaps.StaticData.Spec do
 
   use ESpec
 
+  require Logger
+
+  import KerbalMaps.Factory
+
+  alias KerbalMaps.Repo
+  alias KerbalMaps.StaticData
+  # alias KerbalMaps.StaticData.CelestialBody
+
   # doctest KerbalMaps.StaticData
 
-  describe "celestial_bodies" do
-    # alias KerbalMaps.StaticData.CelestialBody
+  example_group "celestial_bodies" do
+    describe "list_celestial_bodies/1" do
+      before do: allow Repo |> to(accept(:all, fn(_) -> static_list() end))
+      let :static_list, do: [build(:celestial_body)]
+      let :all_celestial_bodies, do: StaticData.list_celestial_bodies()
+
+      it do: expect (all_celestial_bodies()) |> to(have_count(Enum.count(static_list())))
+      it do: expect (all_celestial_bodies()) |> to(match_list(static_list()))
+    end
 
     # before do
     #   {:shared,
