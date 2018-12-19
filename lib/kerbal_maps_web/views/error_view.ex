@@ -1,4 +1,6 @@
 defmodule KerbalMapsWeb.ErrorView do
+  @moduledoc false
+
   use KerbalMapsWeb, :view
 
   alias Phoenix.Controller

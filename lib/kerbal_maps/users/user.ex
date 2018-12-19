@@ -1,6 +1,6 @@
 defmodule KerbalMaps.Users.User do
   @moduledoc """
-  User schema.
+  The User schema.
   """
 
   use Ecto.Schema

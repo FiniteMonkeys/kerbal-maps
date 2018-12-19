@@ -1,4 +1,4 @@
-defmodule KerbalMapsWeb.LayoutView do
+defmodule KerbalMapsWeb.MarkerView do
   @moduledoc false
 
   use KerbalMapsWeb, :view

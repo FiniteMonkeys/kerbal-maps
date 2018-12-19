@@ -34,6 +34,7 @@ defmodule KerbalMapsWeb.Router do
   scope "/", KerbalMapsWeb do
     pipe_through [:browser, :protected]
 
+    resources "/markers", MarkerController
   end
 
   # Other scopes may use custom stacks.

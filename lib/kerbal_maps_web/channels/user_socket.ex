@@ -1,4 +1,8 @@
 defmodule KerbalMapsWeb.UserSocket do
+  @moduledoc """
+
+  """
+
   use Phoenix.Socket
 
   ## Channels
