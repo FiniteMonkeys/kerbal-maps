@@ -3,9 +3,11 @@ defmodule KerbalMaps.StaticData do
   The StaticData context.
   """
 
-  import Ecto.Query, warn: false
-  alias KerbalMaps.Repo
+  require Logger
 
+  import Ecto.Query, warn: false
+
+  alias KerbalMaps.Repo
   alias KerbalMaps.StaticData.CelestialBody
 
   @doc """
@@ -17,9 +19,23 @@ defmodule KerbalMaps.StaticData do
       [%CelestialBody{}, ...]
 
   """
-  def list_celestial_bodies do
-    Repo.all(CelestialBody)
+  def list_celestial_bodies(params \\ %{}) do
+    find_celestial_bodies(params)
+    |> Repo.all
   end
+
+  defp find_celestial_bodies(params) do
+    str = case params do
+            %{"search" => %{"query" => s}} -> s
+            _ -> nil
+          end
+
+    CelestialBody
+    |> filter_celestial_bodies_by(:name, str)
+  end
+
+  defp filter_celestial_bodies_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
+  defp filter_celestial_bodies_by(query, :name, str), do: query |> where([cb], cb.name == ^str)
 
   @doc """
   Gets a single celestial_body.

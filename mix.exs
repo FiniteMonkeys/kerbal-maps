@@ -28,7 +28,7 @@ defmodule KerbalMaps.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "spec/support"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -40,7 +40,7 @@ defmodule KerbalMaps.MixProject do
       {:ecto_sql, "~> 3.0"},
       {:espec_phoenix, "~> 0.6.10", only: :test},
       {:espec, "~> 1.6", only: :test},
-      {:ex_machina, "~> 2.2"},
+      {:ex_machina, "~> 2.2", only: :test},
       {:faker, "~> 0.11.0", only: [:dev, :test], runtime: false},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
@@ -67,7 +67,7 @@ defmodule KerbalMaps.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "espec"]
+      test: ["ecto.drop", "ecto.create --quiet", "ecto.migrate", "espec"]
     ]
   end
 end
