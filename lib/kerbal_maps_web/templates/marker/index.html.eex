@@ -3,11 +3,11 @@
 <table>
   <thead>
     <tr>
+      <th>Body</th>
       <th>Name</th>
       <th>Latitude</th>
       <th>Longitude</th>
       <th>Altitude</th>
-      <th>Navigation uuid</th>
       <th>Icon name</th>
 
       <th></th>
@@ -16,11 +16,11 @@
   <tbody>
 <%= for marker <- @markers do %>
     <tr>
+      <td><%= marker.celestial_body.name %></td>
       <td><%= marker.name %></td>
       <td><%= marker.latitude %></td>
       <td><%= marker.longitude %></td>
       <td><%= marker.altitude %></td>
-      <td><%= marker.navigation_uuid %></td>
       <td><%= marker.icon_name %></td>
 
       <td>
@@ -33,4 +33,5 @@
   </tbody>
 </table>
 
-<span><%= link "New Marker", to: Routes.marker_path(@conn, :new) %></span>
+<p><%= link "New marker", to: Routes.marker_path(@conn, :new) %></p>
+<p><%= link "Return to map", to: Routes.page_path(@conn, :index) %></p>
