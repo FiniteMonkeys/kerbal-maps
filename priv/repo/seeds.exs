@@ -59,7 +59,7 @@ Repo.insert!(%Marker{
   longitude: -175.297852,
   altitude: nil,
   navigation_uuid: nil,
-  icon_name: ~S({"prefix":"fas","name":"fa-city"}),
+  icon_name: ~S({"prefix":"fa","name":"fa-city"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
 })
@@ -70,7 +70,7 @@ Repo.insert!(%Marker{
   longitude: -74.568421,
   altitude: nil,
   navigation_uuid: nil,
-  icon_name: ~S({"prefix":"fas","name":"fa-question"}),
+  icon_name: ~S({"prefix":"fa","name":"fa-question"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
 })
@@ -81,7 +81,7 @@ Repo.insert!(%Marker{
   longitude: -141.395865,
   altitude: nil,
   navigation_uuid: nil,
-  icon_name: ~S({"prefix":"fas","name":"fa-info"}),
+  icon_name: ~S({"prefix":"fa","name":"fa-info"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
 })
