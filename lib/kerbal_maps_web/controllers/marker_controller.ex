@@ -20,7 +20,7 @@ defmodule KerbalMapsWeb.MarkerController do
 
   def create(conn, %{"marker" => marker_params}) do
     case Symbols.create_marker(marker_params) do
-      {:ok, marker} ->
+      {:ok, _marker} ->
         conn
         |> put_flash(:info, "Marker created successfully.")
         |> redirect(to: Routes.marker_path(conn, :index))
@@ -45,7 +45,7 @@ defmodule KerbalMapsWeb.MarkerController do
     marker = Symbols.get_marker!(id)
 
     case Symbols.update_marker(marker, marker_params) do
-      {:ok, marker} ->
+      {:ok, _marker} ->
         conn
         |> put_flash(:info, "Marker updated successfully.")
         |> redirect(to: Routes.marker_path(conn, :index))

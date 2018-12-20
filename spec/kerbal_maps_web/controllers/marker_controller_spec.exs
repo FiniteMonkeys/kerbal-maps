@@ -10,17 +10,19 @@ defmodule KerbalMapsWeb.MarkerController.Spec do
   doctest KerbalMapsWeb.MarkerController
 
   example_group ":index" do
-    let :conn, do: build_conn()
     let :request, do: conn() |> get(Routes.marker_path(conn(), :index))
+    let :unauthenticated_conn, do: build_conn()
+    let :authenticated_conn, do: build_conn() |> Plug.Conn.assign(:current_user, current_user())
 
     context "when not authenticated" do
+      let :conn, do: unauthenticated_conn()
       it "returns a redirect to the authentication page" do
         expect(html_response(request(), 302)) |> to(match("redirected"))
       end
     end
 
     context "when authenticated" do
-      before do: allow Pow.Plug |> to(accept(:current_user, fn _ -> current_user() end))
+      let :conn, do: authenticated_conn()
       let :current_user, do: build(:user)
 
       it "returns all markers" do
