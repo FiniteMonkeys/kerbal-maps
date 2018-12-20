@@ -25,7 +25,7 @@
   <%= error_tag f, :altitude %>
 
   <%= label f, :icon_name %>
-  <%= text_input f, :icon_name %>
+  <%= select f, :icon_name, @icon_options %>
   <%= error_tag f, :icon_name %>
 
   <div>

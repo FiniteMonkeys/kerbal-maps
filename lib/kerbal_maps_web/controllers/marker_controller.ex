@@ -15,7 +15,7 @@ defmodule KerbalMapsWeb.MarkerController do
 
   def new(conn, _params) do
     changeset = Symbols.change_marker(%Marker{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: changeset, icon_options: icon_options())
   end
 
   def create(conn, %{"marker" => marker_params}) do
@@ -38,7 +38,7 @@ defmodule KerbalMapsWeb.MarkerController do
   def edit(conn, %{"id" => id}) do
     marker = Symbols.get_marker!(id)
     changeset = Symbols.change_marker(marker)
-    render(conn, "edit.html", marker: marker, changeset: changeset)
+    render(conn, "edit.html", marker: marker, changeset: changeset, icon_options: icon_options())
   end
 
   def update(conn, %{"id" => id, "marker" => marker_params}) do
@@ -62,5 +62,11 @@ defmodule KerbalMapsWeb.MarkerController do
     conn
     |> put_flash(:info, "Marker deleted successfully.")
     |> redirect(to: Routes.marker_path(conn, :index))
+  end
+
+  defp icon_options do
+    [
+      "Point of interest": ~S({"prefix":"fa","name":"fa-info"}),
+    ]
   end
 end
