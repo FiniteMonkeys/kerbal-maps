@@ -23,7 +23,7 @@ defmodule KerbalMapsWeb.MarkerController do
       {:ok, marker} ->
         conn
         |> put_flash(:info, "Marker created successfully.")
-        |> redirect(to: Routes.marker_path(conn, :show, marker))
+        |> redirect(to: Routes.marker_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -48,7 +48,7 @@ defmodule KerbalMapsWeb.MarkerController do
       {:ok, marker} ->
         conn
         |> put_flash(:info, "Marker updated successfully.")
-        |> redirect(to: Routes.marker_path(conn, :show, marker))
+        |> redirect(to: Routes.marker_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", marker: marker, changeset: changeset)
