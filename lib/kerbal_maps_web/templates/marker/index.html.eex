@@ -5,6 +5,7 @@
     <tr>
       <th>Body</th>
       <th>Name</th>
+      <th>Description</th>
       <th>Latitude</th>
       <th>Longitude</th>
       <th>Altitude</th>
@@ -18,6 +19,7 @@
     <tr>
       <td><%= marker.celestial_body.name %></td>
       <td><%= marker.name %></td>
+      <td><%= marker.description %></td>
       <td><%= marker.latitude %></td>
       <td><%= marker.longitude %></td>
       <td><%= marker.altitude %></td>

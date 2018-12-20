@@ -28,7 +28,7 @@ defmodule KerbalMaps.Symbols.Marker do
   @doc false
   def changeset(marker, attrs) do
     marker
-    |> cast(attrs, [:name, :latitude, :longitude, :altitude, :navigation_uuid, :icon_name, :user_id, :celestial_body_id])
+    |> cast(attrs, [:name, :description, :latitude, :longitude, :altitude, :navigation_uuid, :icon_name, :user_id, :celestial_body_id])
     |> validate_required([:name, :latitude, :longitude, :user_id, :celestial_body_id])
   end
 end

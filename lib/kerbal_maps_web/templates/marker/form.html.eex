@@ -12,6 +12,10 @@
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
+  <%= label f, :description %>
+  <%= text_input f, :description %>
+  <%= error_tag f, :description %>
+
   <%= label f, :latitude %>
   <%= number_input f, :latitude, step: "any" %>
   <%= error_tag f, :latitude %>
