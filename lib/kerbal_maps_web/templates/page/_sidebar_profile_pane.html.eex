@@ -9,9 +9,8 @@
   </h1>
 
   <%= if @current_user do %>
-    <p>
-      <%= link "Log out.", to: Routes.pow_session_path(@conn, :delete), method: :delete %>
-    </p>
+    <p>Edit your <%= link "markers", to: Routes.marker_path(@conn, :index) %>.</p>
+    <p><%= link "Log out.", to: Routes.pow_session_path(@conn, :delete), method: :delete %></p>
   <% else %>
     <p>Have an account? <%= link "Log in.", to: Routes.pow_session_path(@conn, :new) %></p>
     <p>Want an account? <%= link "Create one.", to: Routes.pow_registration_path(@conn, :new) %></p>
