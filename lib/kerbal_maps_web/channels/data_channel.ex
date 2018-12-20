@@ -18,7 +18,9 @@ defmodule KerbalMapsWeb.DataChannel do
     user_id = socket.assigns[:user_id]
     user = KerbalMaps.get_user(user_id)
     if user do
-      {:reply, {:ok, %{data: KerbalMaps.Users.User.markers(user)}}, socket}
+      markers = KerbalMaps.Symbols.list_markers_for_user(user)
+                |> Enum.map(fn m -> %{latitude: m.latitude, longitude: m.longitude, label: "<strong>#{m.name}</strong><br/>#{m.description}"} end)
+      {:reply, {:ok, %{data: markers}}, socket}
     else
       {:reply, {:error, "user with id #{user_id} not found"}}
     end
