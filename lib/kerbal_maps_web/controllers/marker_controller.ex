@@ -9,7 +9,7 @@ defmodule KerbalMapsWeb.MarkerController do
   alias KerbalMaps.Symbols.Marker
 
   def index(conn, _params) do
-    markers = Symbols.list_markers()
+    markers = Symbols.list_markers_for_user(conn.assigns[:current_user])
     render(conn, "index.html", markers: markers)
   end
 
