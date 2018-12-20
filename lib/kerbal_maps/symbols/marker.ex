@@ -6,6 +6,7 @@ defmodule KerbalMaps.Symbols.Marker do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import ESpec.Testable
 
   alias KerbalMaps.StaticData.CelestialBody
   alias KerbalMaps.Users.User
