@@ -9,6 +9,7 @@ defmodule KerbalMaps.Symbols do
 
   alias KerbalMaps.Repo
   alias KerbalMaps.Symbols.Marker
+  alias KerbalMaps.Users.User
 
   @doc """
   Returns the list of markers.
@@ -20,7 +21,16 @@ defmodule KerbalMaps.Symbols do
 
   """
   def list_markers(params \\ %{}) do
-    find_markers(params)
+    params
+    |> find_markers
+    |> Repo.all
+  end
+
+  def list_markers_for_user(%User{} = user, params \\ %{}) do
+    params
+    |> Map.put("user_id", user.id)
+    |> find_markers
+    |> preload([:owner, :celestial_body])
     |> Repo.all
   end
 
@@ -30,12 +40,21 @@ defmodule KerbalMaps.Symbols do
             _ -> nil
           end
 
+    user_id = case params do
+                %{"user_id" => v} when is_integer(v) -> v
+                %{"user_id" => v} when is_binary(v) -> String.to_integer(v)
+                _ -> nil
+               end
+
     Marker
     |> filter_markers_by(:name, str)
+    |> filter_markers_by(:user_id, user_id)
   end
 
   defp filter_markers_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
   defp filter_markers_by(query, :name, str), do: query |> where([m], m.name == ^str)
+  defp filter_markers_by(query, :user_id, nil), do: query
+  defp filter_markers_by(query, :user_id, user_id), do: query |> where(fragment("user_id = ?", ^user_id))
 
   @doc """
   Gets a single marker.

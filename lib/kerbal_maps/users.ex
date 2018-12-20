@@ -31,6 +31,7 @@ defmodule KerbalMaps.Users do
           end
 
     User
+    |> preload(:markers)
     |> filter_users_by(:name, str)
   end
 
