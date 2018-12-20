@@ -4,18 +4,23 @@ defmodule KerbalMaps.Symbols.Marker do
   """
 
   use Ecto.Schema
+
   import Ecto.Changeset
+
+  alias KerbalMaps.StaticData.CelestialBody
+  alias KerbalMaps.Users.User
 
   schema "markers" do
     field :altitude, :decimal
-    field :celestial_body_id, :id
     field :description, :string
     field :icon_name, :string
     field :latitude, :decimal
     field :longitude, :decimal
     field :name, :string
     field :navigation_uuid, Ecto.UUID
-    field :user_id, :id
+
+    belongs_to :owner, User, foreign_key: :user_id
+    belongs_to :celestial_body, CelestialBody
 
     timestamps()
   end
