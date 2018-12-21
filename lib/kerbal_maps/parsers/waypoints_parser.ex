@@ -6,8 +6,11 @@ defmodule KerbalMaps.WaypointsParser do
   import NimbleParsec
 
   def parse({:ok, data, stream}), do: parse({:ok, data, "", stream})
+
+  def parse({:eof, data, "", _stream}), do: {:ok, List.flatten(data), ""}
+  def parse({{:error, reason}, _, _, _}), do: {:error, reason}
   def parse({:ok, _, "", _} = state), do: reload_buffer(state) |> parse
-  def parse({:ok, data, buffer, stream} = state) do
+  def parse({_, data, buffer, stream} = state) do
     case buffer do
       "//" <> remaining ->
         {:ok, data, remaining, stream}
@@ -16,6 +19,7 @@ defmodule KerbalMaps.WaypointsParser do
       "WAYPOINT" <> remaining ->
         {:ok, data, remaining, stream}
         |> parse_waypoint
+        |> reload_buffer
         |> parse
       _ ->
         state
@@ -23,7 +27,6 @@ defmodule KerbalMaps.WaypointsParser do
         |> parse
     end
   end
-  def parse({:eof, data, "", stream}), do: {:ok, List.flatten(data), "", stream}
 
   def strip_comment({:ok, data, <<10, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
   def strip_comment({:ok, data, <<13, 10, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
@@ -82,9 +85,8 @@ defmodule KerbalMaps.WaypointsParser do
     case waypoint(buffer) do
       {:ok, [waypoint: pairs_list], remainder, _, _, _} ->
         {:ok, [data, Enum.reduce(List.flatten(pairs_list), %{}, fn {key, value}, acc -> Map.put(acc, key, value) end)], remainder, stream}
-      {:error, error_message, remainder, _, _, _} = error_state ->
-        ### if buffer doesn't contain a full well-formed waypoint, we get an error here
-        {:error, inspect(error_state), remainder, stream}
+      {:error, error_message, remainder, _, _, _} ->
+        {:error, error_message, remainder, stream}
     end
   end
 
@@ -93,7 +95,7 @@ defmodule KerbalMaps.WaypointsParser do
       :eof ->
         {:eof, data, buffer, stream}
       {:error, _} = error_reason ->
-        error_reason
+        {error_reason, data, buffer, stream}
       new_chunk ->
         {:ok, data, buffer <> new_chunk, stream}
     end
