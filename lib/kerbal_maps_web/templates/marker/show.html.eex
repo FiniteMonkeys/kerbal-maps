@@ -1,0 +1,38 @@
+<h1>Show Marker</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @marker.name %>
+  </li>
+
+  <li>
+    <strong>Latitude:</strong>
+    <%= @marker.latitude %>
+  </li>
+
+  <li>
+    <strong>Longitude:</strong>
+    <%= @marker.longitude %>
+  </li>
+
+  <li>
+    <strong>Altitude:</strong>
+    <%= @marker.altitude %>
+  </li>
+
+  <li>
+    <strong>Navigation uuid:</strong>
+    <%= @marker.navigation_uuid %>
+  </li>
+
+  <li>
+    <strong>Icon name:</strong>
+    <%= @marker.icon_name %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.marker_path(@conn, :edit, @marker) %></span>
+<span><%= link "Back", to: Routes.marker_path(@conn, :index) %></span>

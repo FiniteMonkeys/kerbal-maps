@@ -1,0 +1,39 @@
+<h1>Listing Markers</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Body</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th>Altitude</th>
+      <th>Icon name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for marker <- @markers do %>
+    <tr>
+      <td><%= marker.celestial_body.name %></td>
+      <td><%= marker.name %></td>
+      <td><%= marker.description %></td>
+      <td><%= marker.latitude %></td>
+      <td><%= marker.longitude %></td>
+      <td><%= marker.altitude %></td>
+      <td><%= marker.icon_name %></td>
+
+      <td>
+        <%= link "Show", to: Routes.marker_path(@conn, :show, marker) %>
+        <%= link "Edit", to: Routes.marker_path(@conn, :edit, marker) %>
+        <%= link "Delete", to: Routes.marker_path(@conn, :delete, marker), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<p><%= link "New marker", to: Routes.marker_path(@conn, :new) %></p>
+<p><%= link "Return to map", to: Routes.page_path(@conn, :index) %></p>

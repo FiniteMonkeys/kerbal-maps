@@ -18,9 +18,22 @@ defmodule KerbalMapsWeb.DataChannel do
     user_id = socket.assigns[:user_id]
     user = KerbalMaps.get_user(user_id)
     if user do
-      {:reply, {:ok, %{data: KerbalMaps.Users.User.markers(user)}}, socket}
+      markers = KerbalMaps.Symbols.list_markers_for_user(user)
+                |> Enum.map(fn m -> to_json(m) end)
+      {:reply, {:ok, %{data: markers}}, socket}
     else
       {:reply, {:error, "user with id #{user_id} not found"}}
     end
+  end
+
+  defp to_json(%KerbalMaps.Symbols.Marker{} = marker) do
+    icon_json = Jason.decode!(marker.icon_name)
+    %{
+      latitude: marker.latitude,
+      longitude: marker.longitude,
+      label: "<strong>#{marker.name}</strong><br/>#{marker.description}",
+      icon_prefix: Map.get(icon_json, "prefix", ""),
+      icon_name: Map.get(icon_json, "name", "?"),
+    }
   end
 end

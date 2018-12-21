@@ -13,7 +13,7 @@ defmodule KerbalMaps.StaticData.CelestialBody do
     field :name, :string
 
     belongs_to :parent, CelestialBody
-    has_many :moons, CelestialBody
+    has_many :moons, CelestialBody, foreign_key: :parent_id
 
     timestamps()
   end
