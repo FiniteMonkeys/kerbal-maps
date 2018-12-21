@@ -7,7 +7,7 @@ defmodule KerbalMaps.WaypointsParser do
 
   def parse({:ok, data, stream}), do: parse({:ok, data, "", stream})
   def parse({:ok, _, "", _} = state), do: reload_buffer(state) |> parse
-  def parse({:ok, data, buffer, stream}) do
+  def parse({:ok, data, buffer, stream} = state) do
     case buffer do
       "//" <> remaining ->
         {:ok, data, remaining, stream}
@@ -16,6 +16,10 @@ defmodule KerbalMaps.WaypointsParser do
       "WAYPOINT" <> remaining ->
         {:ok, data, remaining, stream}
         |> parse_waypoint
+        |> parse
+      _ ->
+        state
+        |> strip_whitespace
         |> parse
     end
   end
@@ -26,6 +30,15 @@ defmodule KerbalMaps.WaypointsParser do
   def strip_comment({:ok, data, <<13, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
   def strip_comment({:ok, _, "", _} = state), do: reload_buffer(state) |> strip_comment
   def strip_comment({:ok, data, <<_::bytes-size(1), remaining::binary>>, stream}), do: strip_comment({:ok, data, remaining, stream})
+
+  def strip_whitespace({:ok, data, <<0, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<9, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<10, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<12, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<13, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<32, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, _, "", _} = state), do: reload_buffer(state) |> strip_whitespace
+  def strip_whitespace(state), do: state
 
   # nul, \t, \n, \f, \r, space respectively
   whitespace_values = [0, 9, 10, 12, 13, 32]
@@ -69,8 +82,9 @@ defmodule KerbalMaps.WaypointsParser do
     case waypoint(buffer) do
       {:ok, [waypoint: pairs_list], remainder, _, _, _} ->
         {:ok, [data, Enum.reduce(List.flatten(pairs_list), %{}, fn {key, value}, acc -> Map.put(acc, key, value) end)], remainder, stream}
-      {:error, error_message, remainder, _, _, _} ->
-        {:error, error_message, remainder, stream}
+      {:error, error_message, remainder, _, _, _} = error_state ->
+        ### if buffer doesn't contain a full well-formed waypoint, we get an error here
+        {:error, inspect(error_state), remainder, stream}
     end
   end
 
