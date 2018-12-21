@@ -19,22 +19,22 @@ alias KerbalMaps.Users.User
 
 ##   CelestialBody
 
-Repo.insert!(%CelestialBody{name: "Moho"})
-eve = Repo.insert!(%CelestialBody{name: "Eve"})
-  Repo.insert!(%CelestialBody{name: "Gilly", parent_id: eve.id})
-kerbin = Repo.insert!(%CelestialBody{name: "Kerbin"})
-  Repo.insert!(%CelestialBody{name: "Mun", parent_id: kerbin.id})
-  Repo.insert!(%CelestialBody{name: "Minmus", parent_id: kerbin.id})
-duna = Repo.insert!(%CelestialBody{name: "Duna"})
-  Repo.insert!(%CelestialBody{name: "Ike", parent_id: duna.id})
-Repo.insert!(%CelestialBody{name: "Dres"})
-jool = Repo.insert!(%CelestialBody{name: "Jool"})
-  Repo.insert!(%CelestialBody{name: "Laythe", parent_id: jool.id})
-  Repo.insert!(%CelestialBody{name: "Vall", parent_id: jool.id})
-  Repo.insert!(%CelestialBody{name: "Tylo", parent_id: jool.id})
-  Repo.insert!(%CelestialBody{name: "Bop", parent_id: jool.id})
-  Repo.insert!(%CelestialBody{name: "Pol", parent_id: jool.id})
-Repo.insert!(%CelestialBody{name: "Eeloo"})
+Repo.insert!(%CelestialBody{name: "Moho"} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+eve = Repo.insert!(%CelestialBody{name: "Eve"} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Gilly", parent_id: eve.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+kerbin = Repo.insert!(%CelestialBody{name: "Kerbin"} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Mun", parent_id: kerbin.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Minmus", parent_id: kerbin.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+duna = Repo.insert!(%CelestialBody{name: "Duna"} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Ike", parent_id: duna.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+Repo.insert!(%CelestialBody{name: "Dres"} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+jool = Repo.insert!(%CelestialBody{name: "Jool"} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Laythe", parent_id: jool.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Vall", parent_id: jool.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Tylo", parent_id: jool.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Bop", parent_id: jool.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  Repo.insert!(%CelestialBody{name: "Pol", parent_id: jool.id} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
+Repo.insert!(%CelestialBody{name: "Eeloo"} |> CelestialBody.changeset(%{}) |> Ecto.Changeset.apply_changes())
 
 ## Users
 
@@ -46,7 +46,7 @@ me = Repo.insert!(%User{
   email_confirmation_token: "fdf5593d-b5f2-4c7a-93f7-4efd9ce3f233",
   email_confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second),
   unconfirmed_email: nil,
-})
+} |> User.changeset(%{}) |> Ecto.Changeset.apply_changes())
 
 ## Symbols
 
@@ -62,7 +62,7 @@ Repo.insert!(%Marker{
   icon_name: ~S({"prefix":"fa","name":"fa-city"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
-})
+} |> Marker.changeset(%{}) |> Ecto.Changeset.apply_changes())
 Repo.insert!(%Marker{
   name: "KSC Monolith",
   description: "A monolith on the grounds of the Kerbal Space Center",
@@ -73,15 +73,15 @@ Repo.insert!(%Marker{
   icon_name: ~S({"prefix":"fa","name":"fa-question"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
-})
+} |> Marker.changeset(%{}) |> Ecto.Changeset.apply_changes())
 Repo.insert!(%Marker{
   name: "The Great Desert",
   description: "Bring plenty of water.",
   latitude: 2.490249,
-  longitude: -141.395865,
+  longitude: 218.604135, # -141.395865,
   altitude: nil,
   navigation_uuid: nil,
   icon_name: ~S({"prefix":"fa","name":"fa-info"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
-})
+} |> Marker.changeset(%{}) |> Ecto.Changeset.apply_changes())
