@@ -10,6 +10,7 @@
 
   <%= if @current_user do %>
     <p>Edit your <%= link "markers", to: Routes.marker_path(@conn, :index) %>.</p>
+    <p>Edit your <%= link "overlays", to: Routes.overlay_path(@conn, :index) %>.</p>
     <p><%= link "Log out.", to: Routes.pow_session_path(@conn, :delete), method: :delete %></p>
   <% else %>
     <p>Have an account? <%= link "Log in.", to: Routes.pow_session_path(@conn, :new) %></p>

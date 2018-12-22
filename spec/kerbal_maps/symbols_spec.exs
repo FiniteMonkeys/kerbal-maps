@@ -23,4 +23,15 @@ defmodule KerbalMaps.Symbols.Spec do
       it do: expect (all_markers()) |> to(match_list(static_list()))
     end
   end
+
+  example_group "overlays" do
+    describe "list_overlays/1" do
+      before do: allow Repo |> to(accept(:all, fn(_) -> static_list() end))
+      let :static_list, do: [build(:overlay)]
+      let :all_overlays, do: Symbols.list_overlays()
+
+      it do: expect (all_overlays()) |> to(have_count(Enum.count(static_list())))
+      it do: expect (all_overlays()) |> to(match_list(static_list()))
+    end
+  end
 end

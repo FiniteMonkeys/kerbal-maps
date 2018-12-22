@@ -1,6 +1,6 @@
 defmodule KerbalMapsWeb.MarkerController do
   @moduledoc """
-
+  The Marker controller.
   """
 
   use KerbalMapsWeb, :controller
@@ -28,11 +28,6 @@ defmodule KerbalMapsWeb.MarkerController do
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
-  end
-
-  def show(conn, %{"id" => id}) do
-    marker = Symbols.get_marker!(id)
-    render(conn, "show.html", marker: marker)
   end
 
   def edit(conn, %{"id" => id}) do

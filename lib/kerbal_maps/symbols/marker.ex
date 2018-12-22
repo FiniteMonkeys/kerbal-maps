@@ -9,6 +9,7 @@ defmodule KerbalMaps.Symbols.Marker do
   import ESpec.Testable
 
   alias KerbalMaps.StaticData.CelestialBody
+  alias KerbalMaps.Symbols.Overlay
   alias KerbalMaps.Users.User
 
   schema "markers" do
@@ -22,6 +23,7 @@ defmodule KerbalMaps.Symbols.Marker do
 
     belongs_to :owner, User, foreign_key: :user_id
     belongs_to :celestial_body, CelestialBody
+    many_to_many :overlays, Overlay, join_through: "overlays_markers"
 
     timestamps()
   end

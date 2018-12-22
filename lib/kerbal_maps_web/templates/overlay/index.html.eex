@@ -1,0 +1,28 @@
+<h1>Listing Overlays</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Body</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for overlay <- @overlays do %>
+    <tr>
+      <td><%= overlay.celestial_body.name %></td>
+      <td><%= overlay.name %></td>
+      <td><%= overlay.description %></td>
+      <td>
+        <%= link "Edit", to: Routes.overlay_path(@conn, :edit, overlay) %>
+        <%= link "Delete", to: Routes.overlay_path(@conn, :delete, overlay), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<p><%= link "New overlay", to: Routes.overlay_path(@conn, :new) %></p>
+<p><%= link "Return to map", to: Routes.page_path(@conn, :index) %></p>

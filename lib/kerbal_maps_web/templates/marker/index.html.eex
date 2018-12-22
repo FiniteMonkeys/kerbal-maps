@@ -10,7 +10,6 @@
       <th>Longitude</th>
       <th>Altitude</th>
       <th>Icon name</th>
-
       <th></th>
     </tr>
   </thead>
@@ -24,9 +23,7 @@
       <td><%= marker.longitude %></td>
       <td><%= marker.altitude %></td>
       <td><%= marker.icon_name %></td>
-
       <td>
-        <%= link "Show", to: Routes.marker_path(@conn, :show, marker) %>
         <%= link "Edit", to: Routes.marker_path(@conn, :edit, marker) %>
         <%= link "Delete", to: Routes.marker_path(@conn, :delete, marker), method: :delete, data: [confirm: "Are you sure?"] %>
       </td>

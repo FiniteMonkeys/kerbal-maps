@@ -14,12 +14,12 @@ defmodule KerbalMaps.Repo.Migrations.CreateMarkers do
       add :icon_name, :string
       add :user_id, references(:users, on_delete: :nothing), null: false
       add :celestial_body_id, references(:celestial_bodies, on_delete: :nothing), null: false
-
       timestamps()
     end
 
     create index(:markers, [:user_id])
     create index(:markers, [:celestial_body_id])
     create unique_index(:markers, [:navigation_uuid])
+    create unique_index(:markers, [:name, :user_id])
   end
 end

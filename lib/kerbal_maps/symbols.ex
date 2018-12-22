@@ -9,7 +9,12 @@ defmodule KerbalMaps.Symbols do
 
   alias KerbalMaps.Repo
   alias KerbalMaps.Symbols.Marker
+  alias KerbalMaps.Symbols.Overlay
   alias KerbalMaps.Users.User
+
+  ###################################################################
+  ## markers
+  ##
 
   @doc """
   Returns the list of markers.
@@ -143,5 +148,143 @@ defmodule KerbalMaps.Symbols do
   """
   def change_marker(%Marker{} = marker) do
     Marker.changeset(marker, %{})
+  end
+
+  ###################################################################
+  ## overlays
+  ##
+
+  @doc """
+  Returns the list of overlays.
+
+  ## Examples
+
+      iex> list_overlays()
+      [%Overlay{}, ...]
+
+  """
+  def list_overlays(params \\ %{}) do
+    params
+    |> find_overlays
+    |> Repo.all
+  end
+
+  def list_overlays_for_user(%User{} = user, params \\ %{}) do
+    params
+    |> Map.put("user_id", user.id)
+    |> find_overlays
+    |> preload([:owner, :celestial_body])
+    |> Repo.all
+  end
+
+  defp find_overlays(params) do
+    str = case params do
+            %{"search" => %{"query" => s}} -> s
+            _ -> nil
+          end
+
+    celestial_body_id = case params do
+                          %{"celestial_body_id" => v} when is_integer(v) -> v
+                          %{"celestial_body_id" => v} when is_binary(v) -> String.to_integer(v)
+                          _ -> nil
+                        end
+    user_id = case params do
+                %{"user_id" => v} when is_integer(v) -> v
+                %{"user_id" => v} when is_binary(v) -> String.to_integer(v)
+                _ -> nil
+              end
+
+    Overlay
+    |> filter_overlays_by(:name, str)
+    |> filter_overlays_by(:celestial_body_id, celestial_body_id)
+    |> filter_overlays_by(:user_id, user_id)
+  end
+
+  defp filter_overlays_by(query, :celestial_body_id, nil), do: query
+  defp filter_overlays_by(query, :celestial_body_id, celestial_body_id), do: query |> where(fragment("celestial_body_id = ?", ^celestial_body_id))
+  defp filter_overlays_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
+  defp filter_overlays_by(query, :name, str), do: query |> where([m], m.name == ^str)
+  defp filter_overlays_by(query, :user_id, nil), do: query
+  defp filter_overlays_by(query, :user_id, user_id), do: query |> where(fragment("user_id = ?", ^user_id))
+
+  @doc """
+  Gets a single overlay.
+
+  Raises `Ecto.NoResultsError` if the Overlay does not exist.
+
+  ## Examples
+
+      iex> get_overlay!(123)
+      %Overlay{}
+
+      iex> get_overlay!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_overlay!(id), do: Repo.get!(Overlay, id)
+
+  @doc """
+  Creates a overlay.
+
+  ## Examples
+
+      iex> create_overlay(%{field: value})
+      {:ok, %Overlay{}}
+
+      iex> create_overlay(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_overlay(attrs \\ %{}) do
+    %Overlay{}
+    |> Overlay.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a overlay.
+
+  ## Examples
+
+      iex> update_overlay(overlay, %{field: new_value})
+      {:ok, %Overlay{}}
+
+      iex> update_overlay(overlay, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_overlay(%Overlay{} = overlay, attrs) do
+    overlay
+    |> Overlay.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Overlay.
+
+  ## Examples
+
+      iex> delete_overlay(overlay)
+      {:ok, %Overlay{}}
+
+      iex> delete_overlay(overlay)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_overlay(%Overlay{} = overlay) do
+    Repo.delete(overlay)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking overlay changes.
+
+  ## Examples
+
+      iex> change_overlay(overlay)
+      %Ecto.Changeset{source: %Overlay{}}
+
+  """
+  def change_overlay(%Overlay{} = overlay) do
+    Overlay.changeset(overlay, %{})
   end
 end
