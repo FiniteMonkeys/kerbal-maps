@@ -33,7 +33,7 @@ defmodule KerbalMapsWeb.DataChannel do
     %{
       latitude: marker.latitude,
       longitude: marker.longitude,
-      label: "<strong>#{marker.name}</strong><br/>#{marker.description}",
+      label: "<strong>#{marker.name}</strong><br/>#{marker.latitude} #{marker.longitude}<br/>#{marker.description}",
       icon_prefix: Map.get(icon_json, "prefix", ""),
       icon_name: Map.get(icon_json, "name", "?"),
     }
