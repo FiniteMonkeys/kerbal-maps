@@ -5,9 +5,16 @@
     </div>
   <% end %>
 
+  <%= hidden_input f, :user_id, value: @current_user.id %>
+  <%= hidden_input f, :celestial_body_id, value: 4 %>
+
   <%= label f, :name %>
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
+
+  <%= label f, :description %>
+  <%= text_input f, :description %>
+  <%= error_tag f, :description %>
 
   <div>
     <%= submit "Save" %>

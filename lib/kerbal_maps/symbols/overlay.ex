@@ -8,12 +8,15 @@ defmodule KerbalMaps.Symbols.Overlay do
   import Ecto.Changeset
   # import ESpec.Testable
 
+  alias KerbalMaps.StaticData.CelestialBody
   alias KerbalMaps.Users.User
 
   schema "overlays" do
     field :name, :string
+    field :description, :string
 
     belongs_to :owner, User, foreign_key: :user_id
+    belongs_to :celestial_body, CelestialBody
 
     timestamps()
   end
@@ -21,7 +24,7 @@ defmodule KerbalMaps.Symbols.Overlay do
   @doc false
   def changeset(overlay, attrs) do
     overlay
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :description, :user_id, :celestial_body_id])
+    |> validate_required([:name, :user_id, :celestial_body_id])
   end
 end

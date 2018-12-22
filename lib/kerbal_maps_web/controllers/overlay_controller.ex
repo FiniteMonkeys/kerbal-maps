@@ -1,11 +1,15 @@
 defmodule KerbalMapsWeb.OverlayController do
+  @moduledoc """
+  The Marker controller.
+  """
+
   use KerbalMapsWeb, :controller
 
   alias KerbalMaps.Symbols
   alias KerbalMaps.Symbols.Overlay
 
   def index(conn, _params) do
-    overlays = Symbols.list_overlays()
+    overlays = Symbols.list_overlays_for_user(conn.assigns[:current_user])
     render(conn, "index.html", overlays: overlays)
   end
 
@@ -16,19 +20,14 @@ defmodule KerbalMapsWeb.OverlayController do
 
   def create(conn, %{"overlay" => overlay_params}) do
     case Symbols.create_overlay(overlay_params) do
-      {:ok, overlay} ->
+      {:ok, _overlay} ->
         conn
         |> put_flash(:info, "Overlay created successfully.")
-        |> redirect(to: Routes.overlay_path(conn, :show, overlay))
+        |> redirect(to: Routes.overlay_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
-  end
-
-  def show(conn, %{"id" => id}) do
-    overlay = Symbols.get_overlay!(id)
-    render(conn, "show.html", overlay: overlay)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -41,10 +40,10 @@ defmodule KerbalMapsWeb.OverlayController do
     overlay = Symbols.get_overlay!(id)
 
     case Symbols.update_overlay(overlay, overlay_params) do
-      {:ok, overlay} ->
+      {:ok, _overlay} ->
         conn
         |> put_flash(:info, "Overlay updated successfully.")
-        |> redirect(to: Routes.overlay_path(conn, :show, overlay))
+        |> redirect(to: Routes.overlay_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", overlay: overlay, changeset: changeset)
