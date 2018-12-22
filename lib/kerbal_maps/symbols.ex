@@ -40,17 +40,25 @@ defmodule KerbalMaps.Symbols do
             _ -> nil
           end
 
+    celestial_body_id = case params do
+                          %{"celestial_body_id" => v} when is_integer(v) -> v
+                          %{"celestial_body_id" => v} when is_binary(v) -> String.to_integer(v)
+                          _ -> nil
+                        end
     user_id = case params do
                 %{"user_id" => v} when is_integer(v) -> v
                 %{"user_id" => v} when is_binary(v) -> String.to_integer(v)
                 _ -> nil
-               end
+              end
 
     Marker
     |> filter_markers_by(:name, str)
+    |> filter_markers_by(:celestial_body_id, celestial_body_id)
     |> filter_markers_by(:user_id, user_id)
   end
 
+  defp filter_markers_by(query, :celestial_body_id, nil), do: query
+  defp filter_markers_by(query, :celestial_body_id, celestial_body_id), do: query |> where(fragment("celestial_body_id = ?", ^celestial_body_id))
   defp filter_markers_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
   defp filter_markers_by(query, :name, str), do: query |> where([m], m.name == ^str)
   defp filter_markers_by(query, :user_id, nil), do: query

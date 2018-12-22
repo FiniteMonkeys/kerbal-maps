@@ -59,7 +59,7 @@ Repo.insert!(%Marker{
   longitude: -175.297852,
   altitude: nil,
   navigation_uuid: nil,
-  icon_name: ~S({"prefix":"fa","name":"fa-city"}),
+  icon_name: ~S({"prefix":"fas","name":"city"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
 } |> Marker.changeset(%{}) |> Ecto.Changeset.apply_changes())
@@ -70,7 +70,7 @@ Repo.insert!(%Marker{
   longitude: -74.568421,
   altitude: nil,
   navigation_uuid: nil,
-  icon_name: ~S({"prefix":"fa","name":"fa-question"}),
+  icon_name: ~S({"prefix":"fas","name":"question"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
 } |> Marker.changeset(%{}) |> Ecto.Changeset.apply_changes())
@@ -81,7 +81,7 @@ Repo.insert!(%Marker{
   longitude: 218.604135, # -141.395865,
   altitude: nil,
   navigation_uuid: nil,
-  icon_name: ~S({"prefix":"fa","name":"fa-info"}),
+  icon_name: ~S({"prefix":"fas","name":"info"}),
   user_id: me.id,
   celestial_body_id: kerbin.id,
 } |> Marker.changeset(%{}) |> Ecto.Changeset.apply_changes())

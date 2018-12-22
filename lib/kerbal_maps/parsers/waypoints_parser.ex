@@ -6,8 +6,11 @@ defmodule KerbalMaps.WaypointsParser do
   import NimbleParsec
 
   def parse({:ok, data, stream}), do: parse({:ok, data, "", stream})
+
+  def parse({:eof, data, "", _stream}), do: {:ok, List.flatten(data), ""}
+  def parse({{:error, reason}, _, _, _}), do: {:error, reason}
   def parse({:ok, _, "", _} = state), do: reload_buffer(state) |> parse
-  def parse({:ok, data, buffer, stream}) do
+  def parse({_, data, buffer, stream} = state) do
     case buffer do
       "//" <> remaining ->
         {:ok, data, remaining, stream}
@@ -16,16 +19,29 @@ defmodule KerbalMaps.WaypointsParser do
       "WAYPOINT" <> remaining ->
         {:ok, data, remaining, stream}
         |> parse_waypoint
+        |> reload_buffer
+        |> parse
+      _ ->
+        state
+        |> strip_whitespace
         |> parse
     end
   end
-  def parse({:eof, data, "", stream}), do: {:ok, List.flatten(data), "", stream}
 
   def strip_comment({:ok, data, <<10, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
   def strip_comment({:ok, data, <<13, 10, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
   def strip_comment({:ok, data, <<13, remaining::binary>>, stream}), do: {:ok, data, remaining, stream}
   def strip_comment({:ok, _, "", _} = state), do: reload_buffer(state) |> strip_comment
   def strip_comment({:ok, data, <<_::bytes-size(1), remaining::binary>>, stream}), do: strip_comment({:ok, data, remaining, stream})
+
+  def strip_whitespace({:ok, data, <<0, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<9, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<10, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<12, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<13, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, data, <<32, remaining::binary>>, stream}), do: strip_whitespace({:ok, data, remaining, stream})
+  def strip_whitespace({:ok, _, "", _} = state), do: reload_buffer(state) |> strip_whitespace
+  def strip_whitespace(state), do: state
 
   # nul, \t, \n, \f, \r, space respectively
   whitespace_values = [0, 9, 10, 12, 13, 32]
@@ -79,7 +95,7 @@ defmodule KerbalMaps.WaypointsParser do
       :eof ->
         {:eof, data, buffer, stream}
       {:error, _} = error_reason ->
-        error_reason
+        {error_reason, data, buffer, stream}
       new_chunk ->
         {:ok, data, buffer <> new_chunk, stream}
     end
