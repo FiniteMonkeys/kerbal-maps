@@ -23,6 +23,13 @@ defmodule KerbalMaps.Factory do
     }
   end
 
+  def overlay_factory do
+    %KerbalMaps.Symbols.Overlay{
+      name: Faker.Name.first_name(),
+      user_id: user_factory().id,
+    }
+  end
+
   def user_factory do
     %KerbalMaps.Users.User{
       email: Faker.Internet.email(),

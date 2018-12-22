@@ -1,0 +1,5 @@
+<h1>Edit Overlay</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.overlay_path(@conn, :update, @overlay)) %>
+
+<span><%= link "Back", to: Routes.overlay_path(@conn, :index) %></span>

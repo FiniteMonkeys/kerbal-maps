@@ -1,0 +1,26 @@
+<h1>Listing Overlays</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for overlay <- @overlays do %>
+    <tr>
+      <td><%= overlay.name %></td>
+
+      <td>
+        <%= link "Show", to: Routes.overlay_path(@conn, :show, overlay) %>
+        <%= link "Edit", to: Routes.overlay_path(@conn, :edit, overlay) %>
+        <%= link "Delete", to: Routes.overlay_path(@conn, :delete, overlay), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Overlay", to: Routes.overlay_path(@conn, :new) %></span>

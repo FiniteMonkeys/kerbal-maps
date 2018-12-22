@@ -1,0 +1,13 @@
+<h1>Show Overlay</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @overlay.name %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.overlay_path(@conn, :edit, @overlay) %></span>
+<span><%= link "Back", to: Routes.overlay_path(@conn, :index) %></span>
