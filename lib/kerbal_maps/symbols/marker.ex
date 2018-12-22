@@ -31,6 +31,8 @@ defmodule KerbalMaps.Symbols.Marker do
     marker
     |> cast(attrs, [:name, :description, :latitude, :longitude, :altitude, :navigation_uuid, :icon_name, :user_id, :celestial_body_id])
     |> validate_required([:name, :latitude, :longitude, :user_id, :celestial_body_id])
+    |> unsafe_validate_unique([:navigation_uuid], KerbalMaps.Repo)
+    |> unique_constraint(:navigation_uuid)
     |> wrap([:latitude], {-90.000000, 90.000000})
     |> wrap([:longitude], {-180.000000, 180.000000})
   end

@@ -1,4 +1,6 @@
 defmodule KerbalMaps.Repo.Migrations.AddPowEmailConfirmationToUsers do
+  @moduledoc false
+
   use Ecto.Migration
 
   def change do

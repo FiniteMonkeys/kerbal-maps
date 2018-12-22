@@ -16,9 +16,11 @@ defmodule KerbalMapsWeb.DataChannel do
 
   def handle_in("get_data", _payload, socket) do
     user_id = socket.assigns[:user_id]
-    user = KerbalMaps.get_user(user_id)
+    user = KerbalMaps.Users.get_user!(user_id)
+    celestial_body = KerbalMaps.StaticData.find_celestial_body_by_name("Kerbin")
+
     if user do
-      markers = KerbalMaps.Symbols.list_markers_for_user(user)
+      markers = KerbalMaps.Symbols.list_markers(%{"celestial_body_id" => "#{celestial_body.id}", "user_id" => "#{user_id}"})
                 |> Enum.map(fn m -> to_json(m) end)
       {:reply, {:ok, %{data: markers}}, socket}
     else

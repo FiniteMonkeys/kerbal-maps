@@ -9,5 +9,8 @@ defmodule KerbalMaps.Repo.Migrations.CreateCelestialBodies do
       add :parent_id, references(:celestial_bodies), null: true
       timestamps()
     end
+
+    create unique_index(:celestial_bodies, [:name])
+    create index(:celestial_bodies, [:parent_id])
   end
 end

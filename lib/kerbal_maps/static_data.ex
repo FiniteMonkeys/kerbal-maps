@@ -24,6 +24,12 @@ defmodule KerbalMaps.StaticData do
     |> Repo.all
   end
 
+  def find_celestial_body_by_name(name) do
+    %{"search" => %{"query" => name}}
+    |> find_celestial_bodies
+    |> Repo.one!
+  end
+
   defp find_celestial_bodies(params) do
     str = case params do
             %{"search" => %{"query" => s}} -> s

@@ -24,6 +24,12 @@ defmodule KerbalMaps.Users do
     |> Repo.all
   end
 
+  def find_user_by_username(name) do
+    %{"search" => %{"query" => name}}
+    |> find_users
+    |> Repo.one!
+  end
+
   defp find_users(params) do
     str = case params do
             %{"search" => %{"query" => s}} -> s
@@ -36,7 +42,7 @@ defmodule KerbalMaps.Users do
   end
 
   defp filter_users_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
-  defp filter_users_by(query, :name, str), do: query |> where([u], u.name == ^str)
+  defp filter_users_by(query, :name, str), do: query |> where([u], u.email == ^str)
 
   @doc """
   Gets a single user.
