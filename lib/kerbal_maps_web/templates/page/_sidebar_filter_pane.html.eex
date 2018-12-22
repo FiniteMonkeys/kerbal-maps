@@ -1,0 +1,18 @@
+<div id="sidebar-filter" class="sidebar-pane">
+  <h1 class="sidebar-header">
+    Filter
+    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+  </h1>
+  <ul style="list-style-type: none">
+    <li>
+      <input type="checkbox" id="show_overlays" name="show_overlays" value="true" />
+      <label for="show_overlays" style="display: inline-block">All?</label>
+    </li>
+    <ul style="list-style-type: none">
+      <li>
+        <input type="checkbox" id="show_overlay_1" name="show_overlay" value="1" />
+        <label for="show_overlay_1" style="display: inline-block">KSC ILS 09</label>
+      </li>
+    </ul>
+  </ul>
+</div>

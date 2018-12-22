@@ -2,17 +2,10 @@
   <div class="sidebar-tabs">
     <ul role="tablist">
       <li><a href="#sidebar-home" role="tab"><i class="fa fa-bars"></i></a></li>
-      <li>
-        <a href="#sidebar-profile" role="tab" title="Profile">
-          <%= if @current_user do %>
-            <i class="fas fa-user-check"></i>
-          <% else %>
-            <i class="fa fa-user"></i>
-          <% end %>
-        </a>
-      </li>
+      <li><a href="#sidebar-profile" role="tab" title="Profile"><i class="fas <%= if @current_user, do: "fa-user-check", else: "fa-user" %>"></i></a></li>
       <li><a href="#sidebar-search" role="tab" title="Search"><i class="fas fa-search-location"></i></a></li>
-      <li disabled="true"><a href="#sidebar-upload" role="tab" title="Upload"><i class="fas fa-upload"></i></a></li>
+      <li class="<%= if @current_user, do: "", else: "disabled" %>"><a href="#sidebar-filter" role="tab" title="Filter"><i class="fas fa-filter"></i></a></li>
+      <li class="<%= if @current_user, do: "", else: "disabled" %>"><a href="#sidebar-upload" role="tab" title="Upload"><i class="fas fa-upload"></i></a></li>
     </ul>
 
     <ul role="tablist">
@@ -24,6 +17,7 @@
     <%= render @view_module, "_sidebar_home_pane.html", assigns %>
     <%= render @view_module, "_sidebar_profile_pane.html", assigns %>
     <%= render @view_module, "_sidebar_search_pane.html", assigns %>
+    <%= render @view_module, "_sidebar_filter_pane.html", assigns %>
     <%= render @view_module, "_sidebar_upload_pane.html", assigns %>
 
     <%= render @view_module, "_sidebar_settings_pane.html", assigns %>
