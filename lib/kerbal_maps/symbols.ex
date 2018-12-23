@@ -8,6 +8,7 @@ defmodule KerbalMaps.Symbols do
   import Ecto.Query, warn: false
 
   alias KerbalMaps.Repo
+  alias KerbalMaps.StaticData.CelestialBody
   alias KerbalMaps.Symbols.Marker
   alias KerbalMaps.Symbols.Overlay
   alias KerbalMaps.Users.User
@@ -28,6 +29,15 @@ defmodule KerbalMaps.Symbols do
   def list_markers(params \\ %{}) do
     params
     |> find_markers
+    |> Repo.all
+  end
+
+  def list_markers_for_page(%User{} = user, %CelestialBody{} = celestial_body, params \\ %{}) do
+    params
+    |> Map.put("user_id", user.id)
+    |> Map.put("celestial_body_id", celestial_body.id)
+    |> find_markers
+    |> preload([:owner, :celestial_body])
     |> Repo.all
   end
 
@@ -166,6 +176,15 @@ defmodule KerbalMaps.Symbols do
   def list_overlays(params \\ %{}) do
     params
     |> find_overlays
+    |> Repo.all
+  end
+
+  def list_overlays_for_page(%User{} = user, %CelestialBody{} = celestial_body, params \\ %{}) do
+    params
+    |> Map.put("user_id", user.id)
+    |> Map.put("celestial_body_id", celestial_body.id)
+    |> find_overlays
+    |> preload([:owner, :celestial_body, :markers])
     |> Repo.all
   end
 

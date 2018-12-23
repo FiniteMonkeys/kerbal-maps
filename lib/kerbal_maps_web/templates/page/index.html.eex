@@ -111,15 +111,29 @@
 
   <%= if @current_user do %>
 
-    let username = "<%= @current_user.email %>";
-    let channel = socket.channel(`data:${username}`, {})
+    let channel = socket.channel(`data:${<%= @current_user.id %>}`, {})
     channel.join()
       .receive("ok", resp => {
         console.log("Joined successfully", resp);
         channel.push("get_data")
           .receive("ok", resp => {
-            for (let i = 0, size = resp.data.length; i < size; ++i) {
-              marker_data = resp.data[i]
+
+            window.markers = [];
+            for (let i = 0, size = resp.markers.length; i < size; ++i) {
+              let marker_data = resp.markers[i];
+              window.markers[marker_data.id] = marker_data;
+            }
+
+            window.overlays = [];
+            for (let i = 0, size = resp.overlays.length; i < size; ++i) {
+              let overlay_data = resp.overlays[i];
+              window.overlays[overlay_data.id] = overlay_data;
+            }
+
+            // for (let value of window.overlays) { console.log(value); }
+
+            for (let i = 0, size = resp.markers.length; i < size; ++i) {
+              marker_data = resp.markers[i]
               var latitude = marker_data.latitude
               var longitude = marker_data.longitude
               var label = marker_data.label
