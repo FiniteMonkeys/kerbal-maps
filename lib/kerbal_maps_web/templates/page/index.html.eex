@@ -119,59 +119,80 @@
           console.log(`Joined channel ${channel.topic}`, response)
         })
       .receive("error", response => {
-          console.log("Unable to join channel", response)
+          console.log("Unable to join channel", response);
         });
   }
 
   function show_overlay(overlayId) {
-    channel.push("overlay", {"id":overlayId})
+    // should only do the channel.push if the overlay layerGroup isn't defined
+    // since the layerGroup is loaded in a callback, fire an event that adds the layerGroup to the map?
+    // probably should always call channel.push and update the layerGroup if necessary
+    channel.push("get_overlay", {"id":overlayId})
       .receive("ok", response => {
-          response.overlay.markers.forEach(function (marker) {
-            var latitude = marker.latitude;
-            var longitude = marker.longitude;
-            var label = marker.label;
-            var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name});
-            L.marker([latitude, longitude], {icon: icon}).addTo(map).bindPopup(label);
-            window.markers[marker.id] = true;
-          });
+          overlay = window.overlays[overlayId];
+          if (!overlay.layerGroup) {
+            overlay.layerGroup = L.layerGroup();
+            response.overlay.markers.forEach(function (marker) {
+              var latitude = marker.latitude;
+              var longitude = marker.longitude;
+              var label = `<strong>${marker.name}</strong><br/>${marker.latitude} ${marker.longitude}<br/>${marker.description}`;
+              var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name});
+              L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup);
+            });
+          }
+          overlay.layerGroup.addTo(map);
+          overlay.active = true;
         });
-    window.overlays[overlayId] = true;
   }
 
   function hide_overlay(overlayId) {
-    alert("hiding overlay " + overlayId);
+    overlay = window.overlays[overlayId];
+    overlay.layerGroup.removeFrom(map);
+    overlay.active = false;
   }
 
-  function load_overlays(pane_id) {
-    channel.push("all_overlays", {"body":"Kerbin"})
+  function load_overlays_for_body(paneId, body) {
+    channel.push("get_all_overlays", {"body":body})
       .receive("ok", response => {
-          pane = L.DomUtil.get(pane_id);
-          overlay_list = pane.querySelector("ul ul");
-          overlay_list.innerHTML = "";
+          // don't overwrite window.overlays; update it
           response.overlays.forEach(function (overlay) {
-            checked = window.overlays[overlay.id];
-            overlay_list.insertAdjacentHTML(
-              "beforeend",
-              `
-<li>
-  <input type="checkbox" id="show_overlay_${overlay.id}" name="show_overlay" value="${overlay.id}" ${checked ? 'checked="true"' : ''}/>
-  <label for="show_overlay_${overlay.id}" style="display: inline-block">${overlay.name}</label>
-</li>
-              `
-            );
-            document.getElementById(`show_overlay_${overlay.id}`)
-                    .addEventListener("click", function (event) {
-                      var parsed = Number.parseInt(this.id.replace("show_overlay_", ""));
-                      if (!Number.isNaN(parsed)) {
-                        if (this.checked) {
-                          show_overlay(parsed);
-                        } else {
-                          hide_overlay(parsed);
-                        }
-                      }
-                    });
+            if (!window.overlays[overlay.id]) {
+              overlay.layerGroup = null;
+              overlay.active = false;
+              window.overlays[overlay.id] = overlay
+            }
           });
+          add_overlays_to_list(paneId);
         });
+  }
+
+  function add_overlays_to_list(paneId) {
+    pane = L.DomUtil.get(paneId);
+    checkboxList = pane.querySelector("ul ul");
+    checkboxList.innerHTML = "";
+
+    for (const [overlayId, overlay] of Object.entries(window.overlays)) {
+      checkboxList.insertAdjacentHTML(
+        "beforeend",
+        `
+<li>
+<input type="checkbox" id="show_overlay_${overlayId}" name="show_overlay" value="${overlayId}" ${overlay.active ? 'checked="true"' : ''}/>
+<label for="show_overlay_${overlayId}" style="display: inline-block">${overlay.name}</label>
+</li>
+        `
+      );
+      document.getElementById(`show_overlay_${overlayId}`)
+              .addEventListener("click", function (event) {
+                var parsed = Number.parseInt(this.id.replace("show_overlay_", ""));
+                if (!Number.isNaN(parsed)) {
+                  if (this.checked) {
+                    show_overlay(parsed);
+                  } else {
+                    hide_overlay(parsed);
+                  }
+                }
+              });
+    }
   }
 
   <%= if @current_user do %>
@@ -179,12 +200,11 @@
     let channel = new_channel(`${<%= @current_user.id %>}`);
     join_channel(channel);
     window.overlays = {};
-    window.markers = {};
 
     sidebar.on("content", (event) => {
       switch (event.id) {
         case "sidebar-filter":
-          load_overlays(event.id);
+          load_overlays_for_body(event.id, "Kerbin");
       }
     });
 

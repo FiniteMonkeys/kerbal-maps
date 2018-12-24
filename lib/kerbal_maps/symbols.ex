@@ -179,12 +179,11 @@ defmodule KerbalMaps.Symbols do
     |> Repo.all
   end
 
-  def list_overlays_for_page(%User{} = user, %CelestialBody{} = celestial_body, params \\ %{}) do
+  def list_overlays_for_user_and_body(%User{} = user, %CelestialBody{} = celestial_body, params \\ %{}) do
     params
     |> Map.put("user_id", user.id)
     |> Map.put("celestial_body_id", celestial_body.id)
     |> find_overlays
-    |> preload([:owner, :celestial_body, :markers])
     |> Repo.all
   end
 
