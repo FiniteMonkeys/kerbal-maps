@@ -47,7 +47,7 @@
     // fadeAnimation: true,
     // markerZoomAnimation: true,
     // transform3DLimit: 2^23,
-  })
+  });
 
   L.tileLayer('https://ksp-maps.s3.amazonaws.com/tiles/{body}/{style}/{z}/{x}/{y}.png', {
     // *** TileLayer options
@@ -109,43 +109,84 @@
 
   var sidebar = L.control.sidebar('sidebar').addTo(map);
 
+  function new_channel(subtopic) {
+    return socket.channel(`data:${subtopic}`, {});
+  }
+
+  function join_channel(channel) {
+    channel.join()
+      .receive("ok", response => {
+          console.log(`Joined channel ${channel.topic}`, response)
+        })
+      .receive("error", response => {
+          console.log("Unable to join channel", response)
+        });
+  }
+
+  function show_overlay(overlayId) {
+    channel.push("overlay", {"id":overlayId})
+      .receive("ok", response => {
+          response.overlay.markers.forEach(function (marker) {
+            var latitude = marker.latitude;
+            var longitude = marker.longitude;
+            var label = marker.label;
+            var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name});
+            L.marker([latitude, longitude], {icon: icon}).addTo(map).bindPopup(label);
+            window.markers[marker.id] = true;
+          });
+        });
+    window.overlays[overlayId] = true;
+  }
+
+  function hide_overlay(overlayId) {
+    alert("hiding overlay " + overlayId);
+  }
+
+  function load_overlays(pane_id) {
+    channel.push("all_overlays", {"body":"Kerbin"})
+      .receive("ok", response => {
+          pane = L.DomUtil.get(pane_id);
+          overlay_list = pane.querySelector("ul ul");
+          overlay_list.innerHTML = "";
+          response.overlays.forEach(function (overlay) {
+            checked = window.overlays[overlay.id];
+            overlay_list.insertAdjacentHTML(
+              "beforeend",
+              `
+<li>
+  <input type="checkbox" id="show_overlay_${overlay.id}" name="show_overlay" value="${overlay.id}" ${checked ? 'checked="true"' : ''}/>
+  <label for="show_overlay_${overlay.id}" style="display: inline-block">${overlay.name}</label>
+</li>
+              `
+            );
+            document.getElementById(`show_overlay_${overlay.id}`)
+                    .addEventListener("click", function (event) {
+                      var parsed = Number.parseInt(this.id.replace("show_overlay_", ""));
+                      if (!Number.isNaN(parsed)) {
+                        if (this.checked) {
+                          show_overlay(parsed);
+                        } else {
+                          hide_overlay(parsed);
+                        }
+                      }
+                    });
+          });
+        });
+  }
+
   <%= if @current_user do %>
 
-    let channel = socket.channel(`data:${<%= @current_user.id %>}`, {})
-    channel.join()
-      .receive("ok", resp => {
-        console.log("Joined successfully", resp);
-        channel.push("get_data")
-          .receive("ok", resp => {
+    let channel = new_channel(`${<%= @current_user.id %>}`);
+    join_channel(channel);
+    window.overlays = {};
+    window.markers = {};
 
-            window.markers = [];
-            for (let i = 0, size = resp.markers.length; i < size; ++i) {
-              let marker_data = resp.markers[i];
-              window.markers[marker_data.id] = marker_data;
-            }
-
-            window.overlays = [];
-            for (let i = 0, size = resp.overlays.length; i < size; ++i) {
-              let overlay_data = resp.overlays[i];
-              window.overlays[overlay_data.id] = overlay_data;
-            }
-
-            // for (let value of window.overlays) { console.log(value); }
-
-            for (let i = 0, size = resp.markers.length; i < size; ++i) {
-              marker_data = resp.markers[i]
-              var latitude = marker_data.latitude
-              var longitude = marker_data.longitude
-              var label = marker_data.label
-              var icon = L.icon.glyph({prefix: marker_data.icon_prefix, glyph: marker_data.icon_name})
-              L.marker([latitude, longitude], {icon: icon}).addTo(map).bindPopup(label);
-            }
-          })
-          .receive("error", resp => {
-            console.log("push_data returned an error", resp)
-          })
-      })
-      .receive("error", resp => { console.log("Unable to join", resp) })
+    sidebar.on("content", (event) => {
+      switch (event.id) {
+        case "sidebar-filter":
+          load_overlays(event.id);
+      }
+    });
 
   <% end %>
 </script>

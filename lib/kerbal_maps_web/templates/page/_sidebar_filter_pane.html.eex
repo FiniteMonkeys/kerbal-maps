@@ -9,10 +9,6 @@
       <label for="show_overlays" style="display: inline-block">All?</label>
     </li>
     <ul style="list-style-type: none">
-      <li>
-        <input type="checkbox" id="show_overlay_1" name="show_overlay" value="1" />
-        <label for="show_overlay_1" style="display: inline-block">KSC ILS 09</label>
-      </li>
     </ul>
   </ul>
 </div>

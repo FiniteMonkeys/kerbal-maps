@@ -240,7 +240,11 @@ defmodule KerbalMaps.Symbols do
       ** (Ecto.NoResultsError)
 
   """
-  def get_overlay!(id), do: Repo.get!(Overlay, id)
+  def get_overlay!(id) do
+    Overlay
+    |> preload([:markers])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a overlay.

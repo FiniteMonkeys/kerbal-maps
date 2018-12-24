@@ -12,30 +12,39 @@ defmodule KerbalMapsWeb.DataChannel do
   alias KerbalMaps.Symbols.Marker
   alias KerbalMaps.Symbols.Overlay
   alias KerbalMaps.Users
+  alias Phoenix.Socket
 
-  def join("data:" <> user_id, _payload, socket) do
-    user = Users.get_user!(String.to_integer(user_id))
-    if user do
-      {:ok, Phoenix.Socket.assign(socket, :user_id, user.id)}
+  def join("data:" <> observed_id, _payload, socket) do
+    observed_user = Users.get_user!(String.to_integer(observed_id))
+    if observed_user && (observed_user.id == socket.assigns[:user_id]) do
+      ## save user.id under a different key in Socket.assign?
+      ## two different uses for "user" here:
+      ## 1. the logged-in user (currently stored in socket.assigns[:user_id])
+      ## 2. the user whose markers etc. we're interested in (the channel subtopic)
+      {:ok, Socket.assign(socket, :observed_id, observed_user.id)}
     else
-      {:error, "user with id #{user_id} not found"}
+      {:error, "cannot observe user with id #{observed_id}"}
     end
   end
 
-  def handle_in("get_data", _payload, socket) do
-    user_id = socket.assigns[:user_id]
-    user = Users.get_user!(user_id)
-    celestial_body = StaticData.find_celestial_body_by_name("Kerbin")
+  def handle_in("all_overlays", payload, socket) do
+    user = socket.assigns[:observed_id] |> Users.get_user
+    celestial_body = Map.get(payload, "body") |> StaticData.find_celestial_body_by_name()
+    get_all_overlays(user, celestial_body, socket)
+  end
 
-    if user do
-      markers = Symbols.list_markers_for_page(user, celestial_body, %{})
-                |> Enum.map(fn m -> to_json(m) end)
-      overlays = Symbols.list_overlays_for_page(user, celestial_body, %{})
-                 |> Enum.map(fn o -> to_json(o) end)
-      {:reply, {:ok, %{markers: markers, overlays: overlays}}, socket}
-    else
-      {:reply, {:error, "user with id #{user_id} not found"}}
-    end
+  def handle_in("overlay", payload, socket) do
+    overlay_id = Map.get(payload, "id")
+    overlay = Symbols.get_overlay!(overlay_id) |> to_json()
+    {:reply, {:ok, %{overlay: overlay}}, socket}
+  end
+
+  defp get_all_overlays(nil, _, socket), do: {:reply, {:error, "user not found"}, socket}
+  defp get_all_overlays(_, nil, socket), do: {:reply, {:error, "celestial body not found"}, socket}
+  defp get_all_overlays(user, celestial_body, socket) do
+    overlays = Symbols.list_overlays_for_page(user, celestial_body)
+               |> Enum.map(&to_json/1)
+    {:reply, {:ok, %{overlays: overlays}}, socket}
   end
 
   defp_testable to_json(%Marker{} = marker) do
@@ -55,7 +64,7 @@ defmodule KerbalMapsWeb.DataChannel do
       id: overlay.id,
       name: overlay.name,
       description: overlay.description,
-      markers: Enum.map(overlay.markers, fn m -> to_json(m) end),
+      markers: Enum.map(overlay.markers, &to_json/1),
     }
   end
 end
