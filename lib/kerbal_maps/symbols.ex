@@ -36,17 +36,24 @@ defmodule KerbalMaps.Symbols do
     params
     |> Map.put("user_id", user.id)
     |> Map.put("celestial_body_id", celestial_body.id)
-    |> find_markers
+    |> find_markers()
     |> preload([:owner, :celestial_body])
-    |> Repo.all
+    |> Repo.all()
   end
 
   def list_markers_for_user(%User{} = user, params \\ %{}) do
     params
     |> Map.put("user_id", user.id)
-    |> find_markers
+    |> find_markers()
     |> preload([:owner, :celestial_body])
-    |> Repo.all
+    |> Repo.all()
+  end
+
+  def find_marker_by_name(name, params \\ %{}) do
+    params
+    |> Map.merge(%{"search" => %{"query" => name}})
+    |> find_markers()
+    |> Repo.one()
   end
 
   defp find_markers(params) do
