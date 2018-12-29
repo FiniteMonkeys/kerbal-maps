@@ -47,7 +47,7 @@
     // fadeAnimation: true,
     // markerZoomAnimation: true,
     // transform3DLimit: 2^23,
-  })
+  });
 
   L.tileLayer('https://ksp-maps.s3.amazonaws.com/tiles/{body}/{style}/{z}/{x}/{y}.png', {
     // *** TileLayer options
@@ -109,29 +109,104 @@
 
   var sidebar = L.control.sidebar('sidebar').addTo(map);
 
+  function new_channel(subtopic) {
+    return socket.channel(`data:${subtopic}`, {});
+  }
+
+  function join_channel(channel) {
+    channel.join()
+      .receive("ok", response => {
+          console.log(`Joined channel ${channel.topic}`, response)
+        })
+      .receive("error", response => {
+          console.log("Unable to join channel", response);
+        });
+  }
+
+  function show_overlay(overlayId) {
+    // should only do the channel.push if the overlay layerGroup isn't defined
+    // since the layerGroup is loaded in a callback, fire an event that adds the layerGroup to the map?
+    // probably should always call channel.push and update the layerGroup if necessary
+    channel.push("get_overlay", {"id":overlayId})
+      .receive("ok", response => {
+          overlay = window.overlays[overlayId];
+          if (!overlay.layerGroup) {
+            overlay.layerGroup = L.layerGroup();
+            response.overlay.markers.forEach(function (marker) {
+              var latitude = marker.latitude;
+              var longitude = marker.longitude;
+              var label = `<strong>${marker.name}</strong><br/>${marker.latitude} ${marker.longitude}<br/>${marker.description}`;
+              var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name});
+              L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup);
+            });
+          }
+          overlay.layerGroup.addTo(map);
+          overlay.active = true;
+        });
+  }
+
+  function hide_overlay(overlayId) {
+    overlay = window.overlays[overlayId];
+    overlay.layerGroup.removeFrom(map);
+    overlay.active = false;
+  }
+
+  function load_overlays_for_body(paneId, body) {
+    channel.push("get_all_overlays", {"body":body})
+      .receive("ok", response => {
+          // don't overwrite window.overlays; update it
+          response.overlays.forEach(function (overlay) {
+            if (!window.overlays[overlay.id]) {
+              overlay.layerGroup = null;
+              overlay.active = false;
+              window.overlays[overlay.id] = overlay
+            }
+          });
+          add_overlays_to_list(paneId);
+        });
+  }
+
+  function add_overlays_to_list(paneId) {
+    pane = L.DomUtil.get(paneId);
+    checkboxList = pane.querySelector("ul ul");
+    checkboxList.innerHTML = "";
+
+    for (const [overlayId, overlay] of Object.entries(window.overlays)) {
+      checkboxList.insertAdjacentHTML(
+        "beforeend",
+        `
+<li>
+<input type="checkbox" id="show_overlay_${overlayId}" name="show_overlay" value="${overlayId}" ${overlay.active ? 'checked="true"' : ''}/>
+<label for="show_overlay_${overlayId}" style="display: inline-block">${overlay.name}</label>
+</li>
+        `
+      );
+      document.getElementById(`show_overlay_${overlayId}`)
+              .addEventListener("click", function (event) {
+                var parsed = Number.parseInt(this.id.replace("show_overlay_", ""));
+                if (!Number.isNaN(parsed)) {
+                  if (this.checked) {
+                    show_overlay(parsed);
+                  } else {
+                    hide_overlay(parsed);
+                  }
+                }
+              });
+    }
+  }
+
   <%= if @current_user do %>
 
-    let username = "<%= @current_user.email %>";
-    let channel = socket.channel(`data:${username}`, {})
-    channel.join()
-      .receive("ok", resp => {
-        console.log("Joined successfully", resp);
-        channel.push("get_data")
-          .receive("ok", resp => {
-            for (let i = 0, size = resp.data.length; i < size; ++i) {
-              marker_data = resp.data[i]
-              var latitude = marker_data.latitude
-              var longitude = marker_data.longitude
-              var label = marker_data.label
-              var icon = L.icon.glyph({prefix: marker_data.icon_prefix, glyph: marker_data.icon_name})
-              L.marker([latitude, longitude], {icon: icon}).addTo(map).bindPopup(label);
-            }
-          })
-          .receive("error", resp => {
-            console.log("push_data returned an error", resp)
-          })
-      })
-      .receive("error", resp => { console.log("Unable to join", resp) })
+    let channel = new_channel(`${<%= @current_user.id %>}`);
+    join_channel(channel);
+    window.overlays = {};
+
+    sidebar.on("content", (event) => {
+      switch (event.id) {
+        case "sidebar-filter":
+          load_overlays_for_body(event.id, "Kerbin");
+      }
+    });
 
   <% end %>
 </script>

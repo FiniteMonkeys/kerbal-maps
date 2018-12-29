@@ -1,10 +1,6 @@
 <div id="sidebar-profile" class="sidebar-pane">
   <h1 class="sidebar-header">
-    <%= if @current_user do %>
-      <%= @current_user.email %>
-    <% else %>
-      Profile
-    <% end %>
+    <%= if @current_user, do: @current_user.email, else: "Profile" %>
     <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
 

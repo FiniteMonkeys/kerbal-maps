@@ -8,6 +8,7 @@ defmodule KerbalMaps.Symbols do
   import Ecto.Query, warn: false
 
   alias KerbalMaps.Repo
+  alias KerbalMaps.StaticData.CelestialBody
   alias KerbalMaps.Symbols.Marker
   alias KerbalMaps.Symbols.Overlay
   alias KerbalMaps.Users.User
@@ -31,12 +32,28 @@ defmodule KerbalMaps.Symbols do
     |> Repo.all
   end
 
+  def list_markers_for_page(%User{} = user, %CelestialBody{} = celestial_body, params \\ %{}) do
+    params
+    |> Map.put("user_id", user.id)
+    |> Map.put("celestial_body_id", celestial_body.id)
+    |> find_markers()
+    |> preload([:owner, :celestial_body])
+    |> Repo.all()
+  end
+
   def list_markers_for_user(%User{} = user, params \\ %{}) do
     params
     |> Map.put("user_id", user.id)
-    |> find_markers
+    |> find_markers()
     |> preload([:owner, :celestial_body])
-    |> Repo.all
+    |> Repo.all()
+  end
+
+  def find_marker_by_name(name, params \\ %{}) do
+    params
+    |> Map.merge(%{"search" => %{"query" => name}})
+    |> find_markers()
+    |> Repo.one()
   end
 
   defp find_markers(params) do
@@ -169,6 +186,14 @@ defmodule KerbalMaps.Symbols do
     |> Repo.all
   end
 
+  def list_overlays_for_user_and_body(%User{} = user, %CelestialBody{} = celestial_body, params \\ %{}) do
+    params
+    |> Map.put("user_id", user.id)
+    |> Map.put("celestial_body_id", celestial_body.id)
+    |> find_overlays
+    |> Repo.all
+  end
+
   def list_overlays_for_user(%User{} = user, params \\ %{}) do
     params
     |> Map.put("user_id", user.id)
@@ -221,7 +246,11 @@ defmodule KerbalMaps.Symbols do
       ** (Ecto.NoResultsError)
 
   """
-  def get_overlay!(id), do: Repo.get!(Overlay, id)
+  def get_overlay!(id) do
+    Overlay
+    |> preload([:markers])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a overlay.

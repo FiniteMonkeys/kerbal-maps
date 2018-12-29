@@ -5,37 +5,71 @@ defmodule KerbalMapsWeb.DataChannel do
 
   require Logger
 
-  def join("data:" <> username, _payload, socket) do
-    user = KerbalMaps.find_user_by_email(username)
-    if user do
-      {:ok, Phoenix.Socket.assign(socket, :user_id, user.id)}
+  import ESpec.Testable
+
+  alias KerbalMaps.StaticData
+  alias KerbalMaps.Symbols
+  alias KerbalMaps.Symbols.Marker
+  alias KerbalMaps.Symbols.Overlay
+  alias KerbalMaps.Users
+  alias Phoenix.Socket
+
+  def join("data:" <> observed_id, _payload, socket) do
+    observed_user = Users.get_user!(String.to_integer(observed_id))
+    if observed_user && (observed_user.id == socket.assigns[:user_id]) do
+      ## save user.id under a different key in Socket.assign?
+      ## two different uses for "user" here:
+      ## 1. the logged-in user (currently stored in socket.assigns[:user_id])
+      ## 2. the user whose markers etc. we're interested in (the channel subtopic)
+      {:ok, Socket.assign(socket, :observed_id, observed_user.id)}
     else
-      {:error, "username #{username} not found"}
+      {:error, "cannot observe user with id #{observed_id}"}
     end
   end
 
-  def handle_in("get_data", _payload, socket) do
-    user_id = socket.assigns[:user_id]
-    user = KerbalMaps.Users.get_user!(user_id)
-    celestial_body = KerbalMaps.StaticData.find_celestial_body_by_name("Kerbin")
-
-    if user do
-      markers = KerbalMaps.Symbols.list_markers(%{"celestial_body_id" => "#{celestial_body.id}", "user_id" => "#{user_id}"})
-                |> Enum.map(fn m -> to_json(m) end)
-      {:reply, {:ok, %{data: markers}}, socket}
-    else
-      {:reply, {:error, "user with id #{user_id} not found"}}
-    end
+  def handle_in("get_all_overlays", payload, socket) do
+    user = socket.assigns[:observed_id] |> Users.get_user
+    celestial_body = Map.get(payload, "body") |> StaticData.find_celestial_body_by_name()
+    get_all_overlays(user, celestial_body, socket)
   end
 
-  defp to_json(%KerbalMaps.Symbols.Marker{} = marker) do
+  def handle_in("get_overlay", payload, socket) do
+    overlay_id = Map.get(payload, "id")
+    overlay = Symbols.get_overlay!(overlay_id) |> to_json()
+    {:reply, {:ok, %{overlay: overlay}}, socket}
+  end
+
+  defp get_all_overlays(nil, _, socket), do: {:reply, {:error, "user not found"}, socket}
+  defp get_all_overlays(_, nil, socket), do: {:reply, {:error, "celestial body not found"}, socket}
+  defp get_all_overlays(user, celestial_body, socket) do
+    overlays = Symbols.list_overlays_for_user_and_body(user, celestial_body)
+               |> Enum.map(&to_json/1)
+    {:reply, {:ok, %{overlays: overlays}}, socket}
+  end
+
+  defp_testable to_json(%Marker{} = marker) do
     icon_json = Jason.decode!(marker.icon_name)
     %{
+      description: marker.description,
+      icon_name: Map.get(icon_json, "name", "?"),
+      icon_prefix: Map.get(icon_json, "prefix", ""),
+      id: marker.id,
+      label: "<strong>#{marker.name}</strong><br/>#{marker.latitude} #{marker.longitude}<br/>#{marker.description}",
       latitude: marker.latitude,
       longitude: marker.longitude,
-      label: "<strong>#{marker.name}</strong><br/>#{marker.latitude} #{marker.longitude}<br/>#{marker.description}",
-      icon_prefix: Map.get(icon_json, "prefix", ""),
-      icon_name: Map.get(icon_json, "name", "?"),
+      name: marker.name,
     }
   end
+
+  defp_testable to_json(%Overlay{} = overlay) do
+    %{
+      id: overlay.id,
+      name: overlay.name,
+      description: overlay.description,
+    }
+    |> load_markers_json(overlay.markers)
+  end
+
+  defp load_markers_json(overlay_data, %Ecto.Association.NotLoaded{} = _), do: overlay_data
+  defp load_markers_json(overlay_data, markers), do: Map.put(overlay_data, :markers, Enum.map(markers, &to_json/1))
 end

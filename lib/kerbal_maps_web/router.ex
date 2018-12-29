@@ -11,11 +11,12 @@ defmodule KerbalMapsWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :put_user_token
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
+  # pipeline :api do
+  #   plug :accepts, ["json"]
+  # end
 
   pipeline :protected do
     plug Pow.Plug.RequireAuthenticated,
@@ -42,4 +43,16 @@ defmodule KerbalMapsWeb.Router do
   # scope "/api", KerbalMapsWeb do
   #   pipe_through :api
   # end
+
+  defp put_user_token(conn, _) do
+    if current_user = conn.assigns[:current_user] do
+      salt = Application.get_env(:kerbal_maps, KerbalMapsWeb.Endpoint)
+             |> Keyword.get(:secret_key_base)
+
+      token = Phoenix.Token.sign(conn, salt, current_user.id)
+      assign(conn, :user_token, token)
+    else
+      conn
+    end
+  end
 end
