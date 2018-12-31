@@ -52,7 +52,7 @@
   L.tileLayer('https://d3jvtbpw8wl90d.cloudfront.net/tiles/{body}/{style}/{z}/{x}/{y}.png', {
     // *** TileLayer options
     // minZoom: 0,
-    maxZoom: 5,
+    maxZoom: 7,
     // subdomains
     // errorTileUrl
     // zoomOffset: 0,
@@ -69,7 +69,7 @@
     // updateInterval: 200,
     // zIndex: 1,
     // latLngBounds
-    maxNativeZoom: 5,
+    maxNativeZoom: 7,
     minNativeZoom: 0,
     // noWrap: false,
     // pane
