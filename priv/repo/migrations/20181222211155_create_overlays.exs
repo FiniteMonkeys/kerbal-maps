@@ -14,6 +14,6 @@ defmodule KerbalMaps.Repo.Migrations.CreateOverlays do
 
     create index(:overlays, [:user_id])
     create index(:overlays, [:celestial_body_id])
-    create unique_index(:overlays, [:name, :user_id])
+    create unique_index(:overlays, [:name, :user_id, :celestial_body_id])
   end
 end

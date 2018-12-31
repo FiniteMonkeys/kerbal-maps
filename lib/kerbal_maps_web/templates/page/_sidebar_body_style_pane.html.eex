@@ -1,0 +1,50 @@
+<div id="sidebar-body-style" class="sidebar-pane">
+  <h1 class="sidebar-header">
+    Body and Style
+    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+  </h1>
+
+  <form action="#">
+    <fieldset>
+      <label for="select-body">Body:</label>
+      <select id="select-body" name="select-body">
+        <option value="moho">Moho</option>
+        <option value="eve">Eve</option>
+        <option value="gilly">Gilly</option>
+        <option value="kerbin">Kerbin</option>
+        <option value="mun">Mun</option>
+        <option value="minmus">Minmus</option>
+        <option value="duna">Duna</option>
+        <option value="ike">Ike</option>
+        <option value="dres">Dres</option>
+        <option value="jool" disabled="true">Jool</option>
+        <option value="laythe">Laythe</option>
+        <option value="vall">Vall</option>
+        <option value="tylo">Tylo</option>
+        <option value="bop">Bop</option>
+        <option value="pol">Pol</option>
+        <option value="eeloo">Eeloo</option>
+      </select>
+    </fieldset>
+    <fieldset>
+      <label for="select-style">Style:</label>
+      <select id="select-style" name="select-style">
+        <option value="biome">Biome</option>
+        <option value="sat">Satellite</option>
+        <option value="slope">Slope</option>
+      </select>
+    </fieldset>
+  </form>
+</div>
+
+<script type="text/javascript">
+
+  document.getElementById("select-body").addEventListener('change', function (event) {
+    // alert(event.target.value);
+  });
+
+  document.getElementById("select-style").addEventListener('change', function (event) {
+    // alert(event.target.value);
+  });
+
+</script>

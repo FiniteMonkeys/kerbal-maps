@@ -20,6 +20,6 @@ defmodule KerbalMaps.Repo.Migrations.CreateMarkers do
     create index(:markers, [:user_id])
     create index(:markers, [:celestial_body_id])
     create unique_index(:markers, [:navigation_uuid])
-    create unique_index(:markers, [:name, :user_id])
+    create unique_index(:markers, [:name, :user_id, :celestial_body_id])
   end
 end

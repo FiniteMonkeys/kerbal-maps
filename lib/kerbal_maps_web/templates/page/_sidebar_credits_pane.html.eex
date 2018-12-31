@@ -1,6 +1,6 @@
-<div id="sidebar-settings" class="sidebar-pane">
+<div id="sidebar-credits" class="sidebar-pane">
   <h1 class="sidebar-header">
-    Settings
+    Credits
     <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
 </div>
