@@ -13,9 +13,9 @@
     <%= if assigns[:user_token] do %>
       <script>window.userToken = "<%= assigns[:user_token] %>";</script>
     <% end %>
-    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body style="padding: 0; margin: 0;">
     <%= render @view_module, @view_template, assigns %>
+    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

@@ -3,6 +3,7 @@
     Credits
     <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
+  <div id="credits"></div>
   <h2>Kerbal Maps <%= :application.which_applications |> Enum.find(fn t -> elem(t, 0) == :kerbal_maps end) |> elem(2) %></h2>
   <p>was made possible by</p>
   <ul>
