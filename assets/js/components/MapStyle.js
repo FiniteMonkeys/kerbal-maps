@@ -8,12 +8,13 @@ class MapStyle extends React.Component {
       selectedStyle: "sat"
     }
 
-    // this.changeSelectedStyle = this.changeSelectedStyle.bind(this)
+    this.changeSelectedStyle = this.changeSelectedStyle.bind(this)
   }
 
   changeSelectedStyle (event) {
+    var target = event.target
     this.setState(previousState => ({
-      selectedStyle: event.target.value
+      selectedStyle: target.value
     }))
   }
 

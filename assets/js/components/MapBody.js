@@ -8,16 +8,13 @@ class MapBody extends React.Component {
       selectedBody: "kerbin"
     }
 
-    // this.changeSelectedBody = this.changeSelectedBody.bind(this)
-  }
-
-  selectedBody () {
-    this.state.selectedBody
+    this.changeSelectedBody = this.changeSelectedBody.bind(this)
   }
 
   changeSelectedBody (event) {
+    var target = event.target
     this.setState(previousState => ({
-      selectedBody: event.target.value
+      selectedBody: target.value
     }))
   }
 
@@ -27,7 +24,7 @@ class MapBody extends React.Component {
         <label htmlFor="select-map-body">Body:</label>
         <select id="select-map-body"
                 name="select-map-body"
-                value={this.selectedBody}
+                value={this.state.selectedBody}
                 onChange={this.changeSelectedBody}>
           <option value="moho">Moho</option>
           <option value="eve">Eve</option>
