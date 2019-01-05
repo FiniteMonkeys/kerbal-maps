@@ -27,6 +27,10 @@ class Credits extends React.Component {
             <a href="http://ksp.deringenieur.net">ksp.deringenieur.net</a>&nbsp;
             (and <a href="">kerbalmaps.com</a> before it) for the original idea
           </li>
+          <li>
+            <a href="https://github.com/WizardOfOgz">Andy Ogzewalla</a>&nbsp;
+            for JS mentorship and wizardry
+          </li>
         </ul>
         <p>kerbal maps is a <a href="http://finitemonkeys.org/">finitemonkeys</a> joint</p>
       </div>

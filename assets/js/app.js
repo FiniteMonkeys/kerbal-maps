@@ -17,12 +17,12 @@ import "phoenix_html"
 import { socket } from "./socket.js"
 window.socket = socket
 
+// Credits
+import { renderCredits } from "./credits.js"
+renderCredits()
 
 import React from "react"
 import ReactDOM from "react-dom"
-
-import Credits from "./components/Credits.js"
-ReactDOM.render(<Credits />, document.getElementById("credits"))
 
 import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
 ReactDOM.render(<MapBodyAndStyle />, document.getElementById("map-body-and-style"))
