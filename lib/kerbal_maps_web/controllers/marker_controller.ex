@@ -61,7 +61,7 @@ defmodule KerbalMapsWeb.MarkerController do
 
   defp icon_options do
     [
-      "Point of interest": ~S({"prefix":"fa","name":"fa-info"}),
+      "Point of interest": ~S({"prefix":"fa","name":"fa-info"})
     ]
   end
 end

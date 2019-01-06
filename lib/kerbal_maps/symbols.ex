@@ -29,7 +29,7 @@ defmodule KerbalMaps.Symbols do
   def list_markers(params \\ %{}) do
     params
     |> find_markers
-    |> Repo.all
+    |> Repo.all()
   end
 
   def list_markers_for_page(%User{} = user, %CelestialBody{} = celestial_body, params \\ %{}) do
@@ -57,21 +57,25 @@ defmodule KerbalMaps.Symbols do
   end
 
   defp find_markers(params) do
-    str = case params do
-            %{"search" => %{"query" => s}} -> s
-            _ -> nil
-          end
+    str =
+      case params do
+        %{"search" => %{"query" => s}} -> s
+        _ -> nil
+      end
 
-    celestial_body_id = case params do
-                          %{"celestial_body_id" => v} when is_integer(v) -> v
-                          %{"celestial_body_id" => v} when is_binary(v) -> String.to_integer(v)
-                          _ -> nil
-                        end
-    user_id = case params do
-                %{"user_id" => v} when is_integer(v) -> v
-                %{"user_id" => v} when is_binary(v) -> String.to_integer(v)
-                _ -> nil
-              end
+    celestial_body_id =
+      case params do
+        %{"celestial_body_id" => v} when is_integer(v) -> v
+        %{"celestial_body_id" => v} when is_binary(v) -> String.to_integer(v)
+        _ -> nil
+      end
+
+    user_id =
+      case params do
+        %{"user_id" => v} when is_integer(v) -> v
+        %{"user_id" => v} when is_binary(v) -> String.to_integer(v)
+        _ -> nil
+      end
 
     Marker
     |> filter_markers_by(:name, str)
@@ -80,11 +84,16 @@ defmodule KerbalMaps.Symbols do
   end
 
   defp filter_markers_by(query, :celestial_body_id, nil), do: query
-  defp filter_markers_by(query, :celestial_body_id, celestial_body_id), do: query |> where(fragment("celestial_body_id = ?", ^celestial_body_id))
-  defp filter_markers_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
+
+  defp filter_markers_by(query, :celestial_body_id, celestial_body_id),
+    do: query |> where(fragment("celestial_body_id = ?", ^celestial_body_id))
+
+  defp filter_markers_by(query, :name, str) when is_nil(str) or str == "", do: query
   defp filter_markers_by(query, :name, str), do: query |> where([m], m.name == ^str)
   defp filter_markers_by(query, :user_id, nil), do: query
-  defp filter_markers_by(query, :user_id, user_id), do: query |> where(fragment("user_id = ?", ^user_id))
+
+  defp filter_markers_by(query, :user_id, user_id),
+    do: query |> where(fragment("user_id = ?", ^user_id))
 
   @doc """
   Gets a single marker.
@@ -183,15 +192,19 @@ defmodule KerbalMaps.Symbols do
   def list_overlays(params \\ %{}) do
     params
     |> find_overlays
-    |> Repo.all
+    |> Repo.all()
   end
 
-  def list_overlays_for_user_and_body(%User{} = user, %CelestialBody{} = celestial_body, params \\ %{}) do
+  def list_overlays_for_user_and_body(
+        %User{} = user,
+        %CelestialBody{} = celestial_body,
+        params \\ %{}
+      ) do
     params
     |> Map.put("user_id", user.id)
     |> Map.put("celestial_body_id", celestial_body.id)
     |> find_overlays
-    |> Repo.all
+    |> Repo.all()
   end
 
   def list_overlays_for_user(%User{} = user, params \\ %{}) do
@@ -199,25 +212,29 @@ defmodule KerbalMaps.Symbols do
     |> Map.put("user_id", user.id)
     |> find_overlays
     |> preload([:owner, :celestial_body])
-    |> Repo.all
+    |> Repo.all()
   end
 
   defp find_overlays(params) do
-    str = case params do
-            %{"search" => %{"query" => s}} -> s
-            _ -> nil
-          end
+    str =
+      case params do
+        %{"search" => %{"query" => s}} -> s
+        _ -> nil
+      end
 
-    celestial_body_id = case params do
-                          %{"celestial_body_id" => v} when is_integer(v) -> v
-                          %{"celestial_body_id" => v} when is_binary(v) -> String.to_integer(v)
-                          _ -> nil
-                        end
-    user_id = case params do
-                %{"user_id" => v} when is_integer(v) -> v
-                %{"user_id" => v} when is_binary(v) -> String.to_integer(v)
-                _ -> nil
-              end
+    celestial_body_id =
+      case params do
+        %{"celestial_body_id" => v} when is_integer(v) -> v
+        %{"celestial_body_id" => v} when is_binary(v) -> String.to_integer(v)
+        _ -> nil
+      end
+
+    user_id =
+      case params do
+        %{"user_id" => v} when is_integer(v) -> v
+        %{"user_id" => v} when is_binary(v) -> String.to_integer(v)
+        _ -> nil
+      end
 
     Overlay
     |> filter_overlays_by(:name, str)
@@ -226,11 +243,16 @@ defmodule KerbalMaps.Symbols do
   end
 
   defp filter_overlays_by(query, :celestial_body_id, nil), do: query
-  defp filter_overlays_by(query, :celestial_body_id, celestial_body_id), do: query |> where(fragment("celestial_body_id = ?", ^celestial_body_id))
-  defp filter_overlays_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
+
+  defp filter_overlays_by(query, :celestial_body_id, celestial_body_id),
+    do: query |> where(fragment("celestial_body_id = ?", ^celestial_body_id))
+
+  defp filter_overlays_by(query, :name, str) when is_nil(str) or str == "", do: query
   defp filter_overlays_by(query, :name, str), do: query |> where([m], m.name == ^str)
   defp filter_overlays_by(query, :user_id, nil), do: query
-  defp filter_overlays_by(query, :user_id, user_id), do: query |> where(fragment("user_id = ?", ^user_id))
+
+  defp filter_overlays_by(query, :user_id, user_id),
+    do: query |> where(fragment("user_id = ?", ^user_id))
 
   @doc """
   Gets a single overlay.

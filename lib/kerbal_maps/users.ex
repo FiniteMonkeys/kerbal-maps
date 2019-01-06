@@ -21,27 +21,28 @@ defmodule KerbalMaps.Users do
   """
   def list_users(params \\ %{}) do
     find_users(params)
-    |> Repo.all
+    |> Repo.all()
   end
 
   def find_user_by_username(name) do
     %{"search" => %{"query" => name}}
     |> find_users
-    |> Repo.one!
+    |> Repo.one!()
   end
 
   defp find_users(params) do
-    str = case params do
-            %{"search" => %{"query" => s}} -> s
-            _ -> nil
-          end
+    str =
+      case params do
+        %{"search" => %{"query" => s}} -> s
+        _ -> nil
+      end
 
     User
     |> preload(:markers)
     |> filter_users_by(:name, str)
   end
 
-  defp filter_users_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
+  defp filter_users_by(query, :name, str) when is_nil(str) or str == "", do: query
   defp filter_users_by(query, :name, str), do: query |> where([u], u.email == ^str)
 
   @doc """

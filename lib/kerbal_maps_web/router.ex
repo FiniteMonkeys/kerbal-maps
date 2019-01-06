@@ -46,8 +46,9 @@ defmodule KerbalMapsWeb.Router do
 
   defp put_user_token(conn, _) do
     if current_user = conn.assigns[:current_user] do
-      salt = Application.get_env(:kerbal_maps, KerbalMapsWeb.Endpoint)
-             |> Keyword.get(:secret_key_base)
+      salt =
+        Application.get_env(:kerbal_maps, KerbalMapsWeb.Endpoint)
+        |> Keyword.get(:secret_key_base)
 
       token = Phoenix.Token.sign(conn, salt, current_user.id)
       assign(conn, :user_token, token)
