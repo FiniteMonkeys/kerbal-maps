@@ -37,6 +37,7 @@ defmodule KerbalMaps.MixProject do
   defp deps do
     [
       {:credo, "~> 0.10.2", only: [:dev, :test], runtime: false},
+      {:distillery, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:espec_phoenix, "~> 0.6.10", only: :test},
       {:espec, "~> 1.6", only: :test},
