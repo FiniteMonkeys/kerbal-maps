@@ -21,13 +21,15 @@ defmodule KerbalMapsWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(%{"token" => token}, socket, _connect_info) do
-    salt = Application.get_env(:kerbal_maps, KerbalMapsWeb.Endpoint)
-           |> Keyword.get(:secret_key_base)
+    salt =
+      Application.get_env(:kerbal_maps, KerbalMapsWeb.Endpoint)
+      |> Keyword.get(:secret_key_base)
 
     # max_age: 1209600 is equivalent to two weeks in seconds
     case Phoenix.Token.verify(socket, salt, token, max_age: 1_209_600) do
       {:ok, user_id} ->
         {:ok, assign(socket, :user_id, user_id)}
+
       {:error, _reason} ->
         :error
     end

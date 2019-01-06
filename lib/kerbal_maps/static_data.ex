@@ -21,26 +21,27 @@ defmodule KerbalMaps.StaticData do
   """
   def list_celestial_bodies(params \\ %{}) do
     find_celestial_bodies(params)
-    |> Repo.all
+    |> Repo.all()
   end
 
   def find_celestial_body_by_name(name) do
     %{"search" => %{"query" => name}}
     |> find_celestial_bodies
-    |> Repo.one!
+    |> Repo.one!()
   end
 
   defp find_celestial_bodies(params) do
-    str = case params do
-            %{"search" => %{"query" => s}} -> s
-            _ -> nil
-          end
+    str =
+      case params do
+        %{"search" => %{"query" => s}} -> s
+        _ -> nil
+      end
 
     CelestialBody
     |> filter_celestial_bodies_by(:name, str)
   end
 
-  defp filter_celestial_bodies_by(query, :name, str) when (is_nil(str) or (str == "")), do: query
+  defp filter_celestial_bodies_by(query, :name, str) when is_nil(str) or str == "", do: query
   defp filter_celestial_bodies_by(query, :name, str), do: query |> where([cb], cb.name == ^str)
 
   @doc """

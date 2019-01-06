@@ -13,7 +13,7 @@ defmodule ESpec.Testable do
   useful, for example, to test library functions that shouldn't be exported to client apps.
   """
   defmacro defp_testable(head, body \\ nil) do
-    if Mix.env == :test do
+    if Mix.env() == :test do
       quote do
         def unquote(head) do
           unquote(body[:do])

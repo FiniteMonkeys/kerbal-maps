@@ -13,6 +13,6 @@ defmodule KerbalMapsWeb.PowMailer do
 
   def process(email) do
     # Send email
-    Logger.debug fn -> "E-mail sent: #{inspect email}" end
+    Logger.debug(fn -> "E-mail sent: #{inspect(email)}" end)
   end
 end

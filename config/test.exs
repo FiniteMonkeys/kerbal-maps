@@ -12,7 +12,7 @@ config :logger, level: :warn
 # Configure your database
 config :kerbal_maps, KerbalMaps.Repo,
   hostname: "127.0.0.1",
-  port:     "5432",
+  port: "5432",
   username: "postgres",
   password: "",
   database: "kerbal_maps_test",
