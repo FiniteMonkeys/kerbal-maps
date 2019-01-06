@@ -1,8 +1,8 @@
 import React from "react"
 
 class MapBody extends React.Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
 
     this.state = {
       selectedBody: "kerbin"
