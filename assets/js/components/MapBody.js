@@ -3,29 +3,22 @@ import React from "react"
 class MapBody extends React.Component {
   constructor (props) {
     super(props)
-
-    this.state = {
-      selectedBody: "kerbin"
-    }
-
-    this.changeSelectedBody = this.changeSelectedBody.bind(this)
+    this.changeValue = this.changeValue.bind(this)
   }
 
-  changeSelectedBody (event) {
-    var target = event.target
-    this.setState(previousState => ({
-      selectedBody: target.value
-    }))
+  changeValue (event) {
+    this.props.onValueChange(event.target.value)
   }
 
   render () {
+    const selectedValue = this.props.selectedValue
     return (
       <fieldset>
         <label htmlFor="select-map-body">Body:</label>
         <select id="select-map-body"
                 name="select-map-body"
-                value={this.state.selectedBody}
-                onChange={this.changeSelectedBody}>
+                value={selectedValue}
+                onChange={this.changeValue}>
           <option value="moho">Moho</option>
           <option value="eve">Eve</option>
           <option value="gilly">Gilly</option>
