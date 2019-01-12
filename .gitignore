@@ -43,3 +43,4 @@ npm-debug.log
 
 .DS_Store
 /.circleci/build-local.sh
+/.bash_history

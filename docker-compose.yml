@@ -1,0 +1,9 @@
+version: '3.5'
+
+services:
+  web:
+    image: "kerbal_maps:latest"
+    ports:
+      - "80:4000"
+    env_file:
+      - config/docker.env
