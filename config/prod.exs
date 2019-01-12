@@ -72,10 +72,10 @@ config :logger, level: :info
 
 # Configure your database
 config :kerbal_maps, KerbalMaps.Repo,
+  hostname: "localhost",
   username: "postgres",
   password: "",
   database: "kerbal_maps",
-  hostname: "localhost",
   pool_size: 10
 
 # Finally import the config/prod.secret.exs which should be versioned

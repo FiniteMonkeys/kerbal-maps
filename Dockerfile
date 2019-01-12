@@ -1,5 +1,5 @@
 # The version of Alpine to use for the final image
-# This should match the version of Alpine that the `elixir:1.7.2-alpine` image uses
+# This should match the version of Alpine that the `elixir:1.7.4-alpine` image uses
 ARG ALPINE_VERSION=3.8
 
 FROM elixir:1.7.4-alpine AS builder
@@ -72,8 +72,7 @@ RUN apk update && \
       bash \
       openssl-dev
 
-ENV REPLACE_OS_VARS=true \
-    APP_NAME=${APP_NAME}
+ENV APP_NAME=${APP_NAME}
 
 WORKDIR /opt/app
 
