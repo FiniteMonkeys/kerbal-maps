@@ -2,10 +2,10 @@
 
 > A Google Maps-like UI for Kerbal Space Program (KSP) celestial bodies.
 
-[![CircleCI](https://img.shields.io/circleci/project/github/FiniteMonkeys/ksp-maps.svg?style=flat)](https://circleci.com/gh/FiniteMonkeys/ksp-maps)
-[![Github open issues](https://img.shields.io/github/issues/FiniteMonkeys/ksp-maps.svg?style=flat)](https://github.com/FiniteMonkeys/ksp-maps/issues)
-[![Github open PRs](https://img.shields.io/github/issues-pr/FiniteMonkeys/ksp-maps.svg?style=flat)](https://github.com/FiniteMonkeys/ksp-maps/pulls)
-[![License](https://img.shields.io/github/license/FiniteMonkeys/ksp-maps.svg)](https://github.com/FiniteMonkeys/ksp-maps/blob/master/LICENSE)
+[![CircleCI](https://img.shields.io/circleci/project/github/FiniteMonkeys/kerbal-maps.svg?style=flat)](https://circleci.com/gh/FiniteMonkeys/kerbal-maps)
+[![Github open issues](https://img.shields.io/github/issues/FiniteMonkeys/kerbal-maps.svg?style=flat)](https://github.com/FiniteMonkeys/kerbal-maps/issues)
+[![Github open PRs](https://img.shields.io/github/issues-pr/FiniteMonkeys/kerbal-maps.svg?style=flat)](https://github.com/FiniteMonkeys/kerbal-maps/pulls)
+[![License](https://img.shields.io/github/license/FiniteMonkeys/kerbal-maps.svg)](https://github.com/FiniteMonkeys/kerbal-maps/blob/master/LICENSE)
 
 ## QUICK START
 
@@ -43,11 +43,14 @@ Execute the specs by running `mix espec`.
 
 ## ACKNOWLEDGEMENTS
 
-Made possible by:
+Made possible in part by:
 
 * [Leaflet](https://leafletjs.com)
   * [leaflet.latlng-graticule plugin](https://github.com/cloudybay/leaflet.latlng-graticule) from [CloudyBay](https://github.com/cloudybay)
-* The tiles used for map imagery came from http://ksp.deringenieur.net/, and http://www.kerbalmaps.com/ before it.
+* The latest map imagery tiles were generated using [Sigma-Cartographer](https://github.com/Sigma88/Sigma-Cartographer).
+* _(Outdated)_ The tiles used for map imagery originally came from http://ksp.deringenieur.net/,
+  and before it (I think?) http://www.kerbalmaps.com/.
+* [Distillery](https://hexdocs.pm/distillery/)
 
 ## COPYRIGHT
 
