@@ -24,6 +24,12 @@ resource "google_sql_database_instance" "master" {
   }
 }
 
+resource "google_sql_user" "postgres" {
+  instance = "${google_sql_database_instance.master.name}"
+  name     = "postgres"
+  password = "changeme"
+}
+
 resource "google_sql_database" "kerbal_maps" {
   name      = "kerbal_maps"
   instance  = "${google_sql_database_instance.master.name}"
