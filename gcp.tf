@@ -6,6 +6,15 @@ terraform {
   }
 }
 
+data "null_data_source" "auth_network_whitelist" {
+  count = 1
+
+  inputs = {
+    name  = "onprem-${count.index + 1}"
+    value = "${element(list("136.63.238.101"), count.index)}"
+  }
+}
+
 provider "google" {
   credentials = "${file("credentials.json")}"
   project     = "kerbal-maps"
@@ -21,6 +30,12 @@ resource "google_sql_database_instance" "master" {
   settings {
     tier      = "db-f1-micro"
     # disk_size = "1"
+
+    ip_configuration {
+      authorized_networks = [
+        "${data.null_data_source.auth_network_whitelist.*.outputs}"
+      ]
+    }
   }
 
   timeouts {
