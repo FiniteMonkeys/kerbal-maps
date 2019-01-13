@@ -1,3 +1,11 @@
+terraform {
+  backend "gcs" {
+    credentials = "credentials.json"
+    bucket  = "finitemonkeys-tf-state"
+    prefix  = "kerbal-maps"
+  }
+}
+
 provider "google" {
   credentials = "${file("credentials.json")}"
   project     = "kerbal-maps"
