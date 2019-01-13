@@ -22,6 +22,11 @@ resource "google_sql_database_instance" "master" {
     tier      = "db-f1-micro"
     # disk_size = "1"
   }
+
+  timeouts {
+    create = "15m"
+    delete = "2h"
+  }
 }
 
 resource "google_sql_user" "postgres" {
