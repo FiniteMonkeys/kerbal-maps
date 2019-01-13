@@ -47,3 +47,4 @@ npm-debug.log
 /credentials.json
 /terraform.tfstate
 /terraform.tfstate.backup
+/.terraform
