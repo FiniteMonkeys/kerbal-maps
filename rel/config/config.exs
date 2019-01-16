@@ -1,14 +1,12 @@
 use Mix.Config
 
 config :kerbal_maps, KerbalMaps.Repo,
-  username: System.get_env("DATABASE_USER"),
-  password: System.get_env("DATABASE_PASS"),
-  database: System.get_env("DATABASE_NAME"),
-  hostname: System.get_env("DATABASE_HOST"),
+  url: System.get_env("DATABASE_URL"),
   pool_size: 15
 
 port = String.to_integer(System.get_env("PORT") || "8080")
 config :kerbal_maps, KerbalMapsWeb.Endpoint,
+  ## see https://hexdocs.pm/phoenix/Phoenix.Endpoint.html#module-endpoint-configuration
   http: [port: port],
   url: [host: System.get_env("HOSTNAME"), port: port],
   root: ".",
