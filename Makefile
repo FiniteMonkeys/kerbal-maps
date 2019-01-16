@@ -18,3 +18,7 @@ run:
 	docker run --env-file config/docker.env \
         --expose 4000 -p 80:4000 \
         --rm -it $(APP_NAME):latest
+
+deploy:
+	heroku container:push web
+	heroku container:release web
