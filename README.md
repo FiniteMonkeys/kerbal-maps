@@ -9,18 +9,80 @@
 
 ## QUICK START
 
-1. Clone the repository.
-2. Edit `config/dev.exs` to set up the database connection appropriately.
-3. Run `mix deps.get`.
-4. Run `mix phx.server`.
+  1. Clone the repository.
+  2. Edit `config/dev.exs` to set up the database connection appropriately.
+  3. Run `mix deps.get`.
+  4. Run `mix phx.server`.
 
-Note that image tiles are not included in this repository at the moment.
-I need to figure out who has them and by what rights, if any, we're allowed
-to use them.
+Note that image tiles are not included in this repository:
 
-## INSTALLATION
+  * They add up to more than 11 GB of data (at present, and that's just for Kerbin).
+  * They should be pushed out to a CDN for efficiency.
+  * They can be generated as needed (see below).
 
-> how to deploy?
+## DEPLOYING
+
+### Heroku
+
+   1. Download and install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-command-line).
+   2. Install and set up Docker.
+   3. Create an app on Heroku. The following steps assume that it is named `kerbal-maps`.
+   4. Add Heroku Postgres. The "Hobby - Dev" level should be sufficient for now.
+   5. Define config vars:
+      * `DATABASE_URL` - something like `postgres://username:password@host:port/database`
+      * `ERLANG_COOKIE` - can be anything, as far as I know
+      * `SECRET_KEY_BASE` - get by running `mix phx.gen.secret`
+      * `TILE_CDN_URL` - base URL to where the map tiles are stored, up to but not including the body name, with no trailing slash
+   6. `heroku login`
+   7. `heroku git:remote -a kerbal-maps`
+   8. `heroku container:login`
+   9. `heroku container:push web`
+  10. `heroku container:release web`
+
+## GENERATING THE MAP TILES
+
+The map tiles are extracted using the [Sigma-Cartographer]() mod for KSP.
+When Sigma-Cartographer loads (when KSP is started), it looks for a file
+somewhere in the `GameData` directory tree with the extension `.cfg` and
+containing the tag `@SigmaCartographer`. It uses the configuration in this file
+to determine what tiles to render and how to render them.
+
+The file should contain one or more sections that look like this.
+
+```
+Maps
+{
+  body = Kerbin
+  biomeMap = false
+  colorMap = false
+  slopeMap = false
+  satelliteBiome = true
+  satelliteMap = true
+  satelliteSlope = true
+  oceanFloor = true
+  width = 512
+  tile = 256
+  exportFolder = 0
+  leaflet = false
+}
+```
+
+`body` is the name of one of the bodies of the Kerbin system, in proper case.
+
+> Note: `Jool` is not allowed, as it has no surface, and therefore no map.
+
+`tile` should always be `256`.
+
+`exportFolder` is the zoom level. Its value should be between `0` and `7` inclusive.
+
+> Higher zoom levels are not disallowed, but at level 7 there's already visible
+> rendering artifacts.
+
+`width` is correlated to the zoom level. Its value should be `512 * 2^(zoom level)`.
+
+The rendered tiles are written to `GameData/Sigma/Cartographer/PluginData/(body)/(exportFolder)`.
+They require some rearranging and renaming before they can be uploaded to the CDN.
+The Ruby script in `script/move.rb` will do that.
 
 ## KNOWN BUGS
 
