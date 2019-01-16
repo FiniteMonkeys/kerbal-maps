@@ -14,9 +14,6 @@ build:
         -t $(APP_NAME):$(APP_VSN)-$(BUILD) \
         -t $(APP_NAME):latest .
 
-push:
-	docker push gcr.io/$(PROJECT_ID)/$(PROJECT_ID):$(BUILD)
-
 run:
 	docker run --env-file config/docker.env \
         --expose 4000 -p 80:4000 \
