@@ -16,7 +16,7 @@
 
 Note that image tiles are not included in this repository:
 
-  * They add up to more than 1 GB of data.
+  * They add up to more than 11 GB of data (at present, and that's just for Kerbin).
   * They should be pushed out to a CDN for efficiency.
   * They can be generated as needed (see below).
 
