@@ -3,10 +3,12 @@ defmodule KerbalMaps.MixProject do
 
   use Mix.Project
 
+  @default_version "0.1.0-default"
+
   def project do
     [
       app: :kerbal_maps,
-      version: "0.1.0",
+      version: app_version(),
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -70,5 +72,35 @@ defmodule KerbalMaps.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.drop", "ecto.create --quiet", "ecto.migrate", "espec"]
     ]
+  end
+
+  ## Thanks to https://stackoverflow.com/a/52081108/688981 for the code on which the below is based,
+  ## and https://minhajuddin.com/2017/01/18/a-simpler-way-to-generate-an-incrementing-version-for-elixir-apps/
+  ## for clarification into how and why it works.
+
+  # Build the version number from Git.
+  # It will be something like 1.0.0-beta1 when built against a tag, and
+  # 1.0.0-beta1+18.ga9f2f1ee when built against something after a tag.
+  defp app_version do
+    with {:ok, string} <- get_git_version(),
+         [_, version, commit] <- Regex.run(~r/([\d\.]+(?:\-[a-zA-Z]+\d*)?)(.*)/, String.trim(string)) do
+      version <> (commit |> String.replace(~r/^-/, "+") |> String.replace("-", "."))
+    else
+      other ->
+        IO.puts("Could not get version. error: #{other}")
+        @default_version
+    end
+  end
+
+  # Put a version string in `VERSION` to override any tags in git.
+  defp get_git_version do
+    case File.read("VERSION") do
+      {:error, _} ->
+        case System.cmd("git", ["describe"]) do
+          {string, 0} -> {:ok, string}
+          {error, errno} -> {:error, "Could not get version. errno: #{inspect errno}, error: #{inspect error}"}
+        end
+      ok -> ok
+    end
   end
 end
