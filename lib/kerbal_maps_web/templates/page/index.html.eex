@@ -5,7 +5,7 @@
 <script type="text/javascript" src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
 <script type="text/javascript" src="https://unpkg.com/leaflet-graticule@0.0.1/Leaflet.Graticule.js"></script>
 <script type="text/javascript" src="https://unpkg.com/leaflet-sidebar-v2@3.0.6/js/leaflet-sidebar.min.js"></script>
-<script type="text/javascript" src="https://d27jnlsjxa50i7.cloudfront.net/js/Leaflet.Icon.Glyph.js"></script>
+<script type="text/javascript" src="https://unpkg.com/leaflet.icon.glyph@0.2.1/Leaflet.Icon.Glyph.js"></script>
 <script>
 
   var map = L.map('mapid', {
