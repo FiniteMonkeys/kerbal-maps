@@ -7,6 +7,7 @@
     <li>
       <a href="https://leafletjs.com">Leaflet</a>
       <ul>
+        <li><a href="https://github.com/Leaflet/Leaflet.Graticule">Leaflet.Graticule</a></li>
         <li><a href="https://github.com/nickpeihl/leaflet-sidebar-v2">leaflet-sidebar-v2</a></li>
       </ul>
     </li>
