@@ -1,6 +1,14 @@
-<div id="sidebar-credits" class="sidebar-pane">
-  <h1 class="sidebar-header">
+<div id="sidebar-credits" class="leaflet-sidebar-pane">
+  <h1 class="leaflet-sidebar-header">
     Credits
-    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+    <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
+  <ul>
+    <li>
+      <a href="https://leafletjs.com">Leaflet</a>
+      <ul>
+        <li><a href="https://github.com/nickpeihl/leaflet-sidebar-v2">leaflet-sidebar-v2</a></li>
+      </ul>
+    </li>
+  </ul>
 </div>

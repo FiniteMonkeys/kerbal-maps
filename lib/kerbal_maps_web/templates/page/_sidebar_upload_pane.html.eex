@@ -1,6 +1,6 @@
-<div id="sidebar-upload" class="sidebar-pane">
-  <h1 class="sidebar-header">
+<div id="sidebar-upload" class="leaflet-sidebar-pane">
+  <h1 class="leaflet-sidebar-header">
     Upload
-    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+    <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
 </div>

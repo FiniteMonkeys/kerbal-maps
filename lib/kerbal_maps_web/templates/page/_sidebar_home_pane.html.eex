@@ -1,7 +1,7 @@
-<div id="sidebar-home" class="sidebar-pane">
-  <h1 class="sidebar-header">
+<div id="sidebar-home" class="leaflet-sidebar-pane">
+  <h1 class="leaflet-sidebar-header">
     Kerbal Maps
-    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+    <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
   <p>
     Maps of celestial bodies in

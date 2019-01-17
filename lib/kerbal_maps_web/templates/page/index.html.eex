@@ -1,6 +1,6 @@
 <%= render @view_module, "_sidebar.html", assigns %>
 
-<div id="mapid" class="sidebar-map" style="width: 100vw; height: 100vh; position: relative;"></div>
+<div id="mapid" class="leaflet-sidebar-map" style="width: 100vw; height: 100vh; position: relative;"></div>
 
 <script type="text/javascript" src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
 <script type="text/javascript" src="https://d27jnlsjxa50i7.cloudfront.net/js/leaflet.latlng-graticule.js"></script>
@@ -107,7 +107,7 @@
   }
   map.on('click', onMapClick);
 
-  var sidebar = L.control.sidebar('sidebar').addTo(map);
+  var sidebar = L.control.sidebar({container: "sidebar", autopan: true}).addTo(map);
 
   function new_channel(subtopic) {
     return socket.channel(`data:${subtopic}`, {});
