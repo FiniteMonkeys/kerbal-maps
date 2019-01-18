@@ -3,13 +3,22 @@
     Credits
     <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
+  <p>Kerbal Maps <%= :application.which_applications |> Enum.find(fn t -> elem(t, 0) == :kerbal_maps end) |> elem(2) %></p>
+  <p>
+    Copyright © 2018-2019 Craig S. Cottingham, and subject to
+    <a href="http://www.apache.org/licenses/LICENSE-2.0">the Apache License, Version 2.0</a>
+    except where stated otherwise.
+  </p>
   <ul>
     <li>
       <a href="https://leafletjs.com">Leaflet</a>
       <ul>
         <li><a href="https://github.com/Leaflet/Leaflet.Graticule">Leaflet.Graticule</a></li>
         <li><a href="https://github.com/nickpeihl/leaflet-sidebar-v2">leaflet-sidebar-v2</a></li>
+        <li><a href="https://github.com/Leaflet/Leaflet.Icon.Glyph">Leaflet.Icon.Glyph</a></li>
       </ul>
     </li>
+    <li><a href="https://github.com/Sigma88/Sigma-Cartographer">Sigma-Cartographer</a></li>
+    <li><a href="https://hexdocs.pm/distillery/">Distillery</a></li>
   </ul>
 </div>
