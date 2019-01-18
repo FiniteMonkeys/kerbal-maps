@@ -84,7 +84,10 @@ defmodule KerbalMaps.MixProject do
   defp app_version do
     with {:ok, string} <- get_git_version(),
          [_, version, commit] <- Regex.run(~r/([\d\.]+(?:\-[a-zA-Z]+\d*)?)(.*)/, String.trim(string)) do
-      version <> "-" <> (commit |> String.replace(~r/^-/, "") |> String.replace(~r/-.*$/, ""))
+      _ = version
+      [version, (commit |> String.replace(~r/^-/, "") |> String.replace(~r/-.*$/, ""))]
+      |> Enum.filter(&String.length(&1) > 0)
+      |> Enum.join("-")
     else
       other ->
         IO.puts("Could not get version. error: #{other}")
