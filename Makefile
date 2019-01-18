@@ -24,5 +24,7 @@ tag:
 	@echo 'Run `git tag --annotate 0.1.1 --message "version 0.1.1"`.'
 
 deploy:
-	@heroku container:push web
+	@echo "$(APP_VSN)" > VERSION
+	@heroku container:push web --arg APP_VSN=$(APP_VSN)
 	@heroku container:release web
+	@rm VERSION
