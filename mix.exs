@@ -90,7 +90,7 @@ defmodule KerbalMaps.MixProject do
       |> Enum.join("-")
     else
       other ->
-        IO.puts("Could not get version. error: #{other}")
+        IO.puts("Could not parse version; error: #{inspect other}")
         @default_version
     end
   end
@@ -101,7 +101,7 @@ defmodule KerbalMaps.MixProject do
       {:error, _} ->
         case System.cmd("git", ["describe"]) do
           {string, 0} -> {:ok, string}
-          {error, errno} -> {:error, "Could not get version. errno: #{inspect errno}, error: #{inspect error}"}
+          {error, errno} -> {:error, "Could not get version; errno: #{inspect errno}, error: #{inspect error}"}
         end
       ok -> ok
     end

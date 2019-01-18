@@ -1,7 +1,7 @@
 .PHONY: help
 
-APP_NAME ?= `mix run -e "IO.puts KerbalMaps.MixProject.project() |> Keyword.get(:app)"`
-APP_VSN ?= `mix run -e "IO.puts KerbalMaps.MixProject.project() |> Keyword.get(:version)"`
+APP_NAME ?= `mix compile 2>&1 >/dev/null && mix run -e "IO.puts KerbalMaps.MixProject.project() |> Keyword.get(:app)"`
+APP_VSN ?= `mix compile 2>&1 >/dev/null && mix run -e "IO.puts KerbalMaps.MixProject.project() |> Keyword.get(:version)"`
 
 help:
 	@echo "$(APP_NAME):$(APP_VSN)"
