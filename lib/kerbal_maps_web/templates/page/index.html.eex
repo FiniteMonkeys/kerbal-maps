@@ -1,11 +1,11 @@
 <%= render @view_module, "_sidebar.html", assigns %>
 
-<div id="mapid" class="sidebar-map" style="width: 100vw; height: 100vh; position: relative;"></div>
+<div id="mapid" class="leaflet-sidebar-map" style="width: 100vw; height: 100vh; position: relative;"></div>
 
 <script type="text/javascript" src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
-<script type="text/javascript" src="https://d3jvtbpw8wl90d.cloudfront.net/js/leaflet.latlng-graticule.js"></script>
-<script type="text/javascript" src="https://d3jvtbpw8wl90d.cloudfront.net/js/leaflet-sidebar.min.js"></script>
-<script type="text/javascript" src="https://d3jvtbpw8wl90d.cloudfront.net/js/Leaflet.Icon.Glyph.js"></script>
+<script type="text/javascript" src="https://unpkg.com/leaflet-graticule@0.0.1/Leaflet.Graticule.js"></script>
+<script type="text/javascript" src="https://unpkg.com/leaflet-sidebar-v2@3.0.6/js/leaflet-sidebar.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/leaflet.icon.glyph@0.2.1/Leaflet.Icon.Glyph.js"></script>
 <script>
 
   var map = L.map('mapid', {
@@ -107,7 +107,7 @@
   }
   map.on('click', onMapClick);
 
-  var sidebar = L.control.sidebar('sidebar').addTo(map);
+  var sidebar = L.control.sidebar({container: "sidebar", autopan: true}).addTo(map);
 
   function new_channel(subtopic) {
     return socket.channel(`data:${subtopic}`, {});

@@ -1,5 +1,5 @@
-<div id="sidebar" class="sidebar collapsed">
-  <div class="sidebar-tabs">
+<div id="sidebar" class="leaflet-sidebar collapsed">
+  <div class="leaflet-sidebar-tabs">
     <ul role="tablist">
       <li><a href="#sidebar-home" role="tab"><i class="fa fa-bars"></i></a></li>
       <li><a href="#sidebar-profile" role="tab" title="Profile"><i class="fas <%= if @current_user, do: "fa-user-check", else: "fa-user" %>"></i></a></li>
@@ -14,7 +14,7 @@
     </ul>
   </div>
 
-  <div class="sidebar-content">
+  <div class="leaflet-sidebar-content">
     <%= render @view_module, "_sidebar_home_pane.html", assigns %>
     <%= render @view_module, "_sidebar_profile_pane.html", assigns %>
     <%= render @view_module, "_sidebar_body_style_pane.html", assigns %>

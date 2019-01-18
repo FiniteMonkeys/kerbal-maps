@@ -1,10 +1,16 @@
 #!/usr/bin/env ruby -wKU
 
-require 'fileutils'
+## Usage:
+##   ruby script/mvtiles.rb ~/Applications/KSP\ 1.5.1/GameData/Sigma/Cartographer/PluginData/
+## followed by
+##   aws s3 cp tiles/ s3://kerbal-maps/tiles/ --recursive --include "*.png"
 
-DEST_ROOT = File.expand_path("~/Downloads/ksp-maps/tiles")
+require "fileutils"
 
-Dir.glob("**/*.png").each do | src_filename |
+SRC_ROOT = File.expand_path(ARGV.shift || ".")
+DEST_ROOT = File.expand_path("~/Downloads/kerbal-maps/tiles")
+
+Dir.glob(File.join(SRC_ROOT, "**/*.png")).each do | src_filename |
   (body, zoom, raw_style, _filename) = src_filename.split("/")
   style = case raw_style
           when "BiomeMap"
