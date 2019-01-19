@@ -46,3 +46,4 @@ npm-debug.log
 /.bash_history
 /config/docker.env
 /VERSION
+/.byebug_history
