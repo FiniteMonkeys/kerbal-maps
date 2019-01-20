@@ -9,14 +9,17 @@ help:
 
 build:
 	@echo "$(APP_VSN)" > VERSION
-	@docker build --build-arg APP_NAME=$(APP_NAME) \
+	docker build --build-arg APP_NAME=$(APP_NAME) \
         --build-arg APP_VSN=$(APP_VSN) \
         -t $(APP_NAME):$(APP_VSN) \
         -t $(APP_NAME):latest .
-	@rm VERSION
+	rm VERSION
+
+develop:
+	env_vars=""; while IFS='' read -r line || [[ -n "$$line" ]]; do env_vars="$$env_vars $$line"; done < config/docker.env; eval "$$env_vars mix phx.server"
 
 run:
-	@docker run --env-file config/docker.env \
+	docker run --env-file config/docker.env \
         --expose 4000 -p 80:4000 \
         --rm -it $(APP_NAME):latest
 
@@ -25,6 +28,6 @@ tag:
 
 deploy:
 	@echo "$(APP_VSN)" > VERSION
-	@heroku container:push web --arg APP_VSN=$(APP_VSN)
-	@heroku container:release web
-	@rm VERSION
+	heroku container:push web --arg APP_VSN=$(APP_VSN)
+	heroku container:release web
+	rm VERSION
