@@ -45,3 +45,5 @@ npm-debug.log
 /.circleci/build-local.sh
 /.bash_history
 /config/docker.env
+/VERSION
+/.byebug_history

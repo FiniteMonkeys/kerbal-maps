@@ -83,14 +83,16 @@ defmodule KerbalMaps.MixProject do
   # 1.0.0-beta1+18.ga9f2f1ee when built against something after a tag.
   defp app_version do
     with {:ok, string} <- get_git_version(),
-         [_, version, commit] <- Regex.run(~r/([\d\.]+(?:\-[a-zA-Z]+\d*)?)(.*)/, String.trim(string)) do
+         [_, version, commit] <-
+           Regex.run(~r/([\d\.]+(?:\-[a-zA-Z]+\d*)?)(.*)/, String.trim(string)) do
       _ = version
-      [version, (commit |> String.replace(~r/^-/, "") |> String.replace(~r/-.*$/, ""))]
-      |> Enum.filter(&String.length(&1) > 0)
+
+      [version, commit |> String.replace(~r/^-/, "") |> String.replace(~r/-.*$/, "")]
+      |> Enum.filter(&(String.length(&1) > 0))
       |> Enum.join("-")
     else
       other ->
-        IO.puts("Could not get version. error: #{other}")
+        IO.puts("Could not parse version; error: #{inspect(other)}")
         @default_version
     end
   end
@@ -100,10 +102,15 @@ defmodule KerbalMaps.MixProject do
     case File.read("VERSION") do
       {:error, _} ->
         case System.cmd("git", ["describe"]) do
-          {string, 0} -> {:ok, string}
-          {error, errno} -> {:error, "Could not get version. errno: #{inspect errno}, error: #{inspect error}"}
+          {string, 0} ->
+            {:ok, string}
+
+          {error, errno} ->
+            {:error, "Could not get version; errno: #{inspect(errno)}, error: #{inspect(error)}"}
         end
-      ok -> ok
+
+      ok ->
+        ok
     end
   end
 end

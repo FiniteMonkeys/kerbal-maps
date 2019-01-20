@@ -77,9 +77,9 @@
     // keepBuffer: 2,
 
     // *** Layer options
-    attribution: 'Map data: source unknown' +
+    attribution: 'Map data: crowdsourced' +
       ' ' +
-      'Imagery: source unknown',
+      'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
 
     // *** other options
     body: 'kerbin',
