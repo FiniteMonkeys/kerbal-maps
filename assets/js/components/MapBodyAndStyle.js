@@ -19,12 +19,18 @@ class MapBodyAndStyle extends React.Component {
     this.setState(previousState => ({
       selectedBody: value
     }))
+    if (this.props.onBodyChange !== undefined) {
+      this.props.onBodyChange(value)
+    }
   }
 
   changeSelectedStyle (value) {
     this.setState(previousState => ({
       selectedStyle: value
     }))
+    if (this.props.onStyleChange !== undefined) {
+      this.props.onStyleChange(value)
+    }
   }
 
   render() {
