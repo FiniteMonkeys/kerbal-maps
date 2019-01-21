@@ -4,6 +4,9 @@
 
 .credits {
   background: #EEEEEE;
-  text-align: center;
   padding: 50px 0 50px;
+}
+
+.credits > h2, .credits > p {
+  text-align: center;
 }
