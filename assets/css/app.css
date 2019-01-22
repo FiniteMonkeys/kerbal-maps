@@ -1,3 +1,12 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+
+.credits {
+  background: #EEEEEE;
+  padding: 50px 0 50px;
+}
+
+.credits > h2, .credits > p {
+  text-align: center;
+}

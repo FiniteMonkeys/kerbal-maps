@@ -4,47 +4,5 @@
     <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
 
-  <form action="#">
-    <fieldset>
-      <label for="select-body">Body:</label>
-      <select id="select-body" name="select-body">
-        <option value="moho" disabled="true">Moho</option>
-        <option value="eve" disabled="true">Eve</option>
-        <option value="gilly" disabled="true">Gilly</option>
-        <option value="kerbin" selected="true">Kerbin</option>
-        <option value="mun" disabled="true">Mun</option>
-        <option value="minmus" disabled="true">Minmus</option>
-        <option value="duna" disabled="true">Duna</option>
-        <option value="ike" disabled="true">Ike</option>
-        <option value="dres" disabled="true">Dres</option>
-        <option value="jool" disabled="true">Jool</option>
-        <option value="laythe" disabled="true">Laythe</option>
-        <option value="vall" disabled="true">Vall</option>
-        <option value="tylo" disabled="true">Tylo</option>
-        <option value="bop" disabled="true">Bop</option>
-        <option value="pol" disabled="true">Pol</option>
-        <option value="eeloo" disabled="true">Eeloo</option>
-      </select>
-    </fieldset>
-    <fieldset>
-      <label for="select-style">Style:</label>
-      <select id="select-style" name="select-style">
-        <option value="biome" disabled="true">Biome</option>
-        <option value="sat" selected="true">Satellite</option>
-        <option value="slope" disabled="true">Slope</option>
-      </select>
-    </fieldset>
-  </form>
+  <div id="map-body-and-style"></div>
 </div>
-
-<script type="text/javascript">
-
-  document.getElementById("select-body").addEventListener('change', function (event) {
-    // alert(event.target.value);
-  });
-
-  document.getElementById("select-style").addEventListener('change', function (event) {
-    // alert(event.target.value);
-  });
-
-</script>

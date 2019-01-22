@@ -16,3 +16,21 @@ import "phoenix_html"
 // Local files can be imported directly using relative paths, for example:
 import { socket } from "./socket.js"
 window.socket = socket
+
+// Credits
+import { renderCredits } from "./credits.js"
+renderCredits()
+
+import React from "react"
+import ReactDOM from "react-dom"
+
+window.changeSelectedBody = (value) => {
+  // alert(`changing selected body to "${value}"`)
+}
+
+window.changeSelectedStyle = (value) => {
+  // alert(`changing selected style to "${value}"`)
+}
+
+import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
+ReactDOM.render(<MapBodyAndStyle onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
