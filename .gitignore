@@ -47,3 +47,4 @@ npm-debug.log
 /config/docker.env
 /VERSION
 /.byebug_history
+/priv/repo/seeds_*.exs
