@@ -34,3 +34,8 @@ window.changeSelectedStyle = (value) => {
 
 import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
 ReactDOM.render(<MapBodyAndStyle onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
+
+// enable tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})

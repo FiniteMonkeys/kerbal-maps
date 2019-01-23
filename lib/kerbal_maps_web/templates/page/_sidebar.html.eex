@@ -10,7 +10,7 @@
     </ul>
 
     <ul role="tablist">
-      <li><a href="#sidebar-credits" role="tab"><i class="far fa-smile"></i></a></li>
+      <li><a href="#sidebar-credits" role="tab" title="Credits"><i class="far fa-smile"></i></a></li>
     </ul>
   </div>
 
