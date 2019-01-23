@@ -125,4 +125,30 @@ defmodule KerbalMaps.Symbols.Marker do
     Logger.warn fn -> "***** unknown waypoint icon: '#{icon}'" end
     ~S({"prefix":"fas","name":"question-circle"})
   end
+
+  def insert_marker(params) do
+    icon_glyph = Keyword.get(params, :icon, "exclamation")
+    icon_prefix = Keyword.get(params, :icon_prefix, "fas")
+    Repo.insert!(%Marker{
+      name: Keyword.fetch!(params, :name),
+      description: Keyword.get(params, :description),
+      latitude: Keyword.fetch!(params, :latitude),
+      longitude: Keyword.fetch!(params, :longitude),
+      altitude: Keyword.get(params, :altitude),
+      navigation_uuid: Keyword.get(params, :navigation_uuid),
+      icon_name: ~s({"prefix":"#{icon_prefix}","name":"#{icon_glyph}"}),
+      user_id: Keyword.fetch!(params, :user).id,
+      celestial_body_id: Keyword.fetch!(params, :body).id,
+    } |> Marker.changeset(%{}) |> Ecto.Changeset.apply_changes())
+  end
+  def insert_anomaly_marker(params), do: Keyword.put_new(params, :icon, "question-circle") |> insert_marker()
+  def insert_city_marker(params), do: Keyword.put_new(params, :icon, "city") |> insert_marker()
+  def insert_compass_marker(params), do: Keyword.put_new(params, :icon, "compass") |> insert_marker()
+  def insert_dish_marker(params), do: Keyword.put_new(params, :icon, "satellite-dish") |> insert_marker()
+  def insert_helipad_marker(params), do: Keyword.put_new(params, :icon, "helicopter") |> insert_marker()
+  def insert_highest_point_marker(params), do: Keyword.put_new(params, :icon, "chevron-circle-up") |> insert_marker()
+  def insert_launchsite_marker(params), do: Keyword.put_new(params, :icon, "rocket") |> insert_marker()
+  def insert_lowest_point_marker(params), do: Keyword.put_new(params, :icon, "chevron-circle-down") |> insert_marker()
+  def insert_mountain_marker(params), do: Keyword.put_new(params, :icon, "mountain") |> insert_marker()
+  def insert_runway_marker(params), do: Keyword.put_new(params, :icon, "plane") |> insert_marker()
 end
