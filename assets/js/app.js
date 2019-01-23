@@ -112,7 +112,7 @@ L.tileLayer(`${window.tileCdnURL}/{body}/{style}/{z}/{x}/{y}.png`, {
 
   // *** Layer options
   attribution: 'Map data: crowdsourced' +
-    ' ' +
+    ' | ' +
     'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
 
   // *** other options
@@ -169,7 +169,7 @@ function show_overlay(channel, overlayId) {
           response.overlay.markers.forEach(function (marker) {
             var latitude = marker.latitude;
             var longitude = marker.longitude;
-            var label = `<strong>${marker.name}</strong><br/>${marker.latitude} ${marker.longitude}<br/>${marker.description}`;
+            var label = `<strong>${marker.name}</strong><br/>${marker.latitude}, ${marker.longitude}<br/>${marker.description || ""}`;
             var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name});
             L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup);
           });
@@ -229,15 +229,19 @@ function add_overlays_to_list(channel, paneId) {
   }
 }
 
+var channel;
 if (window.userID) {
-  let channel = new_channel(window.userID);
-  join_channel(channel);
-  window.overlays = {};
-
-  sidebar.on("content", (event) => {
-    switch (event.id) {
-      case "sidebar-filter":
-        load_overlays_for_body(channel, event.id, "Kerbin");
-    }
-  });
+  channel = new_channel(window.userID);
+} else {
+  channel = new_channel(0);
 }
+
+join_channel(channel);
+window.overlays = {};
+
+sidebar.on("content", (event) => {
+  switch (event.id) {
+    case "sidebar-filter":
+      load_overlays_for_body(channel, event.id, "Kerbin");
+  }
+});
