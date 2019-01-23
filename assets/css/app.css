@@ -10,3 +10,7 @@
 .credits > h2, .credits > p {
   text-align: center;
 }
+
+.leaflet-sidebar input, .leaflet-sidebar button {
+  font-size: 12px;
+}
