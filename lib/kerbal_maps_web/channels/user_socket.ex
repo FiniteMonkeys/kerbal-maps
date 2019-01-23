@@ -35,6 +35,11 @@ defmodule KerbalMapsWeb.UserSocket do
     end
   end
 
+  # Unverified connects can only get the global channel.
+  def connect(_params, socket, _connect_info) do
+    {:ok, assign(socket, :user_id, 0)}
+  end
+
   # Returning `nil` makes this socket anonymous.
   def id(socket), do: "user_socket:#{socket.assigns.user_id}"
 end

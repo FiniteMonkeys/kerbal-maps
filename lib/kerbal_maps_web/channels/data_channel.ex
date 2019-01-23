@@ -40,10 +40,10 @@ defmodule KerbalMapsWeb.DataChannel do
     {:reply, {:ok, %{overlay: overlay}}, socket}
   end
 
-  defp get_all_overlays(nil, _, socket), do: {:reply, {:error, "user not found"}, socket}
-
   defp get_all_overlays(_, nil, socket),
     do: {:reply, {:error, "celestial body not found"}, socket}
+
+  defp get_all_overlays(nil, _, socket), do: {:reply, {:error, "user not found"}, socket}
 
   defp get_all_overlays(user, celestial_body, socket) do
     overlays =

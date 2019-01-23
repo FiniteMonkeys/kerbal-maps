@@ -112,7 +112,7 @@ L.tileLayer(`${window.tileCdnURL}/{body}/{style}/{z}/{x}/{y}.png`, {
 
   // *** Layer options
   attribution: 'Map data: crowdsourced' +
-    ' ' +
+    ' | ' +
     'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
 
   // *** other options
@@ -229,15 +229,19 @@ function add_overlays_to_list(channel, paneId) {
   }
 }
 
+var channel;
 if (window.userID) {
-  let channel = new_channel(window.userID);
-  join_channel(channel);
-  window.overlays = {};
-
-  sidebar.on("content", (event) => {
-    switch (event.id) {
-      case "sidebar-filter":
-        load_overlays_for_body(channel, event.id, "Kerbin");
-    }
-  });
+  channel = new_channel(window.userID);
+} else {
+  channel = new_channel(0);
 }
+
+join_channel(channel);
+window.overlays = {};
+
+sidebar.on("content", (event) => {
+  switch (event.id) {
+    case "sidebar-filter":
+      load_overlays_for_body(channel, event.id, "Kerbin");
+  }
+});
