@@ -14,3 +14,7 @@
 .leaflet-sidebar input, .leaflet-sidebar button {
   font-size: 12px;
 }
+
+div.card-body form {
+  margin-bottom: 0;
+}
