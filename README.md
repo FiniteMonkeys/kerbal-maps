@@ -106,7 +106,7 @@ Execute the specs by running `mix espec`.
 > this should probably be broken out to a separate document
 
   * Accept uploading Waypoint Manager files
-
+  * Add `/apple-touch-icon-precomposed.png` and/or `/apple-touch-icon.png`
 ## ACKNOWLEDGEMENTS
 
 Made possible in part by:
