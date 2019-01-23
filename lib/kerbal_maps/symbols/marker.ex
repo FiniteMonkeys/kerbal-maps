@@ -5,10 +5,15 @@ defmodule KerbalMaps.Symbols.Marker do
 
   use Ecto.Schema
 
+  require Logger
+
   import Ecto.Changeset
   import ESpec.Testable
 
+  alias KerbalMaps.Repo
+  alias KerbalMaps.StaticData
   alias KerbalMaps.StaticData.CelestialBody
+  alias KerbalMaps.Symbols.Marker
   alias KerbalMaps.Symbols.Overlay
   alias KerbalMaps.Users.User
 
@@ -31,20 +36,12 @@ defmodule KerbalMaps.Symbols.Marker do
   @doc false
   def changeset(marker, attrs) do
     marker
-    |> cast(attrs, [
-      :name,
-      :description,
-      :latitude,
-      :longitude,
-      :altitude,
-      :navigation_uuid,
-      :icon_name,
-      :user_id,
-      :celestial_body_id
-    ])
+    |> cast(attrs, [:name, :description, :latitude, :longitude, :altitude, :navigation_uuid, :icon_name, :user_id, :celestial_body_id])
     |> validate_required([:name, :latitude, :longitude, :user_id, :celestial_body_id])
-    |> unsafe_validate_unique([:navigation_uuid], KerbalMaps.Repo)
-    |> unique_constraint(:navigation_uuid)
+    |> unsafe_validate_unique([:navigation_uuid, :user_id], Repo)
+    |> unique_constraint(:navigation_uuid, name: :markers_navigation_uuid_user_id_index)
+    |> unsafe_validate_unique([:name, :user_id, :celestial_body_id], Repo)
+    |> unique_constraint(:name, name: :markers_name_user_id_celestial_body_id_index)
     |> wrap([:latitude], {-90.000000, 90.000000})
     |> wrap([:longitude], {-180.000000, 180.000000})
   end
@@ -55,36 +52,17 @@ defmodule KerbalMaps.Symbols.Marker do
     end)
   end
 
-  defp_testable(clamp(nil, _), do: nil)
-
-  defp_testable(clamp(%Decimal{} = value, {%Decimal{} = min, %Decimal{} = max}),
-    do: value |> Decimal.max(min) |> Decimal.min(max)
-  )
-
-  defp_testable(clamp(%Decimal{} = value, {min, %Decimal{} = max}) when is_float(min),
-    do: clamp(value, {Decimal.from_float(min), max})
-  )
-
-  defp_testable(clamp(%Decimal{} = value, {%Decimal{} = min, max}) when is_float(max),
-    do: clamp(value, {min, Decimal.from_float(max)})
-  )
-
-  defp_testable(clamp(%Decimal{} = value, {min, max}) when is_float(min),
-    do: clamp(value, {Decimal.from_float(min), max})
-  )
-
-  defp_testable(clamp(%Decimal{} = value, {min, %Decimal{} = max}),
-    do: clamp(value, {Decimal.new(min), max})
-  )
-
-  defp_testable(clamp(%Decimal{} = value, {%Decimal{} = min, max}),
-    do: clamp(value, {min, Decimal.new(max)})
-  )
-
-  defp_testable(clamp(%Decimal{} = value, {min, max}), do: clamp(value, {Decimal.new(min), max}))
-  defp_testable(clamp(value, {min, _max}) when value < min, do: min)
-  defp_testable(clamp(value, {_min, max}) when value > max, do: max)
-  defp_testable(clamp(value, _), do: value)
+  defp_testable clamp(nil, _), do: nil
+  defp_testable clamp(%Decimal{} = value, {%Decimal{} = min, %Decimal{} = max}), do: value |> Decimal.max(min) |> Decimal.min(max)
+  defp_testable clamp(%Decimal{} = value, {min, %Decimal{} = max}) when is_float(min), do: clamp(value, {Decimal.from_float(min), max})
+  defp_testable clamp(%Decimal{} = value, {%Decimal{} = min, max}) when is_float(max), do: clamp(value, {min, Decimal.from_float(max)})
+  defp_testable clamp(%Decimal{} = value, {min, max}) when is_float(min), do: clamp(value, {Decimal.from_float(min), max})
+  defp_testable clamp(%Decimal{} = value, {min, %Decimal{} = max}), do: clamp(value, {Decimal.new(min), max})
+  defp_testable clamp(%Decimal{} = value, {%Decimal{} = min, max}), do: clamp(value, {min, Decimal.new(max)})
+  defp_testable clamp(%Decimal{} = value, {min, max}), do: clamp(value, {Decimal.new(min), max})
+  defp_testable clamp(value, {min, _max}) when (value < min), do: min
+  defp_testable clamp(value, {_min, max}) when (value > max), do: max
+  defp_testable clamp(value, _), do: value
 
   def wrap(changeset, fields, {_min, _max} = range) do
     Enum.reduce(fields, changeset, fn field, cs ->
@@ -92,8 +70,7 @@ defmodule KerbalMaps.Symbols.Marker do
     end)
   end
 
-  defp_testable(wrap(nil, _), do: nil)
-
+  defp_testable wrap(nil, _), do: nil
   defp_testable wrap(%Decimal{} = value, {%Decimal{} = min, %Decimal{} = max}) do
     cond do
       Decimal.cmp(value, min) == :lt -> value |> Decimal.add(max) |> Decimal.sub(min)
@@ -101,29 +78,51 @@ defmodule KerbalMaps.Symbols.Marker do
       true -> value
     end
   end
+  defp_testable wrap(%Decimal{} = value, {min, %Decimal{} = max}) when is_float(min), do: wrap(value, {Decimal.from_float(min), max})
+  defp_testable wrap(%Decimal{} = value, {%Decimal{} = min, max}) when is_float(max), do: wrap(value, {min, Decimal.from_float(max)})
+  defp_testable wrap(%Decimal{} = value, {min, max}) when is_float(min), do: wrap(value, {Decimal.from_float(min), max})
+  defp_testable wrap(%Decimal{} = value, {min, %Decimal{} = max}), do: wrap(value, {Decimal.new(min), max})
+  defp_testable wrap(%Decimal{} = value, {%Decimal{} = min, max}), do: wrap(value, {min, Decimal.new(max)})
+  defp_testable wrap(%Decimal{} = value, {min, max}), do: wrap(value, {Decimal.new(min), max})
+  defp_testable wrap(value, {min, max}) when (value < min), do: value + max - min
+  defp_testable wrap(value, {min, max}) when (value > max), do: value + min - max
+  defp_testable wrap(value, _), do: value
 
-  defp_testable(wrap(%Decimal{} = value, {min, %Decimal{} = max}) when is_float(min),
-    do: wrap(value, {Decimal.from_float(min), max})
-  )
+  def load_waypoint(waypoint, [for: user]) when is_map(waypoint) do
+    %Marker{}
+    |> Marker.changeset(%{
+      name: waypoint["name"],
+      description: "",
+      latitude: Float.parse(waypoint["latitude"]) |> elem(0),
+      longitude: Float.parse(waypoint["longitude"]) |> elem(0),
+      altitude: Float.parse(waypoint["altitude"]) |> elem(0),
+      navigation_uuid: waypoint["navigationId"],
+      icon_name: marker_icon(waypoint["icon"]),
+      user_id: user.id,
+      celestial_body_id: StaticData.find_celestial_body_by_name(waypoint["celestialName"]) |> Map.get(:id, nil)
+    })
+    # |> Ecto.Changeset.apply_changes
+    |> Repo.insert
+  end
 
-  defp_testable(wrap(%Decimal{} = value, {%Decimal{} = min, max}) when is_float(max),
-    do: wrap(value, {min, Decimal.from_float(max)})
-  )
+  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/arch"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/monolith"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/pyramids"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/unknown"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("ContractPacks/Tourism/Icons/Kerbal"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("balloon"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("custom"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("dish"), do: ~S({"prefix":"fas","name":"satellite-dish"})
+  defp marker_icon("dmVessel"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("eva"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("gravity"), do: ~S({"prefix":"fas","name":"chevron-circle-up"})
+  defp marker_icon("pressure"), do: ~S({"prefix":"fas","name":"chevron-circle-up"})
+  defp marker_icon("report"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("seismic"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("thermometer"), do: ~S({"prefix":"fas","name":"question-circle"})
 
-  defp_testable(wrap(%Decimal{} = value, {min, max}) when is_float(min),
-    do: wrap(value, {Decimal.from_float(min), max})
-  )
-
-  defp_testable(wrap(%Decimal{} = value, {min, %Decimal{} = max}),
-    do: wrap(value, {Decimal.new(min), max})
-  )
-
-  defp_testable(wrap(%Decimal{} = value, {%Decimal{} = min, max}),
-    do: wrap(value, {min, Decimal.new(max)})
-  )
-
-  defp_testable(wrap(%Decimal{} = value, {min, max}), do: wrap(value, {Decimal.new(min), max}))
-  defp_testable(wrap(value, {min, max}) when value < min, do: value + max - min)
-  defp_testable(wrap(value, {min, max}) when value > max, do: value + min - max)
-  defp_testable(wrap(value, _), do: value)
+  defp marker_icon(icon) when is_binary(icon) do
+    Logger.warn fn -> "***** unknown waypoint icon: '#{icon}'" end
+    ~S({"prefix":"fas","name":"question-circle"})
+  end
 end
