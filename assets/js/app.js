@@ -169,7 +169,7 @@ function show_overlay(channel, overlayId) {
           response.overlay.markers.forEach(function (marker) {
             var latitude = marker.latitude;
             var longitude = marker.longitude;
-            var label = `<strong>${marker.name}</strong><br/>${marker.latitude} ${marker.longitude}<br/>${marker.description}`;
+            var label = `<strong>${marker.name}</strong><br/>${marker.latitude}, ${marker.longitude}<br/>${marker.description || ""}`;
             var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name});
             L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup);
           });
