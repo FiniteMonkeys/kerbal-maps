@@ -3,12 +3,13 @@
     Filter
     <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
-  <ul style="list-style-type: none">
-    <li>
-      <input type="checkbox" id="show_overlays" name="show_overlays" value="true" />
-      <label for="show_overlays" style="display: inline-block">All?</label>
-    </li>
-    <ul style="list-style-type: none">
-    </ul>
-  </ul>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <form id="overlay-list" action="#">
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

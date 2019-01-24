@@ -13,8 +13,15 @@
 
 .leaflet-sidebar button,
 .leaflet-sidebar input,
+.leaflet-sidebar li,
+.leaflet-sidebar p,
 .leaflet-sidebar select {
-  font-size: 12px;
+  font-size: 14px;
+}
+
+.leaflet-sidebar label {
+  font-size: 14px;
+  margin-left: 1em;
 }
 
 .leaflet-sidebar-pane .row {
