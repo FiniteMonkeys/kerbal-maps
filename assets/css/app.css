@@ -2,21 +2,31 @@
 
 @import "./phoenix.css";
 
-.credits {
-  background: #EEEEEE;
-  padding: 50px 0 50px;
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: 0;
 }
 
 .credits > h2, .credits > p {
   text-align: center;
 }
 
+.card-header button {
+  margin-bottom: 0;
+}
+
+.card-header h2 {
+  display: inline-block;
+}
+
+/* .card-body h3, */
+.card-header h2,
 .leaflet-sidebar button,
 .leaflet-sidebar input,
 .leaflet-sidebar li,
 .leaflet-sidebar p,
 .leaflet-sidebar select {
   font-size: 14px;
+  line-height: 14px;
 }
 
 .leaflet-sidebar label {
@@ -24,10 +34,23 @@
   margin-left: 1em;
 }
 
+.leaflet-sidebar-pane {
+  padding: 10px;
+}
+
+.leaflet-sidebar-pane .container-fluid {
+  padding: 0;
+}
+
 .leaflet-sidebar-pane .row {
   margin-top: 3em;
 }
 
-div.card-body form {
+.card-body form {
   margin-bottom: 0;
+}
+
+.card-body h3 {
+  font-size: 18px;
+  line-height: 18px;
 }
