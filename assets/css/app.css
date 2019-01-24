@@ -11,8 +11,14 @@
   text-align: center;
 }
 
-.leaflet-sidebar input, .leaflet-sidebar button {
+.leaflet-sidebar button,
+.leaflet-sidebar input,
+.leaflet-sidebar select {
   font-size: 12px;
+}
+
+.leaflet-sidebar-pane .row {
+  margin-top: 3em;
 }
 
 div.card-body form {
