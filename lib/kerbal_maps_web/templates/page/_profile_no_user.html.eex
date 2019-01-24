@@ -1,71 +1,75 @@
 <div class="container-fluid">
-  <div class="accordion" id="accordionNoUser">
+  <div class="row">
+    <div class="col">
+      <div class="accordion" id="accordionNoUser">
 
-    <div class="card">
-      <div class="card-header" id="headingNoUserLogin">
-        <h2 class="mb-0">
-          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseNoUserLogin" aria-expanded="true" aria-controls="collapseNoUserLogin">
-            Have a login?
-          </button>
-        </h2>
-      </div>
-      <div id="collapseNoUserLogin" class="collapse show" aria-labelledby="headingNoUserLogin" data-parent="#accordionNoUser">
-        <div class="card-body">
-          <%= form_for @login_changeset, @login_action, [as: :user], fn f -> %>
-            <%= if @login_changeset.action do %>
-              <div class="alert alert-danger">
-                <p>Oops, something went wrong! Please check the errors below.</p>
-              </div>
-            <% end %>
+        <div class="card">
+          <div class="card-header" id="headingNoUserLogin">
+            <h2 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseNoUserLogin" aria-expanded="true" aria-controls="collapseNoUserLogin">
+                Have a login?
+              </button>
+            </h2>
+          </div>
+          <div id="collapseNoUserLogin" class="collapse show" aria-labelledby="headingNoUserLogin" data-parent="#accordionNoUser">
+            <div class="card-body">
+              <%= form_for @login_changeset, @login_action, [as: :user], fn f -> %>
+                <%= if @login_changeset.action do %>
+                  <div class="alert alert-danger">
+                    <p>Oops, something went wrong! Please check the errors below.</p>
+                  </div>
+                <% end %>
 
-            <div class="form-group">
-              <%= label f, @login_changeset.data.__struct__.pow_user_id_field() %>
-              <%= text_input f, @login_changeset.data.__struct__.pow_user_id_field(), class: "form-control", placeholder: "gene.kerman@ksc.kerbin" %>
-              <%= error_tag f, @login_changeset.data.__struct__.pow_user_id_field() %>
+                <div class="form-group">
+                  <%= label f, @login_changeset.data.__struct__.pow_user_id_field() %>
+                  <%= text_input f, @login_changeset.data.__struct__.pow_user_id_field(), class: "form-control", placeholder: "gene.kerman@ksc.kerbin" %>
+                  <%= error_tag f, @login_changeset.data.__struct__.pow_user_id_field() %>
+                </div>
+
+                <div class="form-group">
+                  <%= label f, :password %>
+                  <%= password_input f, :password, class: "form-control", placeholder: "Password" %>
+                  <%= error_tag f, :password %>
+                </div>
+
+                <div class="form-group float-right">
+                  <button type="submit" class="btn btn-primary">Sign in</button>
+                </div>
+              <% end %>
             </div>
-
-            <div class="form-group">
-              <%= label f, :password %>
-              <%= password_input f, :password, class: "form-control", placeholder: "Password" %>
-              <%= error_tag f, :password %>
-            </div>
-
-            <div class="form-group float-right">
-              <button type="submit" class="btn btn-primary">Sign in</button>
-            </div>
-          <% end %>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="card">
-      <div class="card-header" id="headingNoUserCreate">
-        <h2 class="mb-0">
-          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseNoUserCreate" aria-expanded="false" aria-controls="collapseNoUserCreate">
-            Want a login?
-          </button>
-        </h2>
-      </div>
-      <div id="collapseNoUserCreate" class="collapse" aria-labelledby="headingNoUserCreate" data-parent="#accordionNoUser">
-        <div class="card-body">
-          <%# link "Create one.", to: Routes.pow_registration_path(@conn, :new) %>
-          New account creation is disabled at this time.
+        <div class="card">
+          <div class="card-header" id="headingNoUserCreate">
+            <h2 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseNoUserCreate" aria-expanded="false" aria-controls="collapseNoUserCreate">
+                Want a login?
+              </button>
+            </h2>
+          </div>
+          <div id="collapseNoUserCreate" class="collapse" aria-labelledby="headingNoUserCreate" data-parent="#accordionNoUser">
+            <div class="card-body">
+              <%# link "Create one.", to: Routes.pow_registration_path(@conn, :new) %>
+              New account creation is disabled at this time.
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="card">
-      <div class="card-header" id="headingNoUserReset">
-        <h2 class="mb-0">
-          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseNoUserReset" aria-expanded="false" aria-controls="collapseNoUserReset">
-            Forgot your password?
-          </button>
-        </h2>
-      </div>
-      <div id="collapseNoUserReset" class="collapse" aria-labelledby="headingNoUserReset" data-parent="#accordionNoUser">
-        <div class="card-body">
-          <%# link "Reset it.", to: Routes.pow_reset_password_reset_password_path(@conn, :new) %>
-          Password reset is disabled at this time.
+        <div class="card">
+          <div class="card-header" id="headingNoUserReset">
+            <h2 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseNoUserReset" aria-expanded="false" aria-controls="collapseNoUserReset">
+                Forgot your password?
+              </button>
+            </h2>
+          </div>
+          <div id="collapseNoUserReset" class="collapse" aria-labelledby="headingNoUserReset" data-parent="#accordionNoUser">
+            <div class="card-body">
+              <%# link "Reset it.", to: Routes.pow_reset_password_reset_password_path(@conn, :new) %>
+              Password reset is disabled at this time.
+            </div>
+          </div>
         </div>
       </div>
     </div>

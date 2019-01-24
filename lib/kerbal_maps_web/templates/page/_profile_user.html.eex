@@ -1,3 +1,55 @@
-<p>Edit your <%= link "markers", to: Routes.marker_path(@conn, :index) %>.</p>
-<p>Edit your <%= link "overlays", to: Routes.overlay_path(@conn, :index) %>.</p>
-<p><%= link "Log out.", to: Routes.pow_session_path(@conn, :delete), method: :delete %></p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <div class="accordion" id="accordionUser">
+
+        <div class="card">
+          <div class="card-header" id="headingUserMarkers">
+            <h2 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseUserMarkers" aria-expanded="false" aria-controls="collapseUserMarkers">
+                Edit your markers.
+              </button>
+            </h2>
+          </div>
+          <div id="collapseUserMarkers" class="collapse" aria-labelledby="headingUserMarkers" data-parent="#accordionUser">
+            <div class="card-body">
+              <%# link "markers", to: Routes.marker_path(@conn, :index) %>
+              (marker list/form goes here)
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingUserOverlays">
+            <h2 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseUserOverlays" aria-expanded="false" aria-controls="collapseUserOverlays">
+                Edit your overlays.
+              </button>
+            </h2>
+          </div>
+          <div id="collapseUserOverlays" class="collapse" aria-labelledby="headingUserOverlays" data-parent="#accordionUser">
+            <div class="card-body">
+              <%# link "overlays", to: Routes.overlay_path(@conn, :index) %>
+              (overlay list/form goes here)
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="headingUserLogout">
+            <h2 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseUserLogout" aria-expanded="true" aria-controls="collapseUserLogout">
+                Log out.
+              </button>
+            </h2>
+          </div>
+          <div id="collapseUserLogout" class="collapse show" aria-labelledby="headingUserLogout" data-parent="#accordionUser">
+            <div class="card-body">
+              <%= link "Log out.", to: Routes.pow_session_path(@conn, :delete), method: :delete %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
