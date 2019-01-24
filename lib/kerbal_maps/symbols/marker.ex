@@ -36,7 +36,17 @@ defmodule KerbalMaps.Symbols.Marker do
   @doc false
   def changeset(marker, attrs) do
     marker
-    |> cast(attrs, [:name, :description, :latitude, :longitude, :altitude, :navigation_uuid, :icon_name, :user_id, :celestial_body_id])
+    |> cast(attrs, [
+      :name,
+      :description,
+      :latitude,
+      :longitude,
+      :altitude,
+      :navigation_uuid,
+      :icon_name,
+      :user_id,
+      :celestial_body_id
+    ])
     |> validate_required([:name, :latitude, :longitude, :user_id, :celestial_body_id])
     |> unsafe_validate_unique([:navigation_uuid, :user_id], Repo)
     |> unique_constraint(:navigation_uuid, name: :markers_navigation_uuid_user_id_index)
@@ -52,17 +62,36 @@ defmodule KerbalMaps.Symbols.Marker do
     end)
   end
 
-  defp_testable clamp(nil, _), do: nil
-  defp_testable clamp(%Decimal{} = value, {%Decimal{} = min, %Decimal{} = max}), do: value |> Decimal.max(min) |> Decimal.min(max)
-  defp_testable clamp(%Decimal{} = value, {min, %Decimal{} = max}) when is_float(min), do: clamp(value, {Decimal.from_float(min), max})
-  defp_testable clamp(%Decimal{} = value, {%Decimal{} = min, max}) when is_float(max), do: clamp(value, {min, Decimal.from_float(max)})
-  defp_testable clamp(%Decimal{} = value, {min, max}) when is_float(min), do: clamp(value, {Decimal.from_float(min), max})
-  defp_testable clamp(%Decimal{} = value, {min, %Decimal{} = max}), do: clamp(value, {Decimal.new(min), max})
-  defp_testable clamp(%Decimal{} = value, {%Decimal{} = min, max}), do: clamp(value, {min, Decimal.new(max)})
-  defp_testable clamp(%Decimal{} = value, {min, max}), do: clamp(value, {Decimal.new(min), max})
-  defp_testable clamp(value, {min, _max}) when (value < min), do: min
-  defp_testable clamp(value, {_min, max}) when (value > max), do: max
-  defp_testable clamp(value, _), do: value
+  defp_testable(clamp(nil, _), do: nil)
+
+  defp_testable(clamp(%Decimal{} = value, {%Decimal{} = min, %Decimal{} = max}),
+    do: value |> Decimal.max(min) |> Decimal.min(max)
+  )
+
+  defp_testable(clamp(%Decimal{} = value, {min, %Decimal{} = max}) when is_float(min),
+    do: clamp(value, {Decimal.from_float(min), max})
+  )
+
+  defp_testable(clamp(%Decimal{} = value, {%Decimal{} = min, max}) when is_float(max),
+    do: clamp(value, {min, Decimal.from_float(max)})
+  )
+
+  defp_testable(clamp(%Decimal{} = value, {min, max}) when is_float(min),
+    do: clamp(value, {Decimal.from_float(min), max})
+  )
+
+  defp_testable(clamp(%Decimal{} = value, {min, %Decimal{} = max}),
+    do: clamp(value, {Decimal.new(min), max})
+  )
+
+  defp_testable(clamp(%Decimal{} = value, {%Decimal{} = min, max}),
+    do: clamp(value, {min, Decimal.new(max)})
+  )
+
+  defp_testable(clamp(%Decimal{} = value, {min, max}), do: clamp(value, {Decimal.new(min), max}))
+  defp_testable(clamp(value, {min, _max}) when value < min, do: min)
+  defp_testable(clamp(value, {_min, max}) when value > max, do: max)
+  defp_testable(clamp(value, _), do: value)
 
   def wrap(changeset, fields, {_min, _max} = range) do
     Enum.reduce(fields, changeset, fn field, cs ->
@@ -70,7 +99,8 @@ defmodule KerbalMaps.Symbols.Marker do
     end)
   end
 
-  defp_testable wrap(nil, _), do: nil
+  defp_testable(wrap(nil, _), do: nil)
+
   defp_testable wrap(%Decimal{} = value, {%Decimal{} = min, %Decimal{} = max}) do
     cond do
       Decimal.cmp(value, min) == :lt -> value |> Decimal.add(max) |> Decimal.sub(min)
@@ -78,17 +108,33 @@ defmodule KerbalMaps.Symbols.Marker do
       true -> value
     end
   end
-  defp_testable wrap(%Decimal{} = value, {min, %Decimal{} = max}) when is_float(min), do: wrap(value, {Decimal.from_float(min), max})
-  defp_testable wrap(%Decimal{} = value, {%Decimal{} = min, max}) when is_float(max), do: wrap(value, {min, Decimal.from_float(max)})
-  defp_testable wrap(%Decimal{} = value, {min, max}) when is_float(min), do: wrap(value, {Decimal.from_float(min), max})
-  defp_testable wrap(%Decimal{} = value, {min, %Decimal{} = max}), do: wrap(value, {Decimal.new(min), max})
-  defp_testable wrap(%Decimal{} = value, {%Decimal{} = min, max}), do: wrap(value, {min, Decimal.new(max)})
-  defp_testable wrap(%Decimal{} = value, {min, max}), do: wrap(value, {Decimal.new(min), max})
-  defp_testable wrap(value, {min, max}) when (value < min), do: value + max - min
-  defp_testable wrap(value, {min, max}) when (value > max), do: value + min - max
-  defp_testable wrap(value, _), do: value
 
-  def load_waypoint(waypoint, [for: user]) when is_map(waypoint) do
+  defp_testable(wrap(%Decimal{} = value, {min, %Decimal{} = max}) when is_float(min),
+    do: wrap(value, {Decimal.from_float(min), max})
+  )
+
+  defp_testable(wrap(%Decimal{} = value, {%Decimal{} = min, max}) when is_float(max),
+    do: wrap(value, {min, Decimal.from_float(max)})
+  )
+
+  defp_testable(wrap(%Decimal{} = value, {min, max}) when is_float(min),
+    do: wrap(value, {Decimal.from_float(min), max})
+  )
+
+  defp_testable(wrap(%Decimal{} = value, {min, %Decimal{} = max}),
+    do: wrap(value, {Decimal.new(min), max})
+  )
+
+  defp_testable(wrap(%Decimal{} = value, {%Decimal{} = min, max}),
+    do: wrap(value, {min, Decimal.new(max)})
+  )
+
+  defp_testable(wrap(%Decimal{} = value, {min, max}), do: wrap(value, {Decimal.new(min), max}))
+  defp_testable(wrap(value, {min, max}) when value < min, do: value + max - min)
+  defp_testable(wrap(value, {min, max}) when value > max, do: value + min - max)
+  defp_testable(wrap(value, _), do: value)
+
+  def load_waypoint(waypoint, for: user) when is_map(waypoint) do
     %Marker{}
     |> Marker.changeset(%{
       name: waypoint["name"],
@@ -99,17 +145,28 @@ defmodule KerbalMaps.Symbols.Marker do
       navigation_uuid: waypoint["navigationId"],
       icon_name: marker_icon(waypoint["icon"]),
       user_id: user.id,
-      celestial_body_id: StaticData.find_celestial_body_by_name(waypoint["celestialName"]) |> Map.get(:id, nil)
+      celestial_body_id:
+        StaticData.find_celestial_body_by_name(waypoint["celestialName"]) |> Map.get(:id, nil)
     })
     # |> Ecto.Changeset.apply_changes
-    |> Repo.insert
+    |> Repo.insert()
   end
 
-  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/arch"), do: ~S({"prefix":"fas","name":"question-circle"})
-  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/monolith"), do: ~S({"prefix":"fas","name":"question-circle"})
-  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/pyramids"), do: ~S({"prefix":"fas","name":"question-circle"})
-  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/unknown"), do: ~S({"prefix":"fas","name":"question-circle"})
-  defp marker_icon("ContractPacks/Tourism/Icons/Kerbal"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/arch"),
+    do: ~S({"prefix":"fas","name":"question-circle"})
+
+  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/monolith"),
+    do: ~S({"prefix":"fas","name":"question-circle"})
+
+  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/pyramids"),
+    do: ~S({"prefix":"fas","name":"question-circle"})
+
+  defp marker_icon("ContractPacks/AnomalySurveyor/Icons/unknown"),
+    do: ~S({"prefix":"fas","name":"question-circle"})
+
+  defp marker_icon("ContractPacks/Tourism/Icons/Kerbal"),
+    do: ~S({"prefix":"fas","name":"question-circle"})
+
   defp marker_icon("balloon"), do: ~S({"prefix":"fas","name":"question-circle"})
   defp marker_icon("custom"), do: ~S({"prefix":"fas","name":"question-circle"})
   defp marker_icon("dish"), do: ~S({"prefix":"fas","name":"satellite-dish"})
@@ -122,33 +179,56 @@ defmodule KerbalMaps.Symbols.Marker do
   defp marker_icon("thermometer"), do: ~S({"prefix":"fas","name":"question-circle"})
 
   defp marker_icon(icon) when is_binary(icon) do
-    Logger.warn fn -> "***** unknown waypoint icon: '#{icon}'" end
+    Logger.warn(fn -> "***** unknown waypoint icon: '#{icon}'" end)
     ~S({"prefix":"fas","name":"question-circle"})
   end
 
   def insert_marker(params) do
     icon_glyph = Keyword.get(params, :icon, "exclamation")
     icon_prefix = Keyword.get(params, :icon_prefix, "fas")
-    Repo.insert!(%Marker{
-      name: Keyword.fetch!(params, :name),
-      description: Keyword.get(params, :description),
-      latitude: Keyword.fetch!(params, :latitude),
-      longitude: Keyword.fetch!(params, :longitude),
-      altitude: Keyword.get(params, :altitude),
-      navigation_uuid: Keyword.get(params, :navigation_uuid),
-      icon_name: ~s({"prefix":"#{icon_prefix}","name":"#{icon_glyph}"}),
-      user_id: Keyword.fetch!(params, :user).id,
-      celestial_body_id: Keyword.fetch!(params, :body).id,
-    } |> Marker.changeset(%{}) |> Ecto.Changeset.apply_changes())
+
+    Repo.insert!(
+      %Marker{
+        name: Keyword.fetch!(params, :name),
+        description: Keyword.get(params, :description),
+        latitude: Keyword.fetch!(params, :latitude),
+        longitude: Keyword.fetch!(params, :longitude),
+        altitude: Keyword.get(params, :altitude),
+        navigation_uuid: Keyword.get(params, :navigation_uuid),
+        icon_name: ~s({"prefix":"#{icon_prefix}","name":"#{icon_glyph}"}),
+        user_id: Keyword.fetch!(params, :user).id,
+        celestial_body_id: Keyword.fetch!(params, :body).id
+      }
+      |> Marker.changeset(%{})
+      |> Ecto.Changeset.apply_changes()
+    )
   end
-  def insert_anomaly_marker(params), do: Keyword.put_new(params, :icon, "question-circle") |> insert_marker()
+
+  def insert_anomaly_marker(params),
+    do: Keyword.put_new(params, :icon, "question-circle") |> insert_marker()
+
   def insert_city_marker(params), do: Keyword.put_new(params, :icon, "city") |> insert_marker()
-  def insert_compass_marker(params), do: Keyword.put_new(params, :icon, "compass") |> insert_marker()
-  def insert_dish_marker(params), do: Keyword.put_new(params, :icon, "satellite-dish") |> insert_marker()
-  def insert_helipad_marker(params), do: Keyword.put_new(params, :icon, "helicopter") |> insert_marker()
-  def insert_highest_point_marker(params), do: Keyword.put_new(params, :icon, "chevron-circle-up") |> insert_marker()
-  def insert_launchsite_marker(params), do: Keyword.put_new(params, :icon, "rocket") |> insert_marker()
-  def insert_lowest_point_marker(params), do: Keyword.put_new(params, :icon, "chevron-circle-down") |> insert_marker()
-  def insert_mountain_marker(params), do: Keyword.put_new(params, :icon, "mountain") |> insert_marker()
+
+  def insert_compass_marker(params),
+    do: Keyword.put_new(params, :icon, "compass") |> insert_marker()
+
+  def insert_dish_marker(params),
+    do: Keyword.put_new(params, :icon, "satellite-dish") |> insert_marker()
+
+  def insert_helipad_marker(params),
+    do: Keyword.put_new(params, :icon, "helicopter") |> insert_marker()
+
+  def insert_highest_point_marker(params),
+    do: Keyword.put_new(params, :icon, "chevron-circle-up") |> insert_marker()
+
+  def insert_launchsite_marker(params),
+    do: Keyword.put_new(params, :icon, "rocket") |> insert_marker()
+
+  def insert_lowest_point_marker(params),
+    do: Keyword.put_new(params, :icon, "chevron-circle-down") |> insert_marker()
+
+  def insert_mountain_marker(params),
+    do: Keyword.put_new(params, :icon, "mountain") |> insert_marker()
+
   def insert_runway_marker(params), do: Keyword.put_new(params, :icon, "plane") |> insert_marker()
 end
