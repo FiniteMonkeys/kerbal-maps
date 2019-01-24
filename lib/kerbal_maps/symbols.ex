@@ -248,14 +248,15 @@ defmodule KerbalMaps.Symbols do
     do: query |> where(fragment("celestial_body_id = ?", ^celestial_body_id))
 
   defp filter_overlays_by(query, :name, str) when is_nil(str) or str == "", do: query
-  defp filter_overlays_by(query, :name, str),do: query |> where([m], m.name == ^str)
+  defp filter_overlays_by(query, :name, str), do: query |> where([m], m.name == ^str)
 
   defp filter_overlays_by(query, :user_id, nil),
     do: query |> where(fragment("user_id = 0"))
 
   defp filter_overlays_by(query, :user_id, user_id),
-    do: query
-        |> where(fragment("user_id IN (0, ?)", ^user_id))
+    do:
+      query
+      |> where(fragment("user_id IN (0, ?)", ^user_id))
 
   @doc """
   Gets a single overlay.

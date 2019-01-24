@@ -34,20 +34,37 @@ defmodule KerbalMaps.Symbols.Overlay do
   end
 
   def insert_overlay(params) do
-    Repo.insert!(%Overlay{
-      name: Keyword.fetch!(params, :name),
-      description: Keyword.get(params, :description),
-      user_id: Keyword.fetch!(params, :user).id,
-      celestial_body_id: Keyword.fetch!(params, :body).id,
-    } |> Overlay.changeset(%{}) |> Ecto.Changeset.apply_changes())
+    Repo.insert!(
+      %Overlay{
+        name: Keyword.fetch!(params, :name),
+        description: Keyword.get(params, :description),
+        user_id: Keyword.fetch!(params, :user).id,
+        celestial_body_id: Keyword.fetch!(params, :body).id
+      }
+      |> Overlay.changeset(%{})
+      |> Ecto.Changeset.apply_changes()
+    )
   end
 
   def add_marker(overlay, marker_name) do
-    marker = Symbols.find_marker_by_name(marker_name, %{"user_id" => overlay.user_id, "celestial_body_id" => overlay.celestial_body_id})
+    marker =
+      Symbols.find_marker_by_name(marker_name, %{
+        "user_id" => overlay.user_id,
+        "celestial_body_id" => overlay.celestial_body_id
+      })
+
     Repo.query!(
       "INSERT INTO overlays_markers (overlay_id, marker_id, user_id, celestial_body_id, inserted_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)",
-      [overlay.id, marker.id, overlay.user_id, overlay.celestial_body_id, DateTime.utc_now(), DateTime.utc_now()]
+      [
+        overlay.id,
+        marker.id,
+        overlay.user_id,
+        overlay.celestial_body_id,
+        DateTime.utc_now(),
+        DateTime.utc_now()
+      ]
     )
+
     overlay
   end
 end
