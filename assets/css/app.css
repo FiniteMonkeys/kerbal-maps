@@ -10,3 +10,24 @@
 .credits > h2, .credits > p {
   text-align: center;
 }
+
+.leaflet-sidebar button,
+.leaflet-sidebar input,
+.leaflet-sidebar li,
+.leaflet-sidebar p,
+.leaflet-sidebar select {
+  font-size: 14px;
+}
+
+.leaflet-sidebar label {
+  font-size: 14px;
+  margin-left: 1em;
+}
+
+.leaflet-sidebar-pane .row {
+  margin-top: 3em;
+}
+
+div.card-body form {
+  margin-bottom: 0;
+}

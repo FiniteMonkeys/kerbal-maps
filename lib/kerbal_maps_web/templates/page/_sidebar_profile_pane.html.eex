@@ -5,22 +5,8 @@
   </h1>
 
   <%= if @current_user do %>
-    <p>Edit your <%= link "markers", to: Routes.marker_path(@conn, :index) %>.</p>
-    <p>Edit your <%= link "overlays", to: Routes.overlay_path(@conn, :index) %>.</p>
-    <p><%= link "Log out.", to: Routes.pow_session_path(@conn, :delete), method: :delete %></p>
+    <%= render @view_module, "_profile_user.html", assigns %>
   <% else %>
-    <p>Have an account? <%= link "Log in.", to: Routes.pow_session_path(@conn, :new) %></p>
-    <p>
-      Want an account?&nbsp;
-      <%# link "Create one.", to: Routes.pow_registration_path(@conn, :new) %>
-      <strike>Create one.</strike>&nbsp;
-      New account creation is disabled at this time.
-    </p>
-    <p>
-      Forgot your password?&nbsp;
-      <%# link "Reset it.", to: Routes.pow_reset_password_reset_password_path(@conn, :new) %>
-      <strike>Reset it.</strike>&nbsp;
-      Password reset is disabled at this time.
-    </p>
+    <%= render @view_module, "_profile_no_user.html", assigns %>
   <% end %>
 </div>

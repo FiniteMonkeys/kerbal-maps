@@ -17,10 +17,6 @@ import "phoenix_html"
 import { socket } from "./socket.js"
 window.socket = socket
 
-// Credits
-import { renderCredits } from "./credits.js"
-renderCredits()
-
 import React from "react"
 import ReactDOM from "react-dom"
 
@@ -202,17 +198,17 @@ function load_overlays_for_body(channel, paneId, body) {
 
 function add_overlays_to_list(channel, paneId) {
   var pane = L.DomUtil.get(paneId);
-  var checkboxList = pane.querySelector("ul ul");
+  var checkboxList = pane.querySelector("#overlay-list");
   checkboxList.innerHTML = "";
 
   for (const [overlayId, overlay] of Object.entries(window.overlays)) {
     checkboxList.insertAdjacentHTML(
       "beforeend",
       `
-<li>
-  <input type="checkbox" id="show_overlay_${overlayId}" name="show_overlay" value="${overlayId}" ${overlay.active ? 'checked="true"' : ''}/>
-  <label for="show_overlay_${overlayId}" style="display: inline-block">${overlay.name}</label>
-</li>
+<div class="form-group form-check">
+  <input type="checkbox" class="form-check-input" id="show_overlay_${overlayId}" name="show_overlay" value="${overlayId}" ${overlay.active ? 'checked="true"' : ''}/>
+  <label for="show_overlay_${overlayId}" class="form-check-label">${overlay.name}</label>
+</div>
       `
     );
     document.getElementById(`show_overlay_${overlayId}`)

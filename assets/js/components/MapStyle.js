@@ -13,17 +13,18 @@ class MapStyle extends React.Component {
   render() {
     const selectedValue = this.props.selectedValue
     return (
-      <fieldset>
-        <label htmlFor="select-map-style">Style:</label>
+      <div className="form-group">
+        <label htmlFor="select-map-style">Style</label>
         <select id="select-map-style"
                 name="select-map-style"
                 value={selectedValue}
+                className="form-control"
                 onChange={this.changeValue}>
           <option value="biome">Biome</option>
           <option value="sat">Satellite</option>
           <option value="slope">Slope</option>
         </select>
-      </fieldset>
+      </div>
     )
   }
 }
