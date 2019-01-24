@@ -1,6 +1,6 @@
 <div id="sidebar-home" class="leaflet-sidebar-pane">
   <h1 class="leaflet-sidebar-header">
-    Kerbal Maps <%= :application.which_applications |> Enum.find(fn t -> elem(t, 0) == :kerbal_maps end) |> elem(2) %>
+    Kerbal Maps <%= KerbalMapsWeb.PageController.current_app_version() %>
     <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
 
@@ -8,18 +8,18 @@
     <div class="row">
       <div class="col credits">
         <h2>Kerbal Maps</h2>
-        <p>was made possible by</p>
+        <p>is made possible by</p>
         <ul>
           <li>
-            <a href="https://www.kerbalspaceprogram.com/">Kerbal Space Program</a>&nbsp;
+            <a href="https://www.kerbalspaceprogram.com/">Kerbal Space Program</a>
             for map data, as well as being the reason for doing this in the first place
           </li>
           <li>
-            <a href="https://github.com/Sigma88/Sigma-Cartographer">Sigma-Cartographer</a>&nbsp;
+            <a href="https://github.com/Sigma88/Sigma-Cartographer">Sigma-Cartographer</a>
             for a means of extracting the map data
           </li>
           <li>
-            <a href="https://leafletjs.com">Leaflet.js</a>&nbsp;
+            <a href="https://leafletjs.com">Leaflet.js</a>
             for a means to display the map images, with the help of
             <ul>
               <li><a href="https://github.com/Leaflet/Leaflet.Graticule">Leaflet.Graticule</a></li>
@@ -28,40 +28,38 @@
             </ul>
           </li>
           <li>
-            <a href="https://getbootstrap.com">Bootstrap</a>&nbsp;
+            <a href="https://getbootstrap.com">Bootstrap</a>
             for styling and layout
           </li>
           <li>
-            <a href="https://fontawesome.com">Font Awesome</a>&nbsp;
+            <a href="https://fontawesome.com">Font Awesome</a>
             for graphics
           </li>
           <li>
-            <a href="http://ksp.deringenieur.net">ksp.deringenieur.net</a>&nbsp;
+            <a href="http://ksp.deringenieur.net">ksp.deringenieur.net</a>
             (and <a href="http://www.kerbalmaps.com">kerbalmaps.com</a> before it) for the original idea
           </li>
           <li>
-            <a href="https://hexdocs.pm/distillery/">Distillery</a>&nbsp;
+            <a href="https://hexdocs.pm/distillery/">Distillery</a>
             for making it possible to package the app so it can be made public
           </li>
           <li>
-            <a href="https://heroku.com/">Heroku</a>&nbsp;
+            <a href="https://heroku.com/">Heroku</a>
             for hosting the app
           </li>
           <li>
-            <a href="https://aws.amazon.com/">Amazon AWS</a>&nbsp;
+            <a href="https://aws.amazon.com/">Amazon AWS</a>
             for hosting the map images
           </li>
           <li>
-            <a href="https://github.com/WizardOfOgz">Andy Ogzewalla</a>&nbsp;
+            <a href="https://github.com/WizardOfOgz">Andy Ogzewalla</a>
             for JS mentorship, wizardry, and general awesomeness
           </li>
         </ul>
         <p>kerbal maps is a <a href="http://finitemonkeys.org/">finitemonkeys</a> joint</p>
         <p>
-          Copyright © 2018-2019 Craig S. Cottingham, and subject to
-          &nbsp;
-          <a href="http://www.apache.org/licenses/LICENSE-2.0">the Apache License, Version 2.0</a>
-          &nbsp;
+          Copyright © 2018-2019 Craig S. Cottingham and subject to
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">the Apache License, Version 2.0</a>,
           except where stated otherwise.
         </p>
       </div>
