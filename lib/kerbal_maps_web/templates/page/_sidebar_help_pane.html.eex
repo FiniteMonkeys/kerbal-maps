@@ -1,0 +1,7 @@
+<div id="sidebar-help" class="leaflet-sidebar-pane">
+  <h1 class="leaflet-sidebar-header">
+    Help
+    <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+  </h1>
+  <p>Help goes here.</p>
+</div>

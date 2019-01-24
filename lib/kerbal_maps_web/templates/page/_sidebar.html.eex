@@ -10,7 +10,7 @@
     </ul>
 
     <ul role="tablist">
-      <li><a href="#sidebar-credits" role="tab" title="Credits"><i class="far fa-smile"></i></a></li>
+      <li><a href="#sidebar-help" role="tab" title="Help"><i class="fas fa-question"></i></a></li>
     </ul>
   </div>
 
@@ -22,6 +22,6 @@
     <%= render @view_module, "_sidebar_filter_pane.html", assigns %>
     <%= render @view_module, "_sidebar_upload_pane.html", assigns %>
 
-    <%= render @view_module, "_sidebar_credits_pane.html", assigns %>
+    <%= render @view_module, "_sidebar_help_pane.html", assigns %>
   </div>
 </div>

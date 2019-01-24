@@ -17,10 +17,6 @@ import "phoenix_html"
 import { socket } from "./socket.js"
 window.socket = socket
 
-// Credits
-import { renderCredits } from "./credits.js"
-renderCredits()
-
 import React from "react"
 import ReactDOM from "react-dom"
 
