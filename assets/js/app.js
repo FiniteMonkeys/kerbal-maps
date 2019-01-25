@@ -237,7 +237,7 @@ window.overlays = {};
 
 sidebar.on("content", (event) => {
   switch (event.id) {
-    case "sidebar-filter":
+    case "sidebar-overlays":
       load_overlays_for_body(channel, event.id, "Kerbin");
   }
 });

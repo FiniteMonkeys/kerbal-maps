@@ -3,5 +3,87 @@
     Help
     <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
-  <p>Help goes here.</p>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <div class="accordion" id="accordionHelp">
+
+          <div class="card">
+            <div class="card-header" id="headingHelpOverview">
+              <h2 class="mb-0">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseHelpOverview" aria-expanded="true" aria-controls="collapseHelpOverview">
+                  Overview
+                </button>
+              </h2>
+            </div>
+            <div id="collapseHelpOverview" class="collapse show" aria-labelledby="headingHelpOverview" data-parent="#accordionHelp">
+              <div class="card-body">
+                <p>
+Kerbal Maps is like
+<a href="https://maps.google.com/">Google Maps</a>
+for
+<a href="https://www.kerbalspaceprogram.com">Kerbal Space Program</a>.
+As you'd expect, it behaves a lot like Google Maps (or any other map webapp).
+                </p>
+                <ul>
+                  <li>Click and drag to pan the map.</li>
+                  <li>
+Use the <i class="far fa-plus-square"></i> and <i class="far fa-minus-square"></i> buttons
+in the top-left corner of the map to zoom in and out.
+                  </li>
+                  <li>Single click on the map to get the latitude and longitude at that point.</li>
+                </ul>
+                <p>
+Something that Kerbal Maps has that other map webapps don't is <em>overlays</em>.
+Open the Overlays sidebar pane (by clicking on the <i class="fas fa-layer-group"></i> icon)
+and select one or more checkboxes. Markers will be added to the map as a group
+belonging to that overlay. For example, the "Anomalies" overlay shows the locations
+of all anomalies
+(<a href="https://wiki.kerbalspaceprogram.com/wiki/List_of_easter_eggs">Easter eggs</a>)
+on Kerbin.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header" id="headingHelpSidebar">
+              <h2 class="mb-0">
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseHelpSidebar" aria-expanded="false" aria-controls="collapseHelpSidebar">
+                  Sidebar
+                </button>
+              </h2>
+            </div>
+            <div id="collapseHelpSidebar" class="collapse" aria-labelledby="headingHelpSidebar" data-parent="#accordionHelp">
+              <div class="card-body">
+                <h3><i class="fa fa-bars"></i>&nbsp;:&nbsp;Credits</h3>
+                <p>An incomplete list of everyone and everything who helped make this possible.</p>
+                <br/>
+                <h3><i class="fas fa-user"></i>/<i class="fas fa-user-check"></i>&nbsp;:&nbsp;Profile</h3>
+                <p>If you have a username and password, you can log in here.</p>
+                <p>New account creation is disabled at this time.</p>
+                <br/>
+                <h3><i class="fas fa-globe"></i>&nbsp;:&nbsp;Body and Style</h3>
+                <p>Selecting celestial body and map style is disabled at this time.</p>
+                <br/>
+                <h3><i class="fas fa-search-location"></i>&nbsp;:&nbsp;Search</h3>
+                <p>Search is disabled at this time.</p>
+                <br/>
+                <h3><i class="fas fa-layer-group"></i>&nbsp;:&nbsp;Overlays</h3>
+                <p>Turn overlays on and off.</p>
+                <br/>
+                <h3><i class="fas fa-upload"></i>&nbsp;:&nbsp;Upload</h3>
+                <p>Upload is disabled at this time.</p>
+                <br/>
+                <h3><i class="fas fa-question"></i>&nbsp;:&nbsp;Help</h3>
+                <p>You’re reading it right now.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
