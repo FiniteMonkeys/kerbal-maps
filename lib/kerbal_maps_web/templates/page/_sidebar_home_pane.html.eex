@@ -19,6 +19,12 @@
             for a means of extracting the map data
           </li>
           <li>
+            <a href="https://github.com/jrossignol/WaypointManager">Waypoint Manager</a>
+            and KSP forum user
+            <a href="https://forum.kerbalspaceprogram.com/index.php?/profile/133118-miles-teg/">Miles Teg</a>
+            for the list of waypoints for anomalies currently baked in
+          </li>
+          <li>
             <a href="https://leafletjs.com">Leaflet.js</a>
             for a means to display the map images, with the help of
             <ul>
