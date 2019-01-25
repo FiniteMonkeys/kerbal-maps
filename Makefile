@@ -16,6 +16,8 @@ build:
 	rm VERSION
 
 develop:
+	# it's okay to start a container if it's already running
+	@docker start postgres
 	env_vars=""; while IFS='' read -r line || [[ -n "$$line" ]]; do env_vars="$$env_vars $$line"; done < config/docker.env; eval "$$env_vars mix phx.server"
 
 run:
