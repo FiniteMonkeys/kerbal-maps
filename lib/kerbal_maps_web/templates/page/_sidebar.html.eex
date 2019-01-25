@@ -5,7 +5,7 @@
       <li><a href="#sidebar-profile" role="tab" title="Profile"><i class="fas <%= if @current_user, do: "fa-user-check", else: "fa-user" %>"></i></a></li>
       <li class="disabled"><a href="#sidebar-body-style" role="tab" title="Body and Style"><i class="fas fa-globe"></i></a></li>
       <li class="<%= if @current_user, do: "", else: "disabled" %>"><a href="#sidebar-search" role="tab" title="Search"><i class="fas fa-search-location"></i></a></li>
-      <li><a href="#sidebar-filter" role="tab" title="Filter"><i class="fas fa-filter"></i></a></li>
+      <li><a href="#sidebar-overlays" role="tab" title="Overlays"><i class="fas fa-layer-group"></i></a></li>
       <li class="<%= if @current_user, do: "", else: "disabled" %>"><a href="#sidebar-upload" role="tab" title="Upload"><i class="fas fa-upload"></i></a></li>
     </ul>
 
@@ -19,7 +19,7 @@
     <%= render @view_module, "_sidebar_profile_pane.html", assigns %>
     <%= render @view_module, "_sidebar_body_style_pane.html", assigns %>
     <%= render @view_module, "_sidebar_search_pane.html", assigns %>
-    <%= render @view_module, "_sidebar_filter_pane.html", assigns %>
+    <%= render @view_module, "_sidebar_overlays_pane.html", assigns %>
     <%= render @view_module, "_sidebar_upload_pane.html", assigns %>
 
     <%= render @view_module, "_sidebar_help_pane.html", assigns %>
