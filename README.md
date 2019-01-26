@@ -103,17 +103,7 @@ Execute the specs by running `mix espec`.
 
 ## TODO
 
-> this should probably be broken out to a separate document
-
-  * Support other celestial bodies and map styles
-  * Add more overlayable objects:
-    * lines
-    * paths
-    * regions
-  * Accept uploading Waypoint Manager files
-  * Add search (for lat/lon, waypoint name)
-  * Add `/apple-touch-icon-precomposed.png` and/or `/apple-touch-icon.png`
-  * Enable user accounts
+See the [open issues on Github](https://github.com/FiniteMonkeys/kerbal-maps/issues).
 
 ## ACKNOWLEDGEMENTS
 

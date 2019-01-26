@@ -20,26 +20,8 @@ window.socket = socket
 import React from "react"
 import ReactDOM from "react-dom"
 
-window.changeSelectedBody = (value) => {
-  alert(`changing selected body to "${value}"`)
-}
-
-window.changeSelectedStyle = (value) => {
-  alert(`changing selected style to "${value}"`)
-}
-
-import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
-ReactDOM.render(<MapBodyAndStyle onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
-
-// enable tooltips
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
-
-
-
-var map = L.map('mapid', {
-  // preferCanvas: false,
+window.map = L.map('mapid', {
+  preferCanvas: true,
   // attributionControl: true,
   // zoomControl: true,
   // closePopupOnClick: true,
@@ -77,44 +59,7 @@ var map = L.map('mapid', {
   // fadeAnimation: true,
   // markerZoomAnimation: true,
   // transform3DLimit: 2^23,
-});
-
-L.tileLayer(`${window.tileCdnURL}/{body}/{style}/{z}/{x}/{y}.png`, {
-  // *** TileLayer options
-  // minZoom: 0,
-  maxZoom: 7,
-  // subdomains
-  // errorTileUrl
-  // zoomOffset: 0,
-  tms: true,
-  // zoomReverse: false,
-  // detectRetina: false,
-  // crossOrigin: false,
-
-  // *** GridLayer options
-  // tileSize: 256,
-  // opacity: 1.0,
-  // updateWhenIdle
-  // updateWhenZooming: true,
-  // updateInterval: 200,
-  // zIndex: 1,
-  // latLngBounds
-  maxNativeZoom: 7,
-  minNativeZoom: 0,
-  // noWrap: false,
-  // pane
-  // className
-  // keepBuffer: 2,
-
-  // *** Layer options
-  attribution: 'Map data: crowdsourced' +
-    ' | ' +
-    'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
-
-  // *** other options
-  body: 'kerbin',
-  style: 'sat'
-}).addTo(map);
+})
 
 L.latlngGraticule({
     showLabel: true,
@@ -125,81 +70,155 @@ L.latlngGraticule({
         {start: 5, end: 7, interval: 5},
         {start: 8, end: 10, interval: 1}
     ]
-}).addTo(map);
+}).addTo(window.map)
 
-var popup = L.popup();
+var popup = L.popup()
 
 function onMapClick(e) {
   popup
     .setLatLng(e.latlng)
     .setContent("You clicked the map at " + e.latlng.toString())
-    .openOn(map);
+    .openOn(window.map)
 }
-map.on('click', onMapClick);
+window.map.on('click', onMapClick)
 
-var sidebar = L.control.sidebar({container: "sidebar", autopan: true}).addTo(map);
+var sidebar = L.control.sidebar({container: "sidebar"}).addTo(window.map)
 
-function new_channel(subtopic) {
-  return socket.channel(`data:${subtopic}`, {});
+function createTileLayer() {
+  window.tileLayer = L.tileLayer(`${window.tileCdnURL}/{body}/{style}/{z}/{x}/{y}.png`, {
+    // *** TileLayer options
+    // minZoom: 0,
+    maxZoom: 7,
+    // subdomains
+    // errorTileUrl
+    // zoomOffset: 0,
+    tms: true,
+    // zoomReverse: false,
+    // detectRetina: false,
+    // crossOrigin: false,
+
+    // *** GridLayer options
+    // tileSize: 256,
+    // opacity: 1.0,
+    // updateWhenIdle
+    // updateWhenZooming: true,
+    // updateInterval: 200,
+    // zIndex: 1,
+    // latLngBounds
+    maxNativeZoom: 7,
+    minNativeZoom: 0,
+    // noWrap: false,
+    // pane
+    // className
+    // keepBuffer: 2,
+
+    // *** Layer options
+    attribution: 'Map data: crowdsourced' +
+      ' | ' +
+      'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
+
+    // *** other options
+    body: window.selectedBody,
+    style: window.selectedStyle
+  }).addTo(window.map)
 }
 
-function join_channel(channel) {
+function destroyTileLayer() {
+  window.tileLayer.remove()
+}
+
+function updateTileLayer() {
+  destroyTileLayer()
+  createTileLayer()
+}
+
+window.selectedBody = "kerbin"
+window.selectedStyle = "sat"
+createTileLayer()
+
+window.changeSelectedBody = (value) => {
+  window.selectedBody = value
+  hideAllOverlays()
+  window.overlays = {}  // clear out overlays for previous body
+  updateTileLayer()
+}
+
+window.changeSelectedStyle = (value) => {
+  window.selectedStyle = value
+  updateTileLayer()
+}
+
+import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
+ReactDOM.render(<MapBodyAndStyle onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
+
+function newChannel(subtopic) {
+  return socket.channel(`data:${subtopic}`, {})
+}
+
+function joinChannel(channel) {
   channel.join()
     .receive("ok", response => {
         console.log(`Joined channel ${channel.topic}`, response)
       })
     .receive("error", response => {
-        console.log("Unable to join channel", response);
-      });
+        console.log("Unable to join channel", response)
+      })
 }
 
-function show_overlay(channel, overlayId) {
+function showOverlay(channel, overlayId) {
   // should only do the channel.push if the overlay layerGroup isn't defined
   // since the layerGroup is loaded in a callback, fire an event that adds the layerGroup to the map?
   // probably should always call channel.push and update the layerGroup if necessary
   channel.push("get_overlay", {"id":overlayId})
     .receive("ok", response => {
-        var overlay = window.overlays[overlayId];
+        var overlay = window.overlays[overlayId]
         if (!overlay.layerGroup) {
-          overlay.layerGroup = L.layerGroup();
+          overlay.layerGroup = L.layerGroup()
           response.overlay.markers.forEach(function (marker) {
-            var latitude = marker.latitude;
-            var longitude = marker.longitude;
-            var label = `<strong>${marker.name}</strong><br/>${marker.latitude}, ${marker.longitude}<br/>${marker.description || ""}`;
-            var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name});
-            L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup);
-          });
+            var latitude = marker.latitude
+            var longitude = marker.longitude
+            var label = `<strong>${marker.name}</strong><br/>${marker.latitude}, ${marker.longitude}<br/>${marker.description || ""}`
+            var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name})
+            L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup)
+          })
         }
-        overlay.layerGroup.addTo(map);
-        overlay.active = true;
-      });
+        overlay.layerGroup.addTo(window.map)
+        overlay.active = true
+      })
 }
 
-function hide_overlay(channel, overlayId) {
-  var overlay = window.overlays[overlayId];
-  overlay.layerGroup.removeFrom(map);
-  overlay.active = false;
+function hideOverlay(channel, overlayId) {
+  var overlay = window.overlays[overlayId]
+  overlay.layerGroup.removeFrom(window.map)
+  overlay.active = false
 }
 
-function load_overlays_for_body(channel, paneId, body) {
+function hideAllOverlays() {
+  for (const [id, overlay] of Object.entries(window.overlays)) {
+    overlay.layerGroup.removeFrom(window.map)
+    overlay.active = false
+  }
+}
+
+function loadOverlaysForBody(channel, paneId, body) {
   channel.push("get_all_overlays", {"body":body})
     .receive("ok", response => {
         // don't overwrite window.overlays; update it
         response.overlays.forEach(function (overlay) {
           if (!window.overlays[overlay.id]) {
-            overlay.layerGroup = null;
-            overlay.active = false;
+            overlay.layerGroup = null
+            overlay.active = false
             window.overlays[overlay.id] = overlay
           }
-        });
-        add_overlays_to_list(channel, paneId);
-      });
+        })
+        add_overlays_to_list(channel, paneId)
+      })
 }
 
 function add_overlays_to_list(channel, paneId) {
-  var pane = L.DomUtil.get(paneId);
-  var checkboxList = pane.querySelector("#overlay-list");
-  checkboxList.innerHTML = "";
+  var pane = L.DomUtil.get(paneId)
+  var checkboxList = pane.querySelector("#overlay-list")
+  checkboxList.innerHTML = ""
 
   for (const [overlayId, overlay] of Object.entries(window.overlays)) {
     checkboxList.insertAdjacentHTML(
@@ -210,34 +229,39 @@ function add_overlays_to_list(channel, paneId) {
   <label for="show_overlay_${overlayId}" class="form-check-label">${overlay.name}</label>
 </div>
       `
-    );
+    )
     document.getElementById(`show_overlay_${overlayId}`)
             .addEventListener("click", function (event) {
-              var parsed = Number.parseInt(this.id.replace("show_overlay_", ""));
+              var parsed = Number.parseInt(this.id.replace("show_overlay_", ""))
               if (!Number.isNaN(parsed)) {
                 if (this.checked) {
-                  show_overlay(channel, parsed);
+                  showOverlay(channel, parsed)
                 } else {
-                  hide_overlay(channel, parsed);
+                  hideOverlay(channel, parsed)
                 }
               }
-            });
+            })
   }
 }
 
-var channel;
+var channel
 if (window.userID) {
-  channel = new_channel(window.userID);
+  channel = newChannel(window.userID)
 } else {
-  channel = new_channel(0);
+  channel = newChannel(0)
 }
 
-join_channel(channel);
-window.overlays = {};
+joinChannel(channel)
+window.overlays = {}
 
 sidebar.on("content", (event) => {
   switch (event.id) {
     case "sidebar-overlays":
-      load_overlays_for_body(channel, event.id, "Kerbin");
+      loadOverlaysForBody(channel, event.id, window.selectedBody)
   }
-});
+})
+
+// enable tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
