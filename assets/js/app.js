@@ -138,6 +138,8 @@ createTileLayer()
 
 window.changeSelectedBody = (value) => {
   window.selectedBody = value
+  hideAllOverlays()
+  window.overlays = {}  // clear out overlays for previous body
   updateTileLayer()
 }
 
@@ -149,16 +151,11 @@ window.changeSelectedStyle = (value) => {
 import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
 ReactDOM.render(<MapBodyAndStyle onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
 
-// enable tooltips
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
-
-function new_channel(subtopic) {
+function newChannel(subtopic) {
   return socket.channel(`data:${subtopic}`, {})
 }
 
-function join_channel(channel) {
+function joinChannel(channel) {
   channel.join()
     .receive("ok", response => {
         console.log(`Joined channel ${channel.topic}`, response)
@@ -168,7 +165,7 @@ function join_channel(channel) {
       })
 }
 
-function show_overlay(channel, overlayId) {
+function showOverlay(channel, overlayId) {
   // should only do the channel.push if the overlay layerGroup isn't defined
   // since the layerGroup is loaded in a callback, fire an event that adds the layerGroup to the map?
   // probably should always call channel.push and update the layerGroup if necessary
@@ -185,18 +182,25 @@ function show_overlay(channel, overlayId) {
             L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup)
           })
         }
-        overlay.layerGroup.addTo(map)
+        overlay.layerGroup.addTo(window.map)
         overlay.active = true
       })
 }
 
-function hide_overlay(channel, overlayId) {
+function hideOverlay(channel, overlayId) {
   var overlay = window.overlays[overlayId]
-  overlay.layerGroup.removeFrom(map)
+  overlay.layerGroup.removeFrom(window.map)
   overlay.active = false
 }
 
-function load_overlays_for_body(channel, paneId, body) {
+function hideAllOverlays() {
+  for (const [id, overlay] of Object.entries(window.overlays)) {
+    overlay.layerGroup.removeFrom(window.map)
+    overlay.active = false
+  }
+}
+
+function loadOverlaysForBody(channel, paneId, body) {
   channel.push("get_all_overlays", {"body":body})
     .receive("ok", response => {
         // don't overwrite window.overlays; update it
@@ -231,9 +235,9 @@ function add_overlays_to_list(channel, paneId) {
               var parsed = Number.parseInt(this.id.replace("show_overlay_", ""))
               if (!Number.isNaN(parsed)) {
                 if (this.checked) {
-                  show_overlay(channel, parsed)
+                  showOverlay(channel, parsed)
                 } else {
-                  hide_overlay(channel, parsed)
+                  hideOverlay(channel, parsed)
                 }
               }
             })
@@ -242,17 +246,22 @@ function add_overlays_to_list(channel, paneId) {
 
 var channel
 if (window.userID) {
-  channel = new_channel(window.userID)
+  channel = newChannel(window.userID)
 } else {
-  channel = new_channel(0)
+  channel = newChannel(0)
 }
 
-join_channel(channel)
+joinChannel(channel)
 window.overlays = {}
 
 sidebar.on("content", (event) => {
   switch (event.id) {
     case "sidebar-overlays":
-      load_overlays_for_body(channel, event.id, window.selectedBody)
+      loadOverlaysForBody(channel, event.id, window.selectedBody)
   }
+})
+
+// enable tooltips
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
 })
