@@ -10,6 +10,7 @@ defmodule KerbalMaps.Symbols.Marker do
   import Ecto.Changeset
   import ESpec.Testable
 
+  alias Ecto.Changeset
   alias KerbalMaps.Repo
   alias KerbalMaps.StaticData
   alias KerbalMaps.StaticData.CelestialBody
@@ -200,7 +201,7 @@ defmodule KerbalMaps.Symbols.Marker do
         celestial_body_id: Keyword.fetch!(params, :body).id
       }
       |> Marker.changeset(%{})
-      |> Ecto.Changeset.apply_changes()
+      |> Changeset.apply_changes()
     )
   end
 

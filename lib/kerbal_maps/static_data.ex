@@ -42,7 +42,9 @@ defmodule KerbalMaps.StaticData do
   end
 
   defp filter_celestial_bodies_by(query, :name, str) when is_nil(str) or str == "", do: query
-  defp filter_celestial_bodies_by(query, :name, str), do: query |> where(fragment("lower(name) = lower(?)", ^str))
+
+  defp filter_celestial_bodies_by(query, :name, str),
+    do: query |> where(fragment("lower(name) = lower(?)", ^str))
 
   @doc """
   Gets a single celestial_body.

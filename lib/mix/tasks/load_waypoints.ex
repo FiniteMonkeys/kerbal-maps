@@ -1,12 +1,11 @@
 defmodule Mix.Tasks.LoadWaypoints do
   @moduledoc """
   A Mix task to load a Waypoints Manager file as a set of markers for a user.
-
-
   """
 
   use Mix.Task
 
+  alias Ecto.Changeset
   alias KerbalMaps.Repo
   alias KerbalMaps.StaticData
   alias KerbalMaps.Symbols.Marker
@@ -49,7 +48,7 @@ defmodule Mix.Tasks.LoadWaypoints do
           StaticData.find_celestial_body_by_name(waypoint["celestialName"]) |> Map.get(:id, nil)
       }
       |> Marker.changeset(%{})
-      |> Ecto.Changeset.apply_changes()
+      |> Changeset.apply_changes()
     )
   end
 

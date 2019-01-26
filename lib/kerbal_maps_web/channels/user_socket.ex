@@ -5,6 +5,8 @@ defmodule KerbalMapsWeb.UserSocket do
 
   use Phoenix.Socket
 
+  alias Phoenix.Token
+
   ## Channels
   # channel "room:*", KerbalMapsWeb.RoomChannel
   channel "data:*", KerbalMapsWeb.DataChannel
@@ -26,7 +28,7 @@ defmodule KerbalMapsWeb.UserSocket do
       |> Keyword.get(:secret_key_base)
 
     # max_age: 1209600 is equivalent to two weeks in seconds
-    case Phoenix.Token.verify(socket, salt, token, max_age: 1_209_600) do
+    case Token.verify(socket, salt, token, max_age: 1_209_600) do
       {:ok, user_id} ->
         {:ok, assign(socket, :user_id, user_id)}
 

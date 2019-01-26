@@ -5,6 +5,8 @@ defmodule KerbalMapsWeb.Router do
   use Pow.Phoenix.Router
   use Pow.Extension.Phoenix.Router, otp_app: :kerbal_maps
 
+  alias Phoenix.Token
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -50,7 +52,7 @@ defmodule KerbalMapsWeb.Router do
         Application.get_env(:kerbal_maps, KerbalMapsWeb.Endpoint)
         |> Keyword.get(:secret_key_base)
 
-      token = Phoenix.Token.sign(conn, salt, current_user.id)
+      token = Token.sign(conn, salt, current_user.id)
       assign(conn, :user_token, token)
     else
       conn
