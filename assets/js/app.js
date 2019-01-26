@@ -82,7 +82,7 @@ function onMapClick(e) {
 }
 window.map.on('click', onMapClick)
 
-L.control.sidebar({container: "sidebar"}).addTo(window.map)
+var sidebar = L.control.sidebar({container: "sidebar"}).addTo(window.map)
 
 function createTileLayer() {
   window.tileLayer = L.tileLayer(`${window.tileCdnURL}/{body}/{style}/{z}/{x}/{y}.png`, {
@@ -253,6 +253,6 @@ window.overlays = {}
 sidebar.on("content", (event) => {
   switch (event.id) {
     case "sidebar-overlays":
-      load_overlays_for_body(channel, event.id, "Kerbin")
+      load_overlays_for_body(channel, event.id, window.selectedBody)
   }
 })
