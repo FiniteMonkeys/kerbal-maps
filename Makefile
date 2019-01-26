@@ -25,10 +25,9 @@ run:
         --expose 4000 -p 80:4000 \
         --rm -it $(APP_NAME):latest
 
-tag:
-	@echo 'Run `git tag --annotate 0.1.1 --message "version 0.1.1"`.'
-
 deploy:
+	# it's okay to start a container if it's already running
+	@docker start postgres
 	@echo "$(APP_VSN)" > VERSION
 	heroku container:push web --arg APP_VSN=$(APP_VSN)
 	heroku container:release web
