@@ -105,18 +105,32 @@ Execute the specs by running `mix espec`.
 
 > this should probably be broken out to a separate document
 
+  * Support other celestial bodies and map styles
+  * Add more overlayable objects:
+    * lines
+    * paths
+    * regions
   * Accept uploading Waypoint Manager files
+  * Add search (for lat/lon, waypoint name)
   * Add `/apple-touch-icon-precomposed.png` and/or `/apple-touch-icon.png`
+  * Enable user accounts
+
 ## ACKNOWLEDGEMENTS
 
 Made possible in part by:
 
-* [Leaflet](https://leafletjs.com)
-  * [leaflet.latlng-graticule plugin](https://github.com/cloudybay/leaflet.latlng-graticule) from [CloudyBay](https://github.com/cloudybay)
-* The latest map imagery tiles were generated using [Sigma-Cartographer](https://github.com/Sigma88/Sigma-Cartographer).
-* _(Outdated)_ The tiles used for map imagery originally came from http://ksp.deringenieur.net/,
-  and before it (I think?) http://www.kerbalmaps.com/.
+* [Kerbal Space Program](https://www.kerbalspaceprogram.com/)
+* [Sigma-Cartographer](https://github.com/Sigma88/Sigma-Cartographer)
+* [Waypoint Manager](https://github.com/jrossignol/WaypointManager)
+* [Leaflet.js](https://leafletjs.com) and plugins:
+  * [Leaflet.Graticule](https://github.com/Leaflet/Leaflet.Graticule)
+  * [leaflet-sidebar-v2](https://github.com/nickpeihl/leaflet-sidebar-v2)
+  * [Leaflet.Icon.Glyph](https://github.com/Leaflet/Leaflet.Icon.Glyph)
+* [Bootstrap](https://getbootstrap.com)
+* [Font Awesome](https://fontawesome.com)
+* [RealFaviconGenerator](https://realfavicongenerator.net/)
 * [Distillery](https://hexdocs.pm/distillery/)
+* [Andy Ogzewalla](https://github.com/WizardOfOgz)
 
 ## COPYRIGHT
 
