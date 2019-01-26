@@ -8,6 +8,7 @@ defmodule KerbalMaps.Symbols.Overlay do
   import Ecto.Changeset
   # import ESpec.Testable
 
+  alias Ecto.Changeset
   alias KerbalMaps.Repo
   alias KerbalMaps.StaticData.CelestialBody
   alias KerbalMaps.Symbols
@@ -42,7 +43,7 @@ defmodule KerbalMaps.Symbols.Overlay do
         celestial_body_id: Keyword.fetch!(params, :body).id
       }
       |> Overlay.changeset(%{})
-      |> Ecto.Changeset.apply_changes()
+      |> Changeset.apply_changes()
     )
   end
 
