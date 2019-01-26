@@ -12,7 +12,7 @@ defmodule KerbalMapsWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :kerbal_maps,
-    gzip: true
+    gzip: false
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
