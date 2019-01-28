@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 echo "cwd = $(pwd)"
+echo "sha = $(git rev-parse HEAD)"
+git tag
 GIT_DESCRIBE=$(git describe)
 echo "git describe = $GIT_DESCRIBE"
 
