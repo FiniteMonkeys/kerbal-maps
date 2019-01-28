@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 
-APP_NAME=$(mix compile 2>&1 >/dev/null && mix run --no-start -e "IO.puts KerbalMaps.MixProject.project() |> Keyword.get(:app)")
-APP_VSN=$(mix compile 2>&1 >/dev/null && mix run --no-start -e "IO.puts KerbalMaps.MixProject.project() |> Keyword.get(:version)")
-echo "APP_NAME = $APP_NAME"
-echo "APP_VSN  = $APP_VSN"
-echo "$APP_VSN" > VERSION
-docker build --build-arg APP_NAME=$APP_NAME \
-             --build-arg APP_VSN=$APP_VSN   \
-             -t $APP_NAME:$APP_VSN          \
-             -t $APP_NAME:latest            \
-             .
-rm VERSION
+echo "cwd = $(pwd)"
+GIT_DESCRIBE=$(git describe)
+echo "git describe = $GIT_DESCRIBE"
+
+# APP_NAME=$(mix compile 2>&1 >/dev/null && mix run --no-start -e "IO.puts KerbalMaps.MixProject.project() |> Keyword.get(:app)")
+# APP_VSN=$(mix compile 2>&1 >/dev/null && mix run --no-start -e "IO.puts KerbalMaps.MixProject.project() |> Keyword.get(:version)")
+# echo "APP_NAME = $APP_NAME"
+# echo "APP_VSN  = $APP_VSN"
+# echo "$APP_VSN" > VERSION
+# docker build --build-arg APP_NAME=$APP_NAME \
+#              --build-arg APP_VSN=$APP_VSN   \
+#              -t $APP_NAME:$APP_VSN          \
+#              -t $APP_NAME:latest            \
+#              .
+# rm VERSION
