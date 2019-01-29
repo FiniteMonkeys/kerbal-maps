@@ -6,10 +6,12 @@ defmodule KerbalMapsWeb.PageController.Spec do
   doctest KerbalMapsWeb.PageController
 
   example_group "GET /" do
-    let :request, do: build_conn() |> get("/")
+    context "without a query string" do
+      let :request, do: build_conn() |> get("/")
 
-    it "returns all package names" do
-      expect(html_response(request(), 200)) |> to(match("KerbalMaps"))
+      it "returns all package names" do
+        expect(html_response(request(), 200)) |> to(match("<title>Kerbal Maps</title>"))
+      end
     end
   end
 end
