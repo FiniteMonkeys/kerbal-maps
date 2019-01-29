@@ -47,7 +47,7 @@ window.map = L.map('mapid', {
   // touchZoom
   // bounceAtZoomLimits: true,
   crs: L.CRS.EPSG4326,
-  center: [-0.1027, -74.5754],  // KSC
+  center: ((window.locFromQuery !== undefined) ? window.locFromQuery : [-0.1027, -74.5754]),  // KSC
   zoom: 5,
   // minZoom
   // maxZoom
