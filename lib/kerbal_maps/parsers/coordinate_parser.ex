@@ -6,7 +6,14 @@ defmodule KerbalMaps.CoordinateParser do
   import NimbleParsec
   import KerbalMaps.ParserHelpers
 
-  def parse(str), do: str |> KerbalMaps.CoordinateParser.pair |> Enum.map(fn e -> elem(e, 1) end)
+  def parse(str),
+    do:
+      str
+      |> KerbalMaps.CoordinateParser.pair
+      |> reformat_parser_output
+
+  # {:ok, [real: 20.6709, real: -146.4968], "", %{}, {1, 0}, 17}
+  def reformat_parser_output({:ok, array, _, _, _, _}), do: Enum.map(array, fn term -> elem(term, 1) end)
 
   # nul, \t, \n, \f, \r, space respectively
   whitespace_values = [0, 9, 10, 12, 13, 32]
