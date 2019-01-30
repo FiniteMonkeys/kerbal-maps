@@ -8,7 +8,6 @@ defmodule KerbalMapsWeb.UserSocket do
   alias Phoenix.Token
 
   ## Channels
-  # channel "room:*", KerbalMapsWeb.RoomChannel
   channel "data:*", KerbalMapsWeb.DataChannel
 
   # Socket params are passed from the client and can

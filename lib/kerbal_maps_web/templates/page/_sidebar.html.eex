@@ -4,7 +4,7 @@
       <li><a href="#sidebar-home" role="tab" title="Credits"><i class="fa fa-bars"></i></a></li>
       <li><a href="#sidebar-profile" role="tab" title="Profile"><i class="fas <%= if @current_user, do: "fa-user-check", else: "fa-user" %>"></i></a></li>
       <li><a href="#sidebar-body-style" role="tab" title="Body and Style"><i class="fas fa-globe"></i></a></li>
-      <li class="<%= if @current_user, do: "", else: "disabled" %>"><a href="#sidebar-search" role="tab" title="Search"><i class="fas fa-search-location"></i></a></li>
+      <li><a href="#sidebar-search" role="tab" title="Search"><i class="fas fa-search-location"></i></a></li>
       <li><a href="#sidebar-overlays" role="tab" title="Overlays"><i class="fas fa-layer-group"></i></a></li>
       <li class="<%= if @current_user, do: "", else: "disabled" %>"><a href="#sidebar-upload" role="tab" title="Upload"><i class="fas fa-upload"></i></a></li>
     </ul>
