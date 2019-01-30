@@ -3,4 +3,31 @@
     Search
     <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
   </h1>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+
+        <%= form_for @conn, Routes.page_path(@conn, :index), [as: :search, errors: @conn.assigns[:errors], id: "search-form"], fn f -> %>
+          <%= if f.errors do %>
+            <div class="alert alert-danger">
+              <p>Oops, something went wrong! Please check the errors below.</p>
+              <p><%= inspect f.errors %></p>
+            </div>
+          <% end %>
+
+          <div class="form-group">
+            <%= text_input f, :query, class: "form-control", placeholder: "Coordinate or waypoint", "aria-describedby": "query-help" %>
+            <small id="query-help" class="form-text text-muted">Examples: -0.1027,-74.5754; N 0.1027, W 74.5754; 0.1027 N, 74.5754 W</small>
+            <%# error_tag f, :query %>
+          </div>
+
+          <div class="form-group float-right">
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
 </div>
