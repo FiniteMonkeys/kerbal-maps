@@ -261,7 +261,19 @@ sidebar.on("content", (event) => {
   }
 })
 
+// enable search form?
+$("#search-form").on("submit", (event) => {
+  let query = event.target.elements.namedItem("search[query]").value
+
+  channel.push("parse_search", {"query":query})
+    .receive("ok", response => {
+        window.map.flyTo(response.location)
+      })
+
+  return false
+})
+
 // enable tooltips
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+  $("[data-toggle='tooltip']").tooltip()
 })
