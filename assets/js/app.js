@@ -133,6 +133,9 @@ function updateTileLayer() {
 }
 
 window.selectedBody = "kerbin"
+if (window.bodyFromQuery !== undefined) {
+  window.selectedBody = window.bodyFromQuery
+}
 window.selectedStyle = "sat"
 createTileLayer()
 
