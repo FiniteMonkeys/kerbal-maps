@@ -40,6 +40,15 @@ defmodule KerbalMapsWeb.DataChannel do
     {:reply, {:ok, %{overlay: overlay}}, socket}
   end
 
+  def handle_in("parse_search", payload, socket) do
+    query = Map.get(payload, "query")
+    case KerbalMaps.CoordinateParser.parse(query) do
+      [_, _] = location -> {:reply, {:ok, %{location: location}}, socket}
+      _ -> {:reply, {:ok, %{error: "bad query #{query}"}}, socket}
+    end
+
+  end
+
   defp get_all_overlays(_, nil, socket),
     do: {:reply, {:error, "celestial body not found"}, socket}
 

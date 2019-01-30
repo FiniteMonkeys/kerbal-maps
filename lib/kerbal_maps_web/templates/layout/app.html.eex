@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <title>KerbalMaps</title>
+    <title>Kerbal Maps</title>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -10,8 +10,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#d70000">
-    <meta name="msapplication-TileColor" content="#d70000">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#D70000">
+    <meta name="msapplication-TileColor" content="#D70000">
     <meta name="theme-color" content="#d70000">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -27,6 +27,12 @@
     <% end %>
     <%= if @current_user do %>
       <script>window.userID = <%= @current_user.id %>;</script>
+    <% end %>
+    <%= if assigns[:body_from_query] do %>
+      <script>window.bodyFromQuery = "<%= assigns[:body_from_query] %>";</script>
+    <% end %>
+    <%= if assigns[:loc_from_query] do %>
+      <script>window.locFromQuery = [<%= assigns[:loc_from_query] %>];</script>
     <% end %>
   </head>
   <body style="padding: 0; margin: 0;">

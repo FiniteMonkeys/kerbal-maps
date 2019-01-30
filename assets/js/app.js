@@ -47,7 +47,7 @@ window.map = L.map('mapid', {
   // touchZoom
   // bounceAtZoomLimits: true,
   crs: L.CRS.EPSG4326,
-  center: [-0.1027, -74.5754],  // KSC
+  center: ((window.locFromQuery !== undefined) ? window.locFromQuery : [-0.1027, -74.5754]),  // KSC
   zoom: 5,
   // minZoom
   // maxZoom
@@ -261,7 +261,19 @@ sidebar.on("content", (event) => {
   }
 })
 
+// enable search form?
+$("#search-form").on("submit", (event) => {
+  let query = event.target.elements.namedItem("search[query]").value
+
+  channel.push("parse_search", {"query":query})
+    .receive("ok", response => {
+        window.map.flyTo(response.location)
+      })
+
+  return false
+})
+
 // enable tooltips
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+  $("[data-toggle='tooltip']").tooltip()
 })
