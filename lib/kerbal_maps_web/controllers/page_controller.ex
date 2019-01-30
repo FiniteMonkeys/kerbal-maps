@@ -7,6 +7,7 @@ defmodule KerbalMapsWeb.PageController do
 
   require Logger
 
+  alias KerbalMaps.CoordinateParser
   alias Pow.Plug
 
   def index(conn, params) do
@@ -27,12 +28,13 @@ defmodule KerbalMapsWeb.PageController do
   end
 
   # %{"body" => "Kerbin", "loc" => "12.34,-56.78"}
-  def get_body_from_params(%{"body" => value}), do: value |> String.downcase
+  def get_body_from_params(%{"body" => value}), do: value |> String.downcase()
   def get_body_from_params(_), do: nil
 
   def get_loc_from_params(%{"loc" => value}) do
-    KerbalMaps.CoordinateParser.parse(value)
+    CoordinateParser.parse(value)
     |> Enum.join(",")
   end
+
   def get_loc_from_params(_), do: nil
 end
