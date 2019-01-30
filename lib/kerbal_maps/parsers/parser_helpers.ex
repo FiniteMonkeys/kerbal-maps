@@ -1,4 +1,8 @@
 defmodule KerbalMaps.ParserHelpers do
+  @moduledoc """
+  Helper functions for parsers.
+  """
+
   import NimbleParsec
 
   def fractional_part(combinator \\ empty()), do: combinator |> integer(min: 1)
@@ -13,7 +17,8 @@ defmodule KerbalMaps.ParserHelpers do
   def resolve_integer_sign([{:sign, []}, value]), do: value
 
   # [-789, 0]
-  def resolve_real([integer_part, fractional_part]), do: String.to_float("#{integer_part}.#{fractional_part}")
+  def resolve_real([integer_part, fractional_part]),
+    do: String.to_float("#{integer_part}.#{fractional_part}")
 
   def resolve_latitude([?N, {:real, value}]), do: {:real, value}
   def resolve_latitude([{:real, value}, ?N]), do: {:real, value}

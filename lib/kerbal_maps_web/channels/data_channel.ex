@@ -7,6 +7,7 @@ defmodule KerbalMapsWeb.DataChannel do
 
   import ESpec.Testable
 
+  alias KerbalMaps.CoordinateParser
   alias KerbalMaps.StaticData
   alias KerbalMaps.Symbols
   alias KerbalMaps.Symbols.Marker
@@ -42,11 +43,11 @@ defmodule KerbalMapsWeb.DataChannel do
 
   def handle_in("parse_search", payload, socket) do
     query = Map.get(payload, "query")
-    case KerbalMaps.CoordinateParser.parse(query) do
+
+    case CoordinateParser.parse(query) do
       [_, _] = location -> {:reply, {:ok, %{location: location}}, socket}
       _ -> {:reply, {:ok, %{error: "bad query #{query}"}}, socket}
     end
-
   end
 
   defp get_all_overlays(_, nil, socket),
