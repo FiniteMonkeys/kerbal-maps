@@ -14,6 +14,7 @@ defmodule KerbalMaps.CoordinateParser do
 
   # {:ok, [real: 20.6709, real: -146.4968], "", %{}, {1, 0}, 17}
   def reformat_parser_output({:ok, array, _, _, _, _}), do: Enum.map(array, fn term -> elem(term, 1) end)
+  def reformat_parser_output({:error, message, _, _, _, _}), do: {:error, message}
 
   # nul, \t, \n, \f, \r, space respectively
   whitespace_values = [0, 9, 10, 12, 13, 32]
