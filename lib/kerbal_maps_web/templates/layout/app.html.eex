@@ -34,6 +34,9 @@
     <%= if assigns[:loc_from_query] do %>
       <script>window.locFromQuery = [<%= assigns[:loc_from_query] %>];</script>
     <% end %>
+    <%= if assigns[:label_from_query] do %>
+      <script>window.labelFromQuery = "<%= assigns[:label_from_query] %>";</script>
+    <% end %>
   </head>
   <body style="padding: 0; margin: 0;">
     <%= render @view_module, @view_template, assigns %>

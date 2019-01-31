@@ -72,6 +72,11 @@ L.latlngGraticule({
     ]
 }).addTo(window.map)
 
+if (window.labelFromQuery !== undefined) {
+  var icon = L.icon.glyph({prefix: "far", glyph: "dot-circle"})
+  L.marker(window.locFromQuery, {icon: icon}).bindPopup(window.labelFromQuery).addTo(window.map)
+}
+
 var popup = L.popup()
 
 function onMapClick(e) {
