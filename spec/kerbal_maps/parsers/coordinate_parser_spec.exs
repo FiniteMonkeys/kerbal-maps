@@ -5,32 +5,8 @@ defmodule KerbalMaps.CoordinateParser.Spec do
 
   doctest KerbalMaps.CoordinateParser
 
-  example_group "incomplete or improperly formatted input" do
-    let :parsed, do: input() |> KerbalMaps.CoordinateParser.parse
-
-    describe "given something entirely unlike a coordinate pair" do
-      let :input, do: "It was the best of times, it was the worst of times"
-      it do: expect(parsed() |> elem(0)) |> to(eq(:error))
-    end
-
-    describe "given incomplete data" do
-      let :input, do: "20.6709"
-      it do: expect(parsed() |> elem(0)) |> to(eq(:error))
-    end
-
-    describe "given bad cardinal directions" do
-      let :input, do: "M 20.6709, W 146.4968"
-      it do: expect(parsed() |> elem(0)) |> to(eq(:error))
-    end
-
-    describe "given cardinal directions and signed values" do
-      let :input, do: "N 20.6709, E -146.4968"
-      it do: expect(parsed() |> elem(0)) |> to(eq(:error))
-    end
-  end
-
   example_group "parsing a coordinate pair" do
-    let :parsed, do: input() |> KerbalMaps.CoordinateParser.parse
+    let :parsed, do: input() |> KerbalMaps.CoordinateParser.parse_coordinate
 
     # e.g. 20.6709, -146.4968
     describe "given a bare decimal pair" do
@@ -74,6 +50,41 @@ defmodule KerbalMaps.CoordinateParser.Spec do
         let :input, do: "20.6709 N, 146.4968 W"
         it do: expect(parsed()) |> to(eq([20.6709, -146.4968]))
       end
+    end
+  end
+
+  example_group "coordinate pair plus marker label" do
+    let :input, do: "20.6709,-146.4968,label"
+
+    it "parses the coordinate pair" do
+      expect(KerbalMaps.CoordinateParser.parse_coordinate(input())) |> to(eq([20.6709, -146.4968]))
+    end
+    it "parses the label" do
+      expect(KerbalMaps.CoordinateParser.parse_marker_label(input())) |> to(eq("label"))
+    end
+  end
+
+  example_group "incomplete or improperly formatted input" do
+    let :parsed, do: input() |> KerbalMaps.CoordinateParser.parse_coordinate
+
+    describe "given something entirely unlike a coordinate pair" do
+      let :input, do: "It was the best of times, it was the worst of times"
+      it do: expect(parsed() |> elem(0)) |> to(eq(:error))
+    end
+
+    describe "given incomplete data" do
+      let :input, do: "20.6709"
+      it do: expect(parsed() |> elem(0)) |> to(eq(:error))
+    end
+
+    describe "given bad cardinal directions" do
+      let :input, do: "M 20.6709, W 146.4968"
+      it do: expect(parsed() |> elem(0)) |> to(eq(:error))
+    end
+
+    describe "given cardinal directions and signed values" do
+      let :input, do: "N 20.6709, E -146.4968"
+      it do: expect(parsed() |> elem(0)) |> to(eq(:error))
     end
   end
 end

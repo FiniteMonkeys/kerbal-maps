@@ -6,17 +6,35 @@ defmodule KerbalMaps.CoordinateParser do
   import NimbleParsec
   import KerbalMaps.ParserHelpers
 
-  def parse(str),
+  def parse_coordinate(str),
     do:
       str
-      |> KerbalMaps.CoordinateParser.pair()
-      |> reformat_parser_output
+      |> KerbalMaps.CoordinateParser.pair_with_label()
+      |> reformat_coordinate
 
   # {:ok, [real: 20.6709, real: -146.4968], "", %{}, {1, 0}, 17}
-  def reformat_parser_output({:ok, array, _, _, _, _}),
-    do: Enum.map(array, fn term -> elem(term, 1) end)
+  def reformat_coordinate({:ok, array, _, _, _, _}),
+    do:
+      Enum.slice(array, 0..1)
+      |> Enum.map(fn term -> elem(term, 1) end)
 
-  def reformat_parser_output({:error, message, _, _, _, _}), do: {:error, message}
+  def reformat_coordinate({:error, message, _, _, _, _}), do: {:error, message}
+
+  def parse_marker_label(str) do
+    str
+    |> KerbalMaps.CoordinateParser.pair_with_label()
+    |> reformat_marker_label
+  end
+
+  def reformat_marker_label({:ok, array, _, _, _, _}) do
+    cond do
+      Enum.count(array) == 3 ->
+        List.last(array)
+      true -> nil
+    end
+  end
+
+  def reformat_marker_label({:error, message, _, _, _, _}), do: {:error, message}
 
   # nul, \t, \n, \f, \r, space respectively
   whitespace_values = [0, 9, 10, 12, 13, 32]
@@ -27,7 +45,7 @@ defmodule KerbalMaps.CoordinateParser do
     |> ignore(optional(utf8_char([?,])))
     |> ignore(repeat(whitespace_char))
 
-  pair_separator =
+  separator =
     ignore(repeat(whitespace_char))
     |> ignore(utf8_char([?,]))
     |> ignore(repeat(whitespace_char))
@@ -85,13 +103,16 @@ defmodule KerbalMaps.CoordinateParser do
 
   prefixed_pair =
     prefixed_latitude
-    |> concat(pair_separator)
+    |> concat(separator)
     |> concat(prefixed_longitude)
 
   postfixed_pair =
     postfixed_latitude
-    |> concat(pair_separator)
+    |> concat(separator)
     |> concat(postfixed_longitude)
 
-  defparsec(:pair, choice([prefixed_pair, postfixed_pair, bare_pair]))
+  defparsec(:pair_with_label,
+    choice([prefixed_pair, postfixed_pair, bare_pair])
+    |> optional(concat(separator, utf8_string([], min: 1)))
+  )
 end
