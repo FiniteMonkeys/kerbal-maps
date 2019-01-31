@@ -44,7 +44,7 @@ defmodule KerbalMapsWeb.DataChannel do
   def handle_in("parse_search", payload, socket) do
     query = Map.get(payload, "query")
 
-    case CoordinateParser.parse(query) do
+    case CoordinateParser.parse_coordinate(query) do
       [_, _] = location -> {:reply, {:ok, %{location: location}}, socket}
       _ -> {:reply, {:ok, %{error: "bad query #{query}"}}, socket}
     end
