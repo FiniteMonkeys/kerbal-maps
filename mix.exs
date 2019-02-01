@@ -16,6 +16,7 @@ defmodule KerbalMaps.MixProject do
       preferred_cli_env: [
         espec: :test,
         coveralls: :test,
+        "coveralls.circle": :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
