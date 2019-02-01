@@ -20,6 +20,16 @@ Note that image tiles are not included in this repository:
   * They should be pushed out to a CDN for efficiency.
   * They can be generated as needed (see below).
 
+## API
+
+query params
+
+  * `body`
+  * `loc`
+  * `center`
+  * `zoom`
+  * `overlays`
+
 ## DEPLOYING
 
 ### Heroku
