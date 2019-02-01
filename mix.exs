@@ -12,7 +12,14 @@ defmodule KerbalMaps.MixProject do
       elixirc_options: [warnings_as_errors: true],
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
-      preferred_cli_env: [espec: :test],
+      test_coverage: [tool: ExCoveralls, test_task: "espec"],
+      preferred_cli_env: [
+        espec: :test,
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
       aliases: aliases(),
       deps: deps()
     ]
@@ -43,6 +50,7 @@ defmodule KerbalMaps.MixProject do
       {:espec_phoenix, "~> 0.6.10", only: :test},
       {:espec, "~> 1.6", only: :test},
       {:ex_machina, "~> 2.2", only: :test},
+      {:excoveralls, "~> 0.10.4", only: :test},
       {:faker, "~> 0.11.0", only: [:dev, :test], runtime: false},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
