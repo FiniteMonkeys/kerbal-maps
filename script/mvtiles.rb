@@ -3,7 +3,7 @@
 ## Usage:
 ##   ruby script/mvtiles.rb ~/Applications/KSP\ 1.5.1/GameData/Sigma/Cartographer/PluginData/
 ## followed by
-##   cd ~/Downloads/kerbal-maps && aws s3 cp tiles/ s3://kerbal-maps/tiles/ --recursive --exclude ".DS_Store" --include "*.png"
+##   pushd ~/Downloads/kerbal-maps && aws s3 cp tiles/ s3://kerbal-maps/tiles/ --recursive --exclude ".DS_Store" --include "*.png"
 
 require "fileutils"
 

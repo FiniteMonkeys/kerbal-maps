@@ -9,6 +9,7 @@ defmodule KerbalMaps.CoordinateParser do
   def parse_coordinate(str),
     do:
       str
+      # credo:disable-for-next-line Credo.Check.Design.AliasUsage
       |> KerbalMaps.CoordinateParser.pair_with_label()
       |> reformat_coordinate
 
@@ -22,15 +23,16 @@ defmodule KerbalMaps.CoordinateParser do
 
   def parse_marker_label(str) do
     str
+    # credo:disable-for-next-line Credo.Check.Design.AliasUsage
     |> KerbalMaps.CoordinateParser.pair_with_label()
     |> reformat_marker_label
   end
 
   def reformat_marker_label({:ok, array, _, _, _, _}) do
-    cond do
-      Enum.count(array) == 3 ->
-        List.last(array)
-      true -> nil
+    if Enum.count(array) == 3 do
+      List.last(array)
+    else
+      nil
     end
   end
 
