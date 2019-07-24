@@ -5,15 +5,31 @@ require "optparse"
 # require "ostruct"
 require "pp"
 
-ALL_BODIES = %w(
-  Moho
-  Eve Gilly
-  Kerbin Mun Minmus
-  Duna Ike
-  Dres
-  Jool Laythe Vall Tylo Bop Pol
-  Eeloo
-) - ["Jool"]
+PLANET_PACKS = {
+  default: %w(
+    Moho
+    Eve Gilly
+    Kerbin Mun Minmus
+    Duna Ike
+    Dres
+    Jool Laythe Vall Tylo Bop Pol
+    Eeloo
+  ) - ["Jool"],
+  jnsq: %w(
+    Moho
+    Eve Gilly
+    Kerbin Mun
+    Minmus
+    Duna Ike
+    Edna Dak
+    Dres
+    Jool Laythe Vall Tylo Bop Pol
+    Lindor Krel Aden Riga Talos
+    Eeloo Celes Tam
+    Hamek
+    Nara Amos Enon Prax
+  )
+}
 
 ALL_STYLES = %w(
   Biome
@@ -22,10 +38,11 @@ ALL_STYLES = %w(
 )
 
 class Options
-  attr_accessor :bodies, :styles, :zoom_levels
+  attr_accessor :bodies, :pack, :styles, :zoom_levels
 
   def initialize
     self.bodies = []
+    self.pack = :default
     self.styles = []
     self.zoom_levels = nil
   end
@@ -37,6 +54,7 @@ class Options
     parser.separator "Specific options:"
 
     set_bodies_option(parser)
+    set_pack_option(parser)
     set_styles_option(parser)
     set_zoom_levels_option(parser)
 
@@ -54,10 +72,22 @@ class Options
               "A list of bodies for which to generate map tiles",
               "(may be 'All')") do |body_list|
       self.bodies = if body_list == ["All"]
-                      ALL_BODIES
+                      PLANET_PACKS[self.pack]
                     else
-                      ALL_BODIES & body_list
+                      PLANET_PACKS[self.pack] & body_list
                     end
+    end
+  end
+
+  def set_pack_option(parser)
+    parser.on("-p PLANET_PACK", "--pack=PLANET_PACK", String,
+              "An installed planet pack to use instead of the default KSP system",
+              "(if not specified, assume default)") do |pack_name|
+      self.pack = if pack_name.nil?
+                    :default
+                  else
+                    pack_name.downcase.to_sym
+                  end
     end
   end
 
