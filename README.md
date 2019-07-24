@@ -90,9 +90,11 @@ Maps
 
 `width` is correlated to the zoom level. Its value should be `512 * 2^(zoom level)`.
 
+The Ruby script in `script/gentiles.rb` can generate the configuration file for you.
+
 The rendered tiles are written to `GameData/Sigma/Cartographer/PluginData/(body)/(exportFolder)`.
 They require some rearranging and renaming before they can be uploaded to the CDN.
-The Ruby script in `script/move.rb` will do that.
+The Ruby script in `script/mvtiles.rb` will do that.
 
 Note that on my computer (2.9 GHz Intel Core i7 with 16 GB of memory) rendering a full
 set of tiles (all three styles, zoom levels 0-7) for a single body takes in excess
