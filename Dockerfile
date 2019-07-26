@@ -1,81 +1,71 @@
-# The version of Alpine to use for the final image
-# This should match the version of Alpine that the `elixir:1.7.4-alpine` image uses
-ARG ALPINE_VERSION=3.8
+##
+## build base image
+##
+FROM elixir:1.7.4-alpine AS base
 
-FROM elixir:1.7.4-alpine AS builder
+LABEL project="kerbal_maps"
 
-# The following are build arguments used to change variable parts of the image.
-# The name of your application/release (required)
-ARG APP_NAME=kerbal_maps
-# The version of the application we are building (required)
-ARG APP_VSN=0.1.0
-# The environment to build with
-ARG MIX_ENV=prod
-# Set this to true if this release is not a Phoenix app
-ARG SKIP_PHOENIX=false
-# If you are using an umbrella project, you can change this
-# argument to the directory the Phoenix app is in so that the assets
-# can be built
-ARG PHOENIX_SUBDIR=.
+ENV DOCKER_APP_ROOT=/app MIX_ENV=prod PORT=8080
+EXPOSE $PORT
+WORKDIR $DOCKER_APP_ROOT
+RUN apk update &&                             \
+    apk upgrade --no-cache &&                 \
+    apk add --no-cache                        \
+      bash                                    \
+      curl &&                                 \
+    addgroup elixir &&                        \
+    adduser -G elixir -s /bin/sh -D elixir && \
+    chown elixir:elixir $DOCKER_APP_ROOT
 
-ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
-    APP_NAME=${APP_NAME} \
-    APP_VSN=${APP_VSN} \
-    MIX_ENV=${MIX_ENV}
+##
+## get dependencies
+##
+FROM base AS sidecar
 
-# By convention, /opt is typically used for applications
-WORKDIR /opt/app
+RUN apk add --no-cache     \
+      build-base           \
+      ca-certificates      \
+      gcc                  \
+      git                  \
+      jq                   \
+      make                 \
+      nodejs               \
+      yarn &&              \
+    update-ca-certificates
 
-# This step installs all the build tools we'll need
-RUN apk update && \
-  apk upgrade --no-cache && \
-  apk add --no-cache \
-    nodejs \
-    yarn \
-    git \
-    build-base && \
-  mix local.rebar --force && \
-  mix local.hex --force
+##
+## copy application files
+##
+FROM sidecar AS application_files
 
-# This copies our app source code into the build container
-COPY . .
+COPY --chown=elixir:elixir . $DOCKER_APP_ROOT
+USER elixir
 
+##
+## build
+##
+FROM application_files AS builder
+
+RUN mix local.hex --force
+RUN mix local.rebar --force
+RUN rm -f config/kerbal-maps.conf
 RUN mix do deps.get, deps.compile, compile
 
-# This step builds assets for the Phoenix app (if there is one)
-# If you aren't building a Phoenix app, pass `--build-arg SKIP_PHOENIX=true`
-# This is mostly here for demonstration purposes
-RUN if [ ! "$SKIP_PHOENIX" = "true" ]; then \
-  cd ${PHOENIX_SUBDIR}/assets && \
-  yarn install && \
-  yarn deploy && \
-  cd .. && \
-  mix phx.digest; \
-fi
+RUN cd assets &&    \
+    yarn install && \
+    yarn deploy &&  \
+    cd .. &&        \
+    mix phx.digest
 
-RUN \
-  mkdir -p /opt/built && \
-  mix release --verbose && \
-  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/${APP_VSN}/${APP_NAME}.tar.gz /opt/built && \
-  cd /opt/built && \
-  tar -xzf ${APP_NAME}.tar.gz && \
-  rm ${APP_NAME}.tar.gz
+RUN mix release
 
-# From this line onwards, we're in a new image, which will be the image used in production
-FROM alpine:${ALPINE_VERSION}
+##
+## release
+##
+FROM base AS final
 
-# The name of your application/release (required)
-ARG APP_NAME=kerbal_maps
+COPY --chown=elixir:elixir --from=builder $DOCKER_APP_ROOT/rel rel
 
-RUN apk update && \
-    apk add --no-cache \
-      bash \
-      openssl-dev
-
-ENV APP_NAME=${APP_NAME}
-
-WORKDIR /opt/app
-
-COPY --from=builder /opt/built .
-
-CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground
+# CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground
+ENTRYPOINT ["/app/rel/kerbal_maps/bin/kerbal_maps"]
+CMD ["foreground"]
