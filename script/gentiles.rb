@@ -14,7 +14,7 @@ PLANET_PACKS = {
     Dres
     Jool Laythe Vall Tylo Bop Pol
     Eeloo
-  ) - ["Jool"],
+  ) - %w(Jool),
   jnsq: %w(
     Moho
     Eve Gilly
@@ -28,7 +28,7 @@ PLANET_PACKS = {
     Eeloo Celes Tam
     Hamek
     Nara Amos Enon Prax
-  )
+  ) - %w(Jool Lindor)
 }
 
 ALL_STYLES = %w(
