@@ -48,3 +48,4 @@ npm-debug.log
 /VERSION
 /.byebug_history
 /priv/repo/seeds_*.exs
+/rel/BUILD-INFO
