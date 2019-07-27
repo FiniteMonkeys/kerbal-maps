@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby -wKU
 
 require "optparse"
-# require "optparse/time"
-# require "ostruct"
 require "pp"
 
 PLANET_PACKS = {
@@ -33,15 +31,19 @@ PLANET_PACKS = {
 
 ALL_STYLES = %w(
   Biome
+  Height
   Map
+  Normal
+  Ocean
   Slope
 )
 
 class Options
-  attr_accessor :bodies, :pack, :styles, :zoom_levels
+  attr_accessor :bodies, :output_file, :pack, :styles, :zoom_levels
 
   def initialize
     self.bodies = []
+    self.output_file = STDOUT
     self.pack = :default
     self.styles = []
     self.zoom_levels = nil
@@ -54,6 +56,7 @@ class Options
     parser.separator "Specific options:"
 
     set_bodies_option(parser)
+    set_output_file_option(parser)
     set_pack_option(parser)
     set_styles_option(parser)
     set_zoom_levels_option(parser)
@@ -76,6 +79,22 @@ class Options
                     else
                       PLANET_PACKS[self.pack] & body_list
                     end
+    end
+  end
+
+  def set_output_file_option(parser)
+    parser.on("-o FILENAME", "--out=FILENAME", String,
+              "The file to which to write the configuration",
+              "(STDOUT by default; if a directory, write to Settings.cfg)") do |output_filename|
+      return if output_filename.nil?
+      full_pathname = File.expand_path(output_filename)
+      full_pathname = File.join(full_pathname, "Settings.cfg") if File.directory?(full_pathname)
+      if File.exist?(full_pathname)
+        puts "file #{full_pathname} already exists"
+        exit
+      end
+
+      self.output_file = File.open(full_pathname, "w")
     end
   end
 
@@ -135,21 +154,25 @@ end
 
 options = Options.parse ARGV
 
-puts <<-END_OF_TEXT
-@SigmaCartographer
+options.output_file.puts <<-END_OF_TEXT
+SigmaCartographer
 {
 END_OF_TEXT
 
 options.bodies.each do |body|
   options.zoom_levels.each do |zoom_level|
-    puts <<-END_OF_TEXT
+    options.output_file.puts <<-END_OF_TEXT
   Maps
   {
     body = #{body}
     biomeMap = false
     colorMap = false
+    heightMap = false
+    normalMap = #{options.styles.include?("Normal").to_s}
+    oceanMap = #{options.styles.include?("Ocean").to_s}
     slopeMap = false
     satelliteBiome = #{options.styles.include?("Biome").to_s}
+    satelliteHeight = #{options.styles.include?("Height").to_s}
     satelliteMap = #{options.styles.include?("Map").to_s}
     satelliteSlope = #{options.styles.include?("Slope").to_s}
     oceanFloor = true
@@ -161,7 +184,8 @@ options.bodies.each do |body|
     END_OF_TEXT
   end
 end
+# oceanFloor = #{options.styles.include?("Ocean").to_s}?
 
-puts <<-END_OF_TEXT
+options.output_file.puts <<-END_OF_TEXT
 }
 END_OF_TEXT
