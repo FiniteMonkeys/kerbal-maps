@@ -1,31 +1,50 @@
 #!/usr/bin/env ruby -wKU
 
 require "optparse"
-# require "optparse/time"
-# require "ostruct"
 require "pp"
 
-ALL_BODIES = %w(
-  Moho
-  Eve Gilly
-  Kerbin Mun Minmus
-  Duna Ike
-  Dres
-  Jool Laythe Vall Tylo Bop Pol
-  Eeloo
-) - ["Jool"]
+PLANET_PACKS = {
+  default: %w(
+    Moho
+    Eve Gilly
+    Kerbin Mun Minmus
+    Duna Ike
+    Dres
+    Jool Laythe Vall Tylo Bop Pol
+    Eeloo
+  ) - %w(Jool),
+  jnsq: %w(
+    Moho
+    Eve Gilly
+    Kerbin Mun
+    Minmus
+    Duna Ike
+    Edna Dak
+    Dres
+    Jool Laythe Vall Tylo Bop Pol
+    Lindor Krel Aden Riga Talos
+    Eeloo Celes Tam
+    Hamek
+    Nara Amos Enon Prax
+  ) - %w(Jool Lindor)
+}
 
 ALL_STYLES = %w(
   Biome
+  Height
   Map
+  Normal
+  Ocean
   Slope
 )
 
 class Options
-  attr_accessor :bodies, :styles, :zoom_levels
+  attr_accessor :bodies, :output_file, :pack, :styles, :zoom_levels
 
   def initialize
     self.bodies = []
+    self.output_file = STDOUT
+    self.pack = :default
     self.styles = []
     self.zoom_levels = nil
   end
@@ -37,6 +56,8 @@ class Options
     parser.separator "Specific options:"
 
     set_bodies_option(parser)
+    set_output_file_option(parser)
+    set_pack_option(parser)
     set_styles_option(parser)
     set_zoom_levels_option(parser)
 
@@ -54,10 +75,38 @@ class Options
               "A list of bodies for which to generate map tiles",
               "(may be 'All')") do |body_list|
       self.bodies = if body_list == ["All"]
-                      ALL_BODIES
+                      PLANET_PACKS[self.pack]
                     else
-                      ALL_BODIES & body_list
+                      PLANET_PACKS[self.pack] & body_list
                     end
+    end
+  end
+
+  def set_output_file_option(parser)
+    parser.on("-o FILENAME", "--out=FILENAME", String,
+              "The file to which to write the configuration",
+              "(STDOUT by default; if a directory, write to Settings.cfg)") do |output_filename|
+      return if output_filename.nil?
+      full_pathname = File.expand_path(output_filename)
+      full_pathname = File.join(full_pathname, "Settings.cfg") if File.directory?(full_pathname)
+      if File.exist?(full_pathname)
+        puts "file #{full_pathname} already exists"
+        exit
+      end
+
+      self.output_file = File.open(full_pathname, "w")
+    end
+  end
+
+  def set_pack_option(parser)
+    parser.on("-p PLANET_PACK", "--pack=PLANET_PACK", String,
+              "An installed planet pack to use instead of the default KSP system",
+              "(if not specified, assume default)") do |pack_name|
+      self.pack = if pack_name.nil?
+                    :default
+                  else
+                    pack_name.downcase.to_sym
+                  end
     end
   end
 
@@ -105,21 +154,25 @@ end
 
 options = Options.parse ARGV
 
-puts <<-END_OF_TEXT
-@SigmaCartographer
+options.output_file.puts <<-END_OF_TEXT
+SigmaCartographer
 {
 END_OF_TEXT
 
 options.bodies.each do |body|
   options.zoom_levels.each do |zoom_level|
-    puts <<-END_OF_TEXT
+    options.output_file.puts <<-END_OF_TEXT
   Maps
   {
     body = #{body}
     biomeMap = false
     colorMap = false
+    heightMap = false
+    normalMap = #{options.styles.include?("Normal").to_s}
+    oceanMap = #{options.styles.include?("Ocean").to_s}
     slopeMap = false
     satelliteBiome = #{options.styles.include?("Biome").to_s}
+    satelliteHeight = #{options.styles.include?("Height").to_s}
     satelliteMap = #{options.styles.include?("Map").to_s}
     satelliteSlope = #{options.styles.include?("Slope").to_s}
     oceanFloor = true
@@ -131,7 +184,8 @@ options.bodies.each do |body|
     END_OF_TEXT
   end
 end
+# oceanFloor = #{options.styles.include?("Ocean").to_s}?
 
-puts <<-END_OF_TEXT
+options.output_file.puts <<-END_OF_TEXT
 }
 END_OF_TEXT
