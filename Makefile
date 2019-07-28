@@ -6,6 +6,20 @@ DATE := $(shell date -u "+%Y%m%d")
 TAG_NAME := $(DATE)-$(BUILD_NUMBER)-$(SHORT_BUILD_SHA)
 DOCKER_TAG := $(PROJECT_NAME):$(TAG_NAME)
 DOCKER_TAG_LATEST := $(PROJECT_NAME):latest
+DATABASE_USER := postgres
+DATABASE_PASSWORD := development
+DATABASE_URL := postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@localhost:5432/kerbal_maps
+
+db_create:
+	docker run --name=postgres-kerbal-maps -p 5432:5432 -e POSTGRES_USER=$(DATABASE_USER) -e POSTGRES_PASSWORD=$(DATABASE_PASSWORD) -d postgres:10.9-alpine
+	script/wait-for-it localhost:5432 -- sleep 3
+	psql -c "CREATE DATABASE kerbal_maps;" postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@localhost:5432/template1
+	pg_restore -Fc -c --if-exists -O -v -x -j 8 -d $(DATABASE_URL) priv/repo/dev.dump
+	docker stop postgres-kerbal-maps
+
+db_drop:
+	docker stop postgres-kerbal-maps
+	docker rm postgres-kerbal-maps
 
 develop:
 	# it's okay to start a container if it's already running
