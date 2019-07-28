@@ -22,9 +22,12 @@ db_drop:
 	docker rm postgres-kerbal-maps
 
 develop:
-	# it's okay to start a container if it's already running
-	@docker start postgres
-	env_vars=""; while IFS='' read -r line || [[ -n "$$line" ]]; do env_vars="$$env_vars $$line"; done < config/docker.env; eval "$$env_vars mix phx.server"
+	docker start postgres-kerbal-maps
+	DATABASE_URL=$(DATABASE_URL)                                                         \
+		ERLANG_COOKIE=kerbal_maps                                                          \
+		SECRET_KEY_BASE="iHKHiC1uLovaKtckLv5FhYl5lUpTYiONenuNWHZOLgvAEJwJavoBZ0sof5+TDfgc" \
+	  TILE_CDN_URL=https://d3kmnwgldcmvsd.cloudfront.net/tiles                           \
+		mix phx.server
 
 build: buildinfo_file version_file
 	docker build -t $(DOCKER_TAG) -t $(DOCKER_TAG_LATEST) .
