@@ -6,14 +6,8 @@ config :kerbal_maps, KerbalMapsWeb.Endpoint,
   http: [port: 4002],
   server: false
 
-# Print only warnings and errors during test
 config :logger, level: :warn
 
-# Configure your database
 config :kerbal_maps, KerbalMaps.Repo,
-  hostname: "127.0.0.1",
-  port: "5432",
-  username: "postgres",
-  password: "",
-  database: "kerbal_maps_test",
+  url: System.get_env("DATABASE_URL"),
   pool: Ecto.Adapters.SQL.Sandbox
