@@ -6,6 +6,7 @@ DATE := $(shell date -u "+%Y%m%d")
 TAG_NAME := $(DATE)-$(BUILD_NUMBER)-$(SHORT_BUILD_SHA)
 DOCKER_TAG := $(PROJECT_NAME):$(TAG_NAME)
 DOCKER_TAG_LATEST := $(PROJECT_NAME):latest
+FULL_DOCKER_TAG := finitemonkeys/$(DOCKER_TAG)
 DATABASE_USER := postgres
 DATABASE_PASSWORD := development
 DATABASE_URL := postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@localhost:5432/kerbal_maps
@@ -30,7 +31,7 @@ develop:
 		mix phx.server
 
 build: buildinfo_file version_file
-	docker build -t $(DOCKER_TAG) -t $(DOCKER_TAG_LATEST) .
+	docker build -t $(DOCKER_TAG) -t $(DOCKER_TAG_LATEST) -t $(FULL_DOCKER_TAG) .
 
 run:
 	docker run -e DATABASE_URL=postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@host.docker.internal:5432/kerbal_maps \
@@ -42,7 +43,7 @@ run:
 				     $(DOCKER_TAG_LATEST)
 
 push:
-	docker push $(DOCKER_TAG)
+	docker push $(FULL_DOCKER_TAG)
 
 deploy:
 	# @echo "$(APP_VSN)" > VERSION
