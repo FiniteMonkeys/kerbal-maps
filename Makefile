@@ -33,7 +33,13 @@ build: buildinfo_file version_file
 	docker build -t $(DOCKER_TAG) -t $(DOCKER_TAG_LATEST) .
 
 run:
-	docker run --env-file config/docker.env --expose 4000 -p 80:4000 --rm -it $(DOCKER_TAG_LATEST)
+	docker run -e DATABASE_URL=postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@host.docker.internal:5432/kerbal_maps \
+	           -e ERLANG_COOKIE=kerbal_maps                                                          \
+						 -e HOSTNAME=localhost PORT=8080                                                       \
+						 -e SECRET_KEY_BASE="iHKHiC1uLovaKtckLv5FhYl5lUpTYiONenuNWHZOLgvAEJwJavoBZ0sof5+TDfgc" \
+						 -e TILE_CDN_URL=https://d3kmnwgldcmvsd.cloudfront.net/tiles                           \
+	           -p 8080:8080 --rm -it --name kerbal_maps -d                                           \
+				     $(DOCKER_TAG_LATEST)
 
 push:
 	docker push $(DOCKER_TAG)
