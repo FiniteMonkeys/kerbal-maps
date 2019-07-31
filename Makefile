@@ -46,8 +46,7 @@ push:
 	docker push $(FULL_DOCKER_TAG)
 
 deploy:
-	# @echo "$(APP_VSN)" > VERSION
-	heroku container:push web # --arg APP_VSN=$(APP_VSN)
+	heroku container:push web
 	heroku container:release web
 
 clean:
