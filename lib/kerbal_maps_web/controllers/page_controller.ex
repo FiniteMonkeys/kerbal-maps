@@ -24,9 +24,10 @@ defmodule KerbalMapsWeb.PageController do
   end
 
   def current_app_version do
-    :application.which_applications()
-    |> Enum.find(fn t -> elem(t, 0) == :kerbal_maps end)
-    |> elem(2)
+    # :application.which_applications()
+    # |> Enum.find(fn t -> elem(t, 0) == :kerbal_maps end)
+    # |> elem(2)
+    "0.3.4"
   end
 
   # %{"body" => "Kerbin", "loc" => "12.34,-56.78"}
