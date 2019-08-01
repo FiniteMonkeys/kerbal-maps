@@ -10,6 +10,7 @@ FULL_DOCKER_TAG := finitemonkeys/$(DOCKER_TAG)
 DATABASE_USER := postgres
 DATABASE_PASSWORD := development
 DATABASE_URL := postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@localhost:5432/kerbal_maps
+DATABASE_URL_TEST := postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@localhost:5432/kerbal_maps_test
 
 db_create:
 	docker run --name=postgres-kerbal-maps -p 5432:5432 -e POSTGRES_USER=$(DATABASE_USER) -e POSTGRES_PASSWORD=$(DATABASE_PASSWORD) -d postgres:10.9-alpine
@@ -29,6 +30,9 @@ develop:
 		SECRET_KEY_BASE="iHKHiC1uLovaKtckLv5FhYl5lUpTYiONenuNWHZOLgvAEJwJavoBZ0sof5+TDfgc" \
 	  TILE_CDN_URL=https://d3kmnwgldcmvsd.cloudfront.net/tiles                           \
 		mix phx.server
+
+test:
+	DATABASE_URL=$(DATABASE_URL_TEST) mix test
 
 build: buildinfo_file version_file
 	docker build -t $(DOCKER_TAG) -t $(DOCKER_TAG_LATEST) -t $(FULL_DOCKER_TAG) .

@@ -25,13 +25,12 @@ config :kerbal_maps, KerbalMapsWeb.Endpoint,
     ]
   ]
 
+config :kerbal_maps, KerbalMaps.Repo,
+  url: System.get_env("DATABASE_URL"),
+  pool_size: 10
+
 config :logger, :console, format: "[$level] $message\n"
 
 config :phoenix, :stacktrace_depth, 20
 
 config :phoenix, :plug_init_mode, :runtime
-
-# Configure your database
-config :kerbal_maps, KerbalMaps.Repo,
-  url: System.get_env("DATABASE_URL"),
-  pool_size: 10

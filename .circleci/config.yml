@@ -15,8 +15,7 @@ jobs:
     steps:
       - checkout
 
-      # specify any bash command here prefixed with `run: `
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix deps.get
-      - run: mix test
+      - run: DATABASE_URL="postgres://postgres@localhost:5432/kerbal_maps_test" mix test
