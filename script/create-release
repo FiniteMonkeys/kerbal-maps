@@ -1,0 +1,69 @@
+#!/bin/sh
+set -e
+
+cd "$(dirname "$0")/.."
+
+AUTH_HEADER="Authorization: Token $GITHUB_AUTH_TOKEN"
+
+OWNER_REPO=$1
+SHA=$2
+TAG=$3
+
+##
+## create a tag object
+##   https://developer.github.com/v3/git/tags/#create-a-tag-object
+##
+
+# # Use sed to add a colon in the timezone offset. GitHub requires this format.
+# DATE=$(echo $(date -u  "+%Y-%m-%dT%H:%M:%S%z") | sed -e "s/.\{22\}/&:/")
+DATA=$(cat <<EOF
+  {
+    "tag": "$TAG",
+    "message": "$TAG",
+    "object": "$SHA",
+    "type": "commit"
+  }
+EOF
+)
+
+RESPONSE=$(curl --fail --header "$AUTH_HEADER" --request POST --data "$DATA" https://api.github.com/repos/$OWNER_REPO/git/tags)
+[[ $? != 0 ]] && exit $?
+echo $RESPONSE
+
+##
+## create a reference
+##   https://developer.github.com/v3/git/refs/#create-a-reference
+##
+
+TAG_OBJECT_SHA=$(echo $RESPONSE | jq '.sha')
+DATA=$(cat <<EOF
+  {
+    "ref": "refs/tags/$TAG",
+    "sha": $TAG_OBJECT_SHA
+  }
+EOF
+)
+
+RESPONSE=$(curl --fail --header "$AUTH_HEADER" --request POST --data "$DATA" https://api.github.com/repos/$OWNER_REPO/git/refs)
+[[ $? != 0 ]] && exit $?
+echo $RESPONSE
+
+##
+## create a release
+##   https://developer.github.com/v3/repos/releases/#create-a-release
+##
+
+DATA=$(cat <<EOF
+  {
+    "tag_name": "$TAG",
+    "target_commitish": "$SHA",
+    "name": "$TAG",
+    "body": "$TAG"
+    "prerelease": true
+  }
+EOF
+)
+
+RESPONSE=$(curl --fail --header "$AUTH_HEADER" --request POST --data "$DATA" https://api.github.com/repos/$OWNER_REPO/releases)
+[[ $? != 0 ]] && exit $?
+echo $RESPONSE
