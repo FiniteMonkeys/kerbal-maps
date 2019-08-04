@@ -8,7 +8,7 @@ defmodule KerbalMaps.StaticData do
   import Ecto.Query, warn: false
 
   alias KerbalMaps.Repo
-  alias KerbalMaps.StaticData.CelestialBody
+  alias KerbalMaps.StaticData.{CelestialBody,PlanetPack}
 
   @doc """
   Returns the list of celestial_bodies.
@@ -125,5 +125,122 @@ defmodule KerbalMaps.StaticData do
   """
   def change_celestial_body(%CelestialBody{} = celestial_body) do
     CelestialBody.changeset(celestial_body, %{})
+  end
+
+  @doc """
+  Returns the list of planet_packs.
+
+  ## Examples
+
+      iex> list_planet_packs()
+      [%PlanetPack{}, ...]
+
+  """
+  def list_planet_packs(params \\ %{}) do
+    find_planet_packs(params)
+    |> Repo.all()
+  end
+
+  def find_planet_pack_by_name(name) do
+    %{"search" => %{"query" => name}}
+    |> find_planet_packs
+    |> Repo.one!()
+  end
+
+  defp find_planet_packs(params) do
+    str =
+      case params do
+        %{"search" => %{"query" => s}} -> s
+        _ -> nil
+      end
+
+    PlanetPack
+    |> filter_planet_packs_by(:name, str)
+  end
+
+  defp filter_planet_packs_by(query, :name, str) when is_nil(str) or str == "", do: query
+
+  defp filter_planet_packs_by(query, :name, str),
+    do: query |> where(fragment("lower(name) = lower(?)", ^str))
+
+  @doc """
+  Gets a single planet_pack.
+
+  Raises `Ecto.NoResultsError` if the planet pack does not exist.
+
+  ## Examples
+
+      iex> get_planet_pack!(123)
+      %PlanetPack{}
+
+      iex> get_planet_pack!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_planet_pack!(id), do: Repo.get!(PlanetPack, id)
+
+  @doc """
+  Creates a planet_pack.
+
+  ## Examples
+
+      iex> create_planet_pack(%{field: value})
+      {:ok, %PlanetPack{}}
+
+      iex> create_planet_pack(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_planet_pack(attrs \\ %{}) do
+    %PlanetPack{}
+    |> PlanetPack.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a planet_pack.
+
+  ## Examples
+
+      iex> update_planet_pack(planet_pack, %{field: new_value})
+      {:ok, %PlanetPack{}}
+
+      iex> update_planet_pack(planet_pack, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_planet_pack(%PlanetPack{} = planet_pack, attrs) do
+    planet_pack
+    |> PlanetPack.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a PlanetPack.
+
+  ## Examples
+
+      iex> delete_planet_pack(planet_pack)
+      {:ok, %PlanetPack{}}
+
+      iex> delete_planet_pack(planet_pack)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_planet_pack(%PlanetPack{} = planet_pack) do
+    Repo.delete(planet_pack)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking planet_pack changes.
+
+  ## Examples
+
+      iex> change_planet_pack(planet_pack)
+      %Ecto.Changeset{source: %PlanetPack{}}
+
+  """
+  def change_planet_pack(%PlanetPack{} = planet_pack) do
+    PlanetPack.changeset(planet_pack, %{})
   end
 end
