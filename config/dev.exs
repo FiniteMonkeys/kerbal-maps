@@ -28,7 +28,7 @@ config :kerbal_maps, KerbalMapsWeb.Endpoint,
 config :kerbal_maps, KerbalMaps.Repo,
   url: System.get_env("DATABASE_URL"),
   pool_size: 10,
-  ssl: !Regex.match?(~r/@localhost/, System.get_env("DATABASE_URL"))
+  ssl: !Regex.match?(~r/@localhost/, Map.get(System.get_env(), "DATABASE_URL", ""))
 
 config :logger, :console, format: "[$level] $message\n"
 
