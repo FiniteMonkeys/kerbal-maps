@@ -7,13 +7,15 @@ defmodule KerbalMaps.StaticData.CelestialBody do
 
   import Ecto.Changeset
 
-  alias KerbalMaps.StaticData.CelestialBody
+  alias KerbalMaps.StaticData.{CelestialBody,PlanetPack}
 
   schema "celestial_bodies" do
     field :name, :string
 
     belongs_to :parent, CelestialBody
     has_many :moons, CelestialBody, foreign_key: :parent_id
+
+    belongs_to :planet_pack, PlanetPack
 
     timestamps()
   end
@@ -23,5 +25,6 @@ defmodule KerbalMaps.StaticData.CelestialBody do
     celestial_body
     |> cast(attrs, [:name])
     |> validate_required([:name])
+    |> validate_required([:planet_pack_id])
   end
 end

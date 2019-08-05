@@ -18,6 +18,15 @@ alias KerbalMaps.Users.User
 
 ## StaticData
 
+##   PlanetPack
+
+pp_stock =
+  Repo.insert!(
+    %PlanetPack{:name: "(stock)"}
+    |> PlanetPack.changeset(%{})
+    |> Ecto.Changeset.apply_changes()
+  )
+
 ##   CelestialBody
 
 moho =
