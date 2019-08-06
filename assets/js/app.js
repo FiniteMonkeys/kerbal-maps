@@ -107,7 +107,7 @@ var legend = new L.Control.HtmlLegend({
   visibleIcon: 'icon icon-eye',
   hiddenIcon: 'icon icon-eye-slash'
 });
-window.map.addControl(legend)
+// window.map.addControl(legend)
 
 if (window.labelFromQuery !== undefined) {
   var icon = L.icon.glyph({prefix: "far", glyph: "dot-circle"})
