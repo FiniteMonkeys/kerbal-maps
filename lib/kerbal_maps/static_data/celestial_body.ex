@@ -11,6 +11,7 @@ defmodule KerbalMaps.StaticData.CelestialBody do
 
   schema "celestial_bodies" do
     field :name, :string
+    field :biome_mapping, :map
 
     belongs_to :parent, CelestialBody
     has_many :moons, CelestialBody, foreign_key: :parent_id
