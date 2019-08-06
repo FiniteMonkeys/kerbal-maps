@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby -wKU
 
-
 require "fileutils"
 require "optparse"
 
@@ -75,7 +74,7 @@ end
 
 options = Options.parse ARGV
 
-## Usage:
+## Example usage:
 ##   ruby script/mvtiles.rb --from=~/Applications/KSP\ 1.7.3/GameData/Sigma/Cartographer/PluginData/ --to=~/Downloads/kerbal-maps/tiles
 ## followed by
 ##   pushd ~/Downloads/kerbal-maps && aws s3 cp tiles/ s3://kerbal-maps/tiles/ --recursive --exclude ".DS_Store" --include "*.png"

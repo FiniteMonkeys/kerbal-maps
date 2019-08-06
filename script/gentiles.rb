@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby -wKU
 
+## Example usage:
+##   ruby script/gentiles.rb -b All -s Biome,Map,Slope -z All -o ~/Applications/KSP 1.7.3/GameData/Sigma/Cartographer/Settings.cfg
+## followed by
+##   pushd ~/Downloads/kerbal-maps && aws s3 cp tiles/ s3://kerbal-maps/tiles/ --recursive --exclude ".DS_Store" --include "*.png"
+
 require "optparse"
 require "pp"
 
@@ -39,11 +44,13 @@ ALL_STYLES = %w(
 )
 
 class Options
-  attr_accessor :bodies, :output_file, :pack, :styles, :zoom_levels
+  attr_accessor :bodies, :force, :output_file, :output_filename, :pack, :styles, :zoom_levels
 
   def initialize
     self.bodies = []
+    self.force = false
     self.output_file = STDOUT
+    self.output_filename = nil
     self.pack = :default
     self.styles = []
     self.zoom_levels = nil
@@ -56,7 +63,8 @@ class Options
     parser.separator "Specific options:"
 
     set_bodies_option(parser)
-    set_output_file_option(parser)
+    set_force_option(parser)
+    set_output_filename_option(parser)
     set_pack_option(parser)
     set_styles_option(parser)
     set_zoom_levels_option(parser)
@@ -82,19 +90,20 @@ class Options
     end
   end
 
-  def set_output_file_option(parser)
+  def set_force_option(parser)
+    parser.on("-f", "--[no-]force", "If set, overwrite any existing Settings.cfg") do |force|
+      self.force = force
+    end
+  end
+
+  def set_output_filename_option(parser)
     parser.on("-o FILENAME", "--out=FILENAME", String,
               "The file to which to write the configuration",
               "(STDOUT by default; if a directory, write to Settings.cfg)") do |output_filename|
       return if output_filename.nil?
       full_pathname = File.expand_path(output_filename)
       full_pathname = File.join(full_pathname, "Settings.cfg") if File.directory?(full_pathname)
-      if File.exist?(full_pathname)
-        puts "file #{full_pathname} already exists"
-        exit
-      end
-
-      self.output_file = File.open(full_pathname, "w")
+      self.output_filename = full_pathname
     end
   end
 
@@ -153,6 +162,14 @@ class Options
 end
 
 options = Options.parse ARGV
+
+if !options.output_filename.nil?
+  if File.exist?(options.output_filename) && !options.force
+    puts "file #{options.output_filename} already exists"
+    exit
+  end
+  options.output_file = File.open(options.output_filename, "w")
+end
 
 options.output_file.puts <<-END_OF_TEXT
 SigmaCartographer
