@@ -160,6 +160,7 @@ function createTileLayer() {
       'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
 
     // *** other options
+    pack: window.selectedPack,
     body: window.selectedBody,
     style: window.selectedStyle
   }).addTo(window.map)
@@ -174,12 +175,20 @@ function updateTileLayer() {
   createTileLayer()
 }
 
+window.selectedPack = "(stock)"
 window.selectedBody = "kerbin"
 if (window.bodyFromQuery !== undefined) {
   window.selectedBody = window.bodyFromQuery
 }
 window.selectedStyle = "sat"
 createTileLayer()
+
+window.changeSelectedPack = (value) => {
+  window.selectedPack = value
+  hideAllOverlays()
+  window.overlays = {}  // clear out overlays for previous body
+  updateTileLayer()
+}
 
 window.changeSelectedBody = (value) => {
   window.selectedBody = value
@@ -194,7 +203,7 @@ window.changeSelectedStyle = (value) => {
 }
 
 import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
-ReactDOM.render(<MapBodyAndStyle onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
+ReactDOM.render(<MapBodyAndStyle onPackChange={window.changeSelectedPack} onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
 
 function newChannel(subtopic) {
   return socket.channel(`data:${subtopic}`, {})
@@ -256,11 +265,11 @@ function loadOverlaysForBody(channel, paneId, body) {
             window.overlays[overlay.id] = overlay
           }
         })
-        add_overlays_to_list(channel, paneId)
+        addOverlaysToList(channel, paneId)
       })
 }
 
-function add_overlays_to_list(channel, paneId) {
+function addOverlaysToList(channel, paneId) {
   var pane = L.DomUtil.get(paneId)
   var checkboxList = pane.querySelector("#overlay-list")
   checkboxList.innerHTML = ""
@@ -301,6 +310,10 @@ window.overlays = {}
 
 sidebar.on("content", (event) => {
   switch (event.id) {
+    // case "sidebar-body-style":
+      // load packs
+      // load bodies for pack
+      // load biome mappings for body
     case "sidebar-overlays":
       loadOverlaysForBody(channel, event.id, window.selectedBody)
   }
@@ -322,3 +335,5 @@ $("#search-form").on("submit", (event) => {
 $(function () {
   $("[data-toggle='tooltip']").tooltip()
 })
+
+// force packs/bodies/biome mappings for default selections?

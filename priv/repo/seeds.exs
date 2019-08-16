@@ -31,112 +31,112 @@ pp_stock =
 
 moho =
   Repo.insert!(
-    %CelestialBody{name: "Moho"}
+    %CelestialBody{name: "Moho", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 eve =
   Repo.insert!(
-    %CelestialBody{name: "Eve"}
+    %CelestialBody{name: "Eve", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 gilly =
   Repo.insert!(
-    %CelestialBody{name: "Gilly", parent_id: eve.id}
+    %CelestialBody{name: "Gilly", parent_id: eve.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 kerbin =
   Repo.insert!(
-    %CelestialBody{name: "Kerbin"}
+    %CelestialBody{name: "Kerbin", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 mun =
   Repo.insert!(
-    %CelestialBody{name: "Mun", parent_id: kerbin.id}
+    %CelestialBody{name: "Mun", parent_id: kerbin.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 minmus =
   Repo.insert!(
-    %CelestialBody{name: "Minmus", parent_id: kerbin.id}
+    %CelestialBody{name: "Minmus", parent_id: kerbin.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 duna =
   Repo.insert!(
-    %CelestialBody{name: "Duna"}
+    %CelestialBody{name: "Duna", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 ike =
   Repo.insert!(
-    %CelestialBody{name: "Ike", parent_id: duna.id}
+    %CelestialBody{name: "Ike", parent_id: duna.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 dres =
   Repo.insert!(
-    %CelestialBody{name: "Dres"}
+    %CelestialBody{name: "Dres", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 jool =
   Repo.insert!(
-    %CelestialBody{name: "Jool"}
+    %CelestialBody{name: "Jool", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 laythe =
   Repo.insert!(
-    %CelestialBody{name: "Laythe", parent_id: jool.id}
+    %CelestialBody{name: "Laythe", parent_id: jool.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 vall =
   Repo.insert!(
-    %CelestialBody{name: "Vall", parent_id: jool.id}
+    %CelestialBody{name: "Vall", parent_id: jool.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 tylo =
   Repo.insert!(
-    %CelestialBody{name: "Tylo", parent_id: jool.id}
+    %CelestialBody{name: "Tylo", parent_id: jool.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 bop =
   Repo.insert!(
-    %CelestialBody{name: "Bop", parent_id: jool.id}
+    %CelestialBody{name: "Bop", parent_id: jool.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 pol =
   Repo.insert!(
-    %CelestialBody{name: "Pol", parent_id: jool.id}
+    %CelestialBody{name: "Pol", parent_id: jool.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
 eeloo =
   Repo.insert!(
-    %CelestialBody{name: "Eeloo"}
+    %CelestialBody{name: "Eeloo", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
