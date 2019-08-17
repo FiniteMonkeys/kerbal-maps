@@ -29,6 +29,11 @@ defmodule KerbalMapsWeb.DataChannel do
     end
   end
 
+  def handle_in("get_all_biomes", payload, socket) do
+    celestial_body = Map.get(payload, "body") |> StaticData.find_celestial_body_by_name()
+    get_all_biomes(celestial_body, socket)
+  end
+
   def handle_in("get_all_overlays", payload, socket) do
     user = socket.assigns[:observed_id] |> Users.get_user()
     celestial_body = Map.get(payload, "body") |> StaticData.find_celestial_body_by_name()
@@ -48,6 +53,16 @@ defmodule KerbalMapsWeb.DataChannel do
       [_, _] = location -> {:reply, {:ok, %{location: location}}, socket}
       _ -> {:reply, {:ok, %{error: "bad query #{query}"}}, socket}
     end
+  end
+
+  defp get_all_biomes(celestial_body, socket) do
+    biomes =
+      celestial_body.biome_mapping
+      |> Enum.reduce([], fn {label, [r, g, b, a]}, acc -> [%{label: label, r: r, g: g, b: b, a: a} | acc] end)
+      |> List.flatten()
+      |> Enum.sort_by(fn elem -> elem.label end)
+
+    {:reply, {:ok, %{biomes: biomes}}, socket}
   end
 
   defp get_all_overlays(_, nil, socket),
