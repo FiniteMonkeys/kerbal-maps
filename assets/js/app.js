@@ -20,6 +20,201 @@ window.socket = socket
 import React from "react"
 import ReactDOM from "react-dom"
 
+//
+// connect to channel
+//
+
+var channel
+if (window.userID) {
+  channel = newChannel(window.userID)
+} else {
+  channel = newChannel(0)
+}
+
+joinChannel(channel)
+
+//
+// helper functions
+//
+
+function addOverlaysToList(channel, paneId) {
+  var pane = L.DomUtil.get(paneId)
+  var checkboxList = pane.querySelector("#overlay-list")
+  checkboxList.innerHTML = ""
+
+  for (const [overlayId, overlay] of Object.entries(window.overlays)) {
+    checkboxList.insertAdjacentHTML(
+      "beforeend",
+      `
+<div class="form-group form-check">
+  <input type="checkbox" class="form-check-input" id="show_overlay_${overlayId}" name="show_overlay" value="${overlayId}" ${overlay.active ? 'checked="true"' : ''}/>
+  <label for="show_overlay_${overlayId}" class="form-check-label">${overlay.name}</label>
+</div>
+      `
+    )
+    document.getElementById(`show_overlay_${overlayId}`)
+            .addEventListener("click", function (event) {
+              var parsed = Number.parseInt(this.id.replace("show_overlay_", ""))
+              if (!Number.isNaN(parsed)) {
+                if (this.checked) {
+                  showOverlay(channel, parsed)
+                } else {
+                  hideOverlay(channel, parsed)
+                }
+              }
+            })
+  }
+}
+
+function createTileLayer() {
+  window.tileLayer = L.tileLayer(`${window.tileCdnURL}/{body}/{style}/{z}/{x}/{y}.png`, {
+    // *** TileLayer options
+    // minZoom: 0,
+    maxZoom: 7,
+    // subdomains
+    // errorTileUrl
+    // zoomOffset: 0,
+    tms: true,
+    // zoomReverse: false,
+    // detectRetina: false,
+    // crossOrigin: false,
+
+    // *** GridLayer options
+    // tileSize: 256,
+    // opacity: 1.0,
+    // updateWhenIdle
+    // updateWhenZooming: true,
+    // updateInterval: 200,
+    // zIndex: 1,
+    // latLngBounds
+    maxNativeZoom: 7,
+    minNativeZoom: 0,
+    // noWrap: false,
+    // pane
+    // className
+    // keepBuffer: 2,
+
+    // *** Layer options
+    attribution: 'Map data: crowdsourced' +
+      ' | ' +
+      'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
+
+    // *** other options
+    pack: window.selectedPack,
+    body: window.selectedBody,
+    style: window.selectedStyle
+  }).addTo(window.map)
+}
+
+function destroyTileLayer() {
+  window.tileLayer.remove()
+}
+
+function hideAllOverlays() {
+  for (const [id, overlay] of Object.entries(window.overlays)) {
+    overlay.layerGroup.removeFrom(window.map)
+    overlay.active = false
+  }
+}
+
+function hideOverlay(channel, overlayId) {
+  var overlay = window.overlays[overlayId]
+  overlay.layerGroup.removeFrom(window.map)
+  overlay.active = false
+}
+
+function joinChannel(channel) {
+  channel.join()
+    .receive("ok", response => {
+        console.log(`Joined channel ${channel.topic}`, response)
+      })
+    .receive("error", response => {
+        console.log("Unable to join channel", response)
+      })
+}
+
+function loadBiomesForBody(channel, legend, body) {
+  channel.push("get_all_biomes", {"body":body})
+    .receive("ok", response => {
+        var elements = response.biomes.reduce((acc, biome) => {
+          acc.push({
+            style: makeLegendStyle(`rgba(${biome.r}, ${biome.g}, ${biome.b}, ${biome.a})`),
+            html: '<div>&nbsp;</div>',
+            label: biome.label
+          })
+          return acc
+        }, [])
+
+        legend.removeLegend(legend._lastId)
+        legend.addLegend({
+          name: 'Biomes',
+          elements: elements
+        })
+      })
+}
+
+function loadOverlaysForBody(channel, paneId, body) {
+  channel.push("get_all_overlays", {"body":body})
+    .receive("ok", response => {
+        // don't overwrite window.overlays; update it
+        response.overlays.forEach(function (overlay) {
+          if (!window.overlays[overlay.id]) {
+            overlay.layerGroup = null
+            overlay.active = false
+            window.overlays[overlay.id] = overlay
+          }
+        })
+        addOverlaysToList(channel, paneId)
+      })
+}
+
+function makeLegendStyle(color) {
+  let style = {
+    'width': '11px',
+    'height': '11px',
+    'border': '1px solid #000000',
+    'background-color': color,
+    'font-size': '11px',
+    'vertical-align': 'baseline'
+  }
+  return style
+}
+
+function newChannel(subtopic) {
+  return socket.channel(`data:${subtopic}`, {})
+}
+
+function showOverlay(channel, overlayId) {
+  // should only do the channel.push if the overlay layerGroup isn't defined
+  // since the layerGroup is loaded in a callback, fire an event that adds the layerGroup to the map?
+  // probably should always call channel.push and update the layerGroup if necessary
+  channel.push("get_overlay", {"id":overlayId})
+    .receive("ok", response => {
+        var overlay = window.overlays[overlayId]
+        if (!overlay.layerGroup) {
+          overlay.layerGroup = L.layerGroup()
+          response.overlay.markers.forEach(function (marker) {
+            var latitude = marker.latitude
+            var longitude = marker.longitude
+            var label = `<strong>${marker.name}</strong><br/>${marker.latitude}, ${marker.longitude}<br/>${marker.description || ""}`
+            var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name})
+            L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup)
+          })
+        }
+        overlay.layerGroup.addTo(window.map)
+        overlay.active = true
+      })
+}
+
+function updateTileLayer() {
+  destroyTileLayer()
+  createTileLayer()
+}
+
+//
+// start setting up the window
+//
+
 window.map = L.map('mapid', {
   preferCanvas: true,
   // attributionControl: true,
@@ -72,18 +267,6 @@ L.latlngGraticule({
     ]
 }).addTo(window.map)
 
-function makeLegendStyle(color) {
-  let style = {
-    'width': '11px',
-    'height': '11px',
-    'border': '1px solid #000000',
-    'background-color': color,
-    'font-size': '11px',
-    'vertical-align': 'baseline'
-  }
-  return style
-}
-
 if (window.labelFromQuery !== undefined) {
   var icon = L.icon.glyph({prefix: "far", glyph: "dot-circle"})
   L.marker(window.locFromQuery, {icon: icon}).bindPopup(window.labelFromQuery).addTo(window.map)
@@ -99,56 +282,20 @@ function onMapClick(e) {
 }
 window.map.on('click', onMapClick)
 
+var legendControl = new L.Control.HtmlLegend({
+  position: 'bottomright',
+  legends: [{
+    name: 'Placeholder',
+    elements: []
+  }],
+  collapseSimple: true,
+  detectStretched: true,
+  visibleIcon: 'icon icon-eye',
+  hiddenIcon: 'icon icon-eye-slash'
+});
+window.map.addControl(legendControl)
+
 var sidebar = L.control.sidebar({container: "sidebar"}).addTo(window.map)
-
-function createTileLayer() {
-  window.tileLayer = L.tileLayer(`${window.tileCdnURL}/{body}/{style}/{z}/{x}/{y}.png`, {
-    // *** TileLayer options
-    // minZoom: 0,
-    maxZoom: 7,
-    // subdomains
-    // errorTileUrl
-    // zoomOffset: 0,
-    tms: true,
-    // zoomReverse: false,
-    // detectRetina: false,
-    // crossOrigin: false,
-
-    // *** GridLayer options
-    // tileSize: 256,
-    // opacity: 1.0,
-    // updateWhenIdle
-    // updateWhenZooming: true,
-    // updateInterval: 200,
-    // zIndex: 1,
-    // latLngBounds
-    maxNativeZoom: 7,
-    minNativeZoom: 0,
-    // noWrap: false,
-    // pane
-    // className
-    // keepBuffer: 2,
-
-    // *** Layer options
-    attribution: 'Map data: crowdsourced' +
-      ' | ' +
-      'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
-
-    // *** other options
-    pack: window.selectedPack,
-    body: window.selectedBody,
-    style: window.selectedStyle
-  }).addTo(window.map)
-}
-
-function destroyTileLayer() {
-  window.tileLayer.remove()
-}
-
-function updateTileLayer() {
-  destroyTileLayer()
-  createTileLayer()
-}
 
 window.selectedPack = "(stock)"
 window.selectedBody = "kerbin"
@@ -170,6 +317,7 @@ window.changeSelectedBody = (value) => {
   hideAllOverlays()
   window.overlays = {}  // clear out overlays for previous body
   updateTileLayer()
+  loadBiomesForBody(channel, legendControl, window.selectedBody)
 }
 
 window.changeSelectedStyle = (value) => {
@@ -180,143 +328,7 @@ window.changeSelectedStyle = (value) => {
 import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
 ReactDOM.render(<MapBodyAndStyle onPackChange={window.changeSelectedPack} onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
 
-function newChannel(subtopic) {
-  return socket.channel(`data:${subtopic}`, {})
-}
-
-function joinChannel(channel) {
-  channel.join()
-    .receive("ok", response => {
-        console.log(`Joined channel ${channel.topic}`, response)
-      })
-    .receive("error", response => {
-        console.log("Unable to join channel", response)
-      })
-}
-
-function showOverlay(channel, overlayId) {
-  // should only do the channel.push if the overlay layerGroup isn't defined
-  // since the layerGroup is loaded in a callback, fire an event that adds the layerGroup to the map?
-  // probably should always call channel.push and update the layerGroup if necessary
-  channel.push("get_overlay", {"id":overlayId})
-    .receive("ok", response => {
-        var overlay = window.overlays[overlayId]
-        if (!overlay.layerGroup) {
-          overlay.layerGroup = L.layerGroup()
-          response.overlay.markers.forEach(function (marker) {
-            var latitude = marker.latitude
-            var longitude = marker.longitude
-            var label = `<strong>${marker.name}</strong><br/>${marker.latitude}, ${marker.longitude}<br/>${marker.description || ""}`
-            var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name})
-            L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup)
-          })
-        }
-        overlay.layerGroup.addTo(window.map)
-        overlay.active = true
-      })
-}
-
-function hideOverlay(channel, overlayId) {
-  var overlay = window.overlays[overlayId]
-  overlay.layerGroup.removeFrom(window.map)
-  overlay.active = false
-}
-
-function hideAllOverlays() {
-  for (const [id, overlay] of Object.entries(window.overlays)) {
-    overlay.layerGroup.removeFrom(window.map)
-    overlay.active = false
-  }
-}
-
-function loadOverlaysForBody(channel, paneId, body) {
-  channel.push("get_all_overlays", {"body":body})
-    .receive("ok", response => {
-        // don't overwrite window.overlays; update it
-        response.overlays.forEach(function (overlay) {
-          if (!window.overlays[overlay.id]) {
-            overlay.layerGroup = null
-            overlay.active = false
-            window.overlays[overlay.id] = overlay
-          }
-        })
-        addOverlaysToList(channel, paneId)
-      })
-}
-
-function addOverlaysToList(channel, paneId) {
-  var pane = L.DomUtil.get(paneId)
-  var checkboxList = pane.querySelector("#overlay-list")
-  checkboxList.innerHTML = ""
-
-  for (const [overlayId, overlay] of Object.entries(window.overlays)) {
-    checkboxList.insertAdjacentHTML(
-      "beforeend",
-      `
-<div class="form-group form-check">
-  <input type="checkbox" class="form-check-input" id="show_overlay_${overlayId}" name="show_overlay" value="${overlayId}" ${overlay.active ? 'checked="true"' : ''}/>
-  <label for="show_overlay_${overlayId}" class="form-check-label">${overlay.name}</label>
-</div>
-      `
-    )
-    document.getElementById(`show_overlay_${overlayId}`)
-            .addEventListener("click", function (event) {
-              var parsed = Number.parseInt(this.id.replace("show_overlay_", ""))
-              if (!Number.isNaN(parsed)) {
-                if (this.checked) {
-                  showOverlay(channel, parsed)
-                } else {
-                  hideOverlay(channel, parsed)
-                }
-              }
-            })
-  }
-}
-
-var legendControl = new L.Control.HtmlLegend({
-  position: 'bottomright',
-  legends: [{
-    name: 'Placeholder',
-    elements: []
-  }],
-  collapseSimple: true,
-  detectStretched: true,
-  visibleIcon: 'icon icon-eye',
-  hiddenIcon: 'icon icon-eye-slash'
-});
-window.map.addControl(legendControl)
-
-function loadBiomesForBody(channel, legend, body) {
-  channel.push("get_all_biomes", {"body":body})
-    .receive("ok", response => {
-        var elements = response.biomes.reduce((acc, biome) => {
-          acc.push({
-            style: makeLegendStyle(`rgba(${biome.r}, ${biome.g}, ${biome.b}, ${biome.a})`),
-            html: '<div>&nbsp;</div>',
-            label: biome.label
-          })
-          return acc
-        }, [])
-
-        legend.removeLegend(1)
-        legend.addLegend({
-          name: 'Biomes',
-          elements: elements
-        })
-      })
-}
-
-var channel
-if (window.userID) {
-  channel = newChannel(window.userID)
-} else {
-  channel = newChannel(0)
-}
-
-joinChannel(channel)
 window.overlays = {}
-
-loadBiomesForBody(channel, legendControl, "Kerbin")
 
 sidebar.on("content", (event) => {
   switch (event.id) {
@@ -347,3 +359,5 @@ $(function () {
 })
 
 // force packs/bodies/biome mappings for default selections?
+
+loadBiomesForBody(channel, legendControl, window.selectedBody)
