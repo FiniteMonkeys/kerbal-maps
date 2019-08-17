@@ -291,7 +291,7 @@ function onMapClick(e) {
 }
 window.map.on('click', onMapClick)
 
-var legendControl = new L.Control.HtmlLegend({
+window.legendControl = new L.Control.HtmlLegend({
   position: 'bottomright',
   legends: [
     {
@@ -304,7 +304,7 @@ var legendControl = new L.Control.HtmlLegend({
   visibleIcon: 'icon icon-eye',
   hiddenIcon: 'icon icon-eye-slash'
 });
-window.map.addControl(legendControl)
+// window.map.addControl(window.legendControl)
 
 var sidebar = L.control.sidebar({container: "sidebar"}).addTo(window.map)
 
@@ -328,24 +328,31 @@ window.changeSelectedBody = (value) => {
   hideAllOverlays()
   window.overlays = {} // clear out overlays for previous body
   updateTileLayer()
-  loadBiomesForBody(channel, legendControl, window.selectedBody)
+  if (window.selectedStyle == "biome") {
+    loadBiomesForBody(channel, window.legendControl, window.selectedBody)
+  }
 }
 
 window.changeSelectedStyle = (value) => {
   window.selectedStyle = value
   updateTileLayer()
+  if (window.selectedStyle == "biome") {
+    window.legendControl.addTo(window.map)
+    loadBiomesForBody(channel, window.legendControl, window.selectedBody)
+  }
+  else {
+    window.legendControl.remove()
+  }
 }
 
 import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
-ReactDOM.render(< MapBodyAndStyle onPackChange = {
-  window.changeSelectedPack
-}
-onBodyChange = {
-  window.changeSelectedBody
-}
-onStyleChange = {
-  window.changeSelectedStyle
-} />, document.getElementById("map-body-and-style"))
+ReactDOM.render(
+  <MapBodyAndStyle
+    onPackChange = { window.changeSelectedPack }
+    onBodyChange = { window.changeSelectedBody }
+    onStyleChange = { window.changeSelectedStyle }
+  />, document.getElementById("map-body-and-style")
+)
 
 window.overlays = {}
 
@@ -377,5 +384,3 @@ $(function() {
 })
 
 // force packs/bodies/biome mappings for default selections?
-
-loadBiomesForBody(channel, legendControl, window.selectedBody)
