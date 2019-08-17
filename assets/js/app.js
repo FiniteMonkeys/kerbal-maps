@@ -84,31 +84,6 @@ function makeLegendStyle(color) {
   return style
 }
 
-var legend = new L.Control.HtmlLegend({
-  position: 'bottomright',
-  legends: [{
-    name: 'Biomes',
-    elements: [
-      {style: makeLegendStyle(`rgba(${1.000*255}, ${1.000*255}, ${1.000*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Ice Caps'},
-      {style: makeLegendStyle(`rgba(${0.894*255}, ${0.992*255}, ${1.000*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Northern Ice Shelf'},
-      {style: makeLegendStyle(`rgba(${0.847*255}, ${0.847*255}, ${0.847*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Southern Ice Shelf'},
-      {style: makeLegendStyle(`rgba(${0.780*255}, ${0.561*255}, ${0.875*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Tundra'},
-      {style: makeLegendStyle(`rgba(${0.365*255}, ${0.522*255}, ${0.165*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Highlands'},
-      {style: makeLegendStyle(`rgba(${0.655*255}, ${0.655*255}, ${0.655*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Mountains'},
-      {style: makeLegendStyle(`rgba(${0.514*255}, ${0.737*255}, ${0.180*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Grasslands'},
-      {style: makeLegendStyle(`rgba(${0.918*255}, ${0.749*255}, ${0.435*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Deserts'},
-      {style: makeLegendStyle(`rgba(${0.592*255}, ${0.310*255}, ${0.137*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Badlands'},
-      {style: makeLegendStyle(`rgba(${0.980*255}, ${0.949*255}, ${0.718*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Shores'},
-      {style: makeLegendStyle(`rgba(${0.216*255}, ${0.384*255}, ${0.671*255}, 1.000)`), html: '<div>&nbsp;</div>', label: 'Water'},
-    ]
-  }],
-  collapseSimple: true,
-  detectStretched: true,
-  visibleIcon: 'icon icon-eye',
-  hiddenIcon: 'icon icon-eye-slash'
-});
-// window.map.addControl(legend)
-
 if (window.labelFromQuery !== undefined) {
   var icon = L.icon.glyph({prefix: "far", glyph: "dot-circle"})
   L.marker(window.locFromQuery, {icon: icon}).bindPopup(window.labelFromQuery).addTo(window.map)
@@ -298,6 +273,39 @@ function addOverlaysToList(channel, paneId) {
   }
 }
 
+var legendControl = new L.Control.HtmlLegend({
+  position: 'bottomright',
+  legends: [{
+    name: 'Placeholder',
+    elements: []
+  }],
+  collapseSimple: true,
+  detectStretched: true,
+  visibleIcon: 'icon icon-eye',
+  hiddenIcon: 'icon icon-eye-slash'
+});
+window.map.addControl(legendControl)
+
+function loadBiomesForBody(channel, legend, body) {
+  channel.push("get_all_biomes", {"body":body})
+    .receive("ok", response => {
+        var elements = response.biomes.reduce((acc, biome) => {
+          acc.push({
+            style: makeLegendStyle(`rgba(${biome.r}, ${biome.g}, ${biome.b}, ${biome.a})`),
+            html: '<div>&nbsp;</div>',
+            label: biome.label
+          })
+          return acc
+        }, [])
+
+        legend.removeLegend(1)
+        legend.addLegend({
+          name: 'Biomes',
+          elements: elements
+        })
+      })
+}
+
 var channel
 if (window.userID) {
   channel = newChannel(window.userID)
@@ -307,6 +315,8 @@ if (window.userID) {
 
 joinChannel(channel)
 window.overlays = {}
+
+loadBiomesForBody(channel, legendControl, "Kerbin")
 
 sidebar.on("content", (event) => {
   switch (event.id) {
