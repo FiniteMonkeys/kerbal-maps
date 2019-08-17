@@ -14,7 +14,9 @@ import "phoenix_html"
 // Import local files
 //
 // Local files can be imported directly using relative paths, for example:
-import { socket } from "./socket.js"
+import {
+  socket
+} from "./socket.js"
 window.socket = socket
 
 import React from "react"
@@ -53,16 +55,16 @@ function addOverlaysToList(channel, paneId) {
       `
     )
     document.getElementById(`show_overlay_${overlayId}`)
-            .addEventListener("click", function (event) {
-              var parsed = Number.parseInt(this.id.replace("show_overlay_", ""))
-              if (!Number.isNaN(parsed)) {
-                if (this.checked) {
-                  showOverlay(channel, parsed)
-                } else {
-                  hideOverlay(channel, parsed)
-                }
-              }
-            })
+      .addEventListener("click", function(event) {
+        var parsed = Number.parseInt(this.id.replace("show_overlay_", ""))
+        if (!Number.isNaN(parsed)) {
+          if (this.checked) {
+            showOverlay(channel, parsed)
+          } else {
+            hideOverlay(channel, parsed)
+          }
+        }
+      })
   }
 }
 
@@ -97,7 +99,7 @@ function createTileLayer() {
     // *** Layer options
     attribution: 'Map data: crowdsourced' +
       ' | ' +
-      'Imagery: © 2011-2018 Take-Two Interactive, Inc.',
+      'Imagery: © 2011-2019 Take-Two Interactive, Inc.',
 
     // *** other options
     pack: window.selectedPack,
@@ -126,46 +128,50 @@ function hideOverlay(channel, overlayId) {
 function joinChannel(channel) {
   channel.join()
     .receive("ok", response => {
-        console.log(`Joined channel ${channel.topic}`, response)
-      })
+      console.log(`Joined channel ${channel.topic}`, response)
+    })
     .receive("error", response => {
-        console.log("Unable to join channel", response)
-      })
+      console.log("Unable to join channel", response)
+    })
 }
 
 function loadBiomesForBody(channel, legend, body) {
-  channel.push("get_all_biomes", {"body":body})
+  channel.push("get_all_biomes", {
+      "body": body
+    })
     .receive("ok", response => {
-        var elements = response.biomes.reduce((acc, biome) => {
-          acc.push({
-            style: makeLegendStyle(`rgba(${biome.r}, ${biome.g}, ${biome.b}, ${biome.a})`),
-            html: '<div>&nbsp;</div>',
-            label: biome.label
-          })
-          return acc
-        }, [])
-
-        legend.removeLegend(legend._lastId)
-        legend.addLegend({
-          name: 'Biomes',
-          elements: elements
+      var elements = response.biomes.reduce((acc, biome) => {
+        acc.push({
+          style: makeLegendStyle(`rgba(${biome.r}, ${biome.g}, ${biome.b}, ${biome.a})`),
+          html: '<div>&nbsp;</div>',
+          label: biome.label
         })
+        return acc
+      }, [])
+
+      legend.removeLegend(legend._lastId)
+      legend.addLegend({
+        name: 'Biomes',
+        elements: elements
       })
+    })
 }
 
 function loadOverlaysForBody(channel, paneId, body) {
-  channel.push("get_all_overlays", {"body":body})
+  channel.push("get_all_overlays", {
+      "body": body
+    })
     .receive("ok", response => {
-        // don't overwrite window.overlays; update it
-        response.overlays.forEach(function (overlay) {
-          if (!window.overlays[overlay.id]) {
-            overlay.layerGroup = null
-            overlay.active = false
-            window.overlays[overlay.id] = overlay
-          }
-        })
-        addOverlaysToList(channel, paneId)
+      // don't overwrite window.overlays; update it
+      response.overlays.forEach(function(overlay) {
+        if (!window.overlays[overlay.id]) {
+          overlay.layerGroup = null
+          overlay.active = false
+          window.overlays[overlay.id] = overlay
+        }
       })
+      addOverlaysToList(channel, paneId)
+    })
 }
 
 function makeLegendStyle(color) {
@@ -188,22 +194,29 @@ function showOverlay(channel, overlayId) {
   // should only do the channel.push if the overlay layerGroup isn't defined
   // since the layerGroup is loaded in a callback, fire an event that adds the layerGroup to the map?
   // probably should always call channel.push and update the layerGroup if necessary
-  channel.push("get_overlay", {"id":overlayId})
+  channel.push("get_overlay", {
+      "id": overlayId
+    })
     .receive("ok", response => {
-        var overlay = window.overlays[overlayId]
-        if (!overlay.layerGroup) {
-          overlay.layerGroup = L.layerGroup()
-          response.overlay.markers.forEach(function (marker) {
-            var latitude = marker.latitude
-            var longitude = marker.longitude
-            var label = `<strong>${marker.name}</strong><br/>${marker.latitude}, ${marker.longitude}<br/>${marker.description || ""}`
-            var icon = L.icon.glyph({prefix: marker.icon_prefix, glyph: marker.icon_name})
-            L.marker([latitude, longitude], {icon: icon}).bindPopup(label).addTo(overlay.layerGroup)
+      var overlay = window.overlays[overlayId]
+      if (!overlay.layerGroup) {
+        overlay.layerGroup = L.layerGroup()
+        response.overlay.markers.forEach(function(marker) {
+          var latitude = marker.latitude
+          var longitude = marker.longitude
+          var label = `<strong>${marker.name}</strong><br/>${marker.latitude}, ${marker.longitude}<br/>${marker.description || ""}`
+          var icon = L.icon.glyph({
+            prefix: marker.icon_prefix,
+            glyph: marker.icon_name
           })
-        }
-        overlay.layerGroup.addTo(window.map)
-        overlay.active = true
-      })
+          L.marker([latitude, longitude], {
+            icon: icon
+          }).bindPopup(label).addTo(overlay.layerGroup)
+        })
+      }
+      overlay.layerGroup.addTo(window.map)
+      overlay.active = true
+    })
 }
 
 function updateTileLayer() {
@@ -242,7 +255,7 @@ window.map = L.map('mapid', {
   // touchZoom
   // bounceAtZoomLimits: true,
   crs: L.CRS.EPSG4326,
-  center: ((window.locFromQuery !== undefined) ? window.locFromQuery : [-0.1027, -74.5754]),  // KSC
+  center: ((window.locFromQuery !== undefined) ? window.locFromQuery : [-0.1027, -74.5754]), // KSC
   zoom: ((window.zoomFromQuery !== undefined) ? window.zoomFromQuery : 5),
   // minZoom
   // maxZoom
@@ -257,19 +270,39 @@ window.map = L.map('mapid', {
 })
 
 L.latlngGraticule({
-    showLabel: true,
-    dashArray: [5, 5],
-    zoomInterval: [
-        {start: 2, end: 3, interval: 30},
-        {start: 4, end: 4, interval: 10},
-        {start: 5, end: 7, interval: 5},
-        {start: 8, end: 10, interval: 1}
-    ]
+  showLabel: true,
+  dashArray: [5, 5],
+  zoomInterval: [{
+      start: 2,
+      end: 3,
+      interval: 30
+    },
+    {
+      start: 4,
+      end: 4,
+      interval: 10
+    },
+    {
+      start: 5,
+      end: 7,
+      interval: 5
+    },
+    {
+      start: 8,
+      end: 10,
+      interval: 1
+    }
+  ]
 }).addTo(window.map)
 
 if (window.labelFromQuery !== undefined) {
-  var icon = L.icon.glyph({prefix: "far", glyph: "dot-circle"})
-  L.marker(window.locFromQuery, {icon: icon}).bindPopup(window.labelFromQuery).addTo(window.map)
+  var icon = L.icon.glyph({
+    prefix: "far",
+    glyph: "dot-circle"
+  })
+  L.marker(window.locFromQuery, {
+    icon: icon
+  }).bindPopup(window.labelFromQuery).addTo(window.map)
 }
 
 var popup = L.popup()
@@ -295,7 +328,9 @@ var legendControl = new L.Control.HtmlLegend({
 });
 window.map.addControl(legendControl)
 
-var sidebar = L.control.sidebar({container: "sidebar"}).addTo(window.map)
+var sidebar = L.control.sidebar({
+  container: "sidebar"
+}).addTo(window.map)
 
 window.selectedPack = "(stock)"
 window.selectedBody = "kerbin"
@@ -308,14 +343,14 @@ createTileLayer()
 window.changeSelectedPack = (value) => {
   window.selectedPack = value
   hideAllOverlays()
-  window.overlays = {}  // clear out overlays for previous body
+  window.overlays = {} // clear out overlays for previous body
   updateTileLayer()
 }
 
 window.changeSelectedBody = (value) => {
   window.selectedBody = value
   hideAllOverlays()
-  window.overlays = {}  // clear out overlays for previous body
+  window.overlays = {} // clear out overlays for previous body
   updateTileLayer()
   loadBiomesForBody(channel, legendControl, window.selectedBody)
 }
@@ -326,38 +361,49 @@ window.changeSelectedStyle = (value) => {
 }
 
 import MapBodyAndStyle from "./components/MapBodyAndStyle.js"
-ReactDOM.render(<MapBodyAndStyle onPackChange={window.changeSelectedPack} onBodyChange={window.changeSelectedBody} onStyleChange={window.changeSelectedStyle} />, document.getElementById("map-body-and-style"))
+ReactDOM.render( < MapBodyAndStyle onPackChange = {
+      window.changeSelectedPack
+    }
+    onBodyChange = {
+      window.changeSelectedBody
+    }
+    onStyleChange = {
+      window.changeSelectedStyle
+    }
+    />, document.getElementById("map-body-and-style"))
 
-window.overlays = {}
+    window.overlays = {}
 
-sidebar.on("content", (event) => {
-  switch (event.id) {
-    // case "sidebar-body-style":
-      // load packs
-      // load bodies for pack
-      // load biome mappings for body
-    case "sidebar-overlays":
-      loadOverlaysForBody(channel, event.id, window.selectedBody)
-  }
-})
+    sidebar.on("content", (event) => {
+      switch (event.id) {
+        // case "sidebar-body-style":
+        // load packs
+        // load bodies for pack
+        // load biome mappings for body
+        case "sidebar-overlays":
+          loadOverlaysForBody(channel, event.id, window.selectedBody)
+      }
+    })
 
-// enable search form?
-$("#search-form").on("submit", (event) => {
-  let query = event.target.elements.namedItem("search[query]").value
+    // enable search form?
+    $("#search-form").on("submit", (event) => {
+      let query = event.target.elements.namedItem("search[query]").value
 
-  channel.push("parse_search", {"query":query})
-    .receive("ok", response => {
-        window.map.flyTo(response.location)
-      })
+      channel.push("parse_search", {
+          "query": query
+        })
+        .receive("ok", response => {
+          window.map.flyTo(response.location)
+        })
 
-  return false
-})
+      return false
+    })
 
-// enable tooltips
-$(function () {
-  $("[data-toggle='tooltip']").tooltip()
-})
+    // enable tooltips
+    $(function() {
+      $("[data-toggle='tooltip']").tooltip()
+    })
 
-// force packs/bodies/biome mappings for default selections?
+    // force packs/bodies/biome mappings for default selections?
 
-loadBiomesForBody(channel, legendControl, window.selectedBody)
+    loadBiomesForBody(channel, legendControl, window.selectedBody)
