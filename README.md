@@ -12,7 +12,7 @@
   1. Clone the repository.
   2. Edit `config/dev.exs` to set up the database connection appropriately.
   3. Run `mix deps.get`.
-  4. Run `mix phx.server`.
+  4. Run `make develop`.
 
 Note that image tiles are not included in this repository:
 
@@ -128,6 +128,7 @@ Made possible in part by:
   * [Leaflet.Graticule](https://github.com/Leaflet/Leaflet.Graticule)
   * [leaflet-sidebar-v2](https://github.com/nickpeihl/leaflet-sidebar-v2)
   * [Leaflet.Icon.Glyph](https://github.com/Leaflet/Leaflet.Icon.Glyph)
+  * [Leaflet.HtmlLegend](https://github.com/consbio/Leaflet.HtmlLegend)
 * [Bootstrap](https://getbootstrap.com)
 * [Font Awesome](https://fontawesome.com)
 * [RealFaviconGenerator](https://realfavicongenerator.net/)
