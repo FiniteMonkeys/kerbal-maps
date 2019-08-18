@@ -54,3 +54,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 18px;
   line-height: 18px;
 }
+
+.leaflet-grab {
+  cursor: crosshair;
+}
