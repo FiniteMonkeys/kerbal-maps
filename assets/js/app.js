@@ -88,7 +88,7 @@ function createTileLayer() {
     // latLngBounds
     maxNativeZoom: 7,
     minNativeZoom: 0,
-    // noWrap: false,
+    noWrap: true,
     // pane
     // className
     // keepBuffer: 2,
