@@ -49,3 +49,4 @@ npm-debug.log
 /.byebug_history
 /priv/repo/seeds_*.exs
 /rel/BUILD-INFO
+/rel/kerbal_maps
