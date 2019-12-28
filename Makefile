@@ -16,7 +16,7 @@ db_create:
 	docker run --name=postgres-kerbal-maps -p 5432:5432 -e POSTGRES_USER=$(DATABASE_USER) -e POSTGRES_PASSWORD=$(DATABASE_PASSWORD) -d postgres:10.9-alpine
 	script/wait-for-it localhost:5432 -- sleep 3
 	psql -c "CREATE DATABASE kerbal_maps;" postgres://$(DATABASE_USER):$(DATABASE_PASSWORD)@localhost:5432/template1
-	pg_restore -Fc -c --if-exists -O -v -x -j 8 -d $(DATABASE_URL) priv/repo/dev.dump
+	MIX_ENV=test DATABASE_URL=${DATABASE_URL_TEST} mix ecto.setup
 	docker stop postgres-kerbal-maps
 
 db_drop:
@@ -32,7 +32,9 @@ develop:
 		mix phx.server
 
 test:
+	docker start postgres-kerbal-maps
 	DATABASE_URL=$(DATABASE_URL_TEST) mix test
+	docker stop postgres-kerbal-maps
 
 build: buildinfo_file version_file
 	docker build -t $(DOCKER_TAG) -t $(DOCKER_TAG_LATEST) -t $(FULL_DOCKER_TAG) .
