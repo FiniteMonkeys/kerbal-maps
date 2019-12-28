@@ -5,6 +5,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/FiniteMonkeys/kerbal-maps.svg?style=flat)](https://circleci.com/gh/FiniteMonkeys/kerbal-maps)
 [![Github open issues](https://img.shields.io/github/issues/FiniteMonkeys/kerbal-maps.svg?style=flat)](https://github.com/FiniteMonkeys/kerbal-maps/issues)
 [![Github open PRs](https://img.shields.io/github/issues-pr/FiniteMonkeys/kerbal-maps.svg?style=flat)](https://github.com/FiniteMonkeys/kerbal-maps/pulls)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=FiniteMonkeys/kerbal-maps)](https://dependabot.com)
 [![License](https://img.shields.io/github/license/FiniteMonkeys/kerbal-maps.svg)](https://github.com/FiniteMonkeys/kerbal-maps/blob/master/LICENSE)
 
 ## QUICK START
