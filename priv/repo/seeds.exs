@@ -11,9 +11,8 @@
 # and so on) as they will fail if something goes wrong.
 
 alias KerbalMaps.Repo
-alias KerbalMaps.StaticData.CelestialBody
-alias KerbalMaps.Symbols.Marker
-alias KerbalMaps.Symbols.Overlay
+alias KerbalMaps.StaticData.{CelestialBody, PlanetPack}
+alias KerbalMaps.Symbols.{Marker, Overlay}
 alias KerbalMaps.Users.User
 
 ## StaticData
@@ -22,7 +21,7 @@ alias KerbalMaps.Users.User
 
 pp_stock =
   Repo.insert!(
-    %PlanetPack{:name: "(stock)"}
+    %PlanetPack{name: "(stock)"}
     |> PlanetPack.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
@@ -43,7 +42,7 @@ eve =
     |> Ecto.Changeset.apply_changes()
   )
 
-gilly =
+_gilly =
   Repo.insert!(
     %CelestialBody{name: "Gilly", parent_id: eve.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
@@ -78,14 +77,14 @@ duna =
     |> Ecto.Changeset.apply_changes()
   )
 
-ike =
+_ike =
   Repo.insert!(
     %CelestialBody{name: "Ike", parent_id: duna.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
-dres =
+_dres =
   Repo.insert!(
     %CelestialBody{name: "Dres", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
@@ -99,7 +98,7 @@ jool =
     |> Ecto.Changeset.apply_changes()
   )
 
-laythe =
+_laythe =
   Repo.insert!(
     %CelestialBody{name: "Laythe", parent_id: jool.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
@@ -127,14 +126,14 @@ bop =
     |> Ecto.Changeset.apply_changes()
   )
 
-pol =
+_pol =
   Repo.insert!(
     %CelestialBody{name: "Pol", parent_id: jool.id, planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
     |> Ecto.Changeset.apply_changes()
   )
 
-eeloo =
+_eeloo =
   Repo.insert!(
     %CelestialBody{name: "Eeloo", planet_pack_id: pp_stock.id}
     |> CelestialBody.changeset(%{})
