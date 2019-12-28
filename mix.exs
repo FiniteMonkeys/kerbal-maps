@@ -43,7 +43,7 @@ defmodule KerbalMaps.MixProject do
       {:espec_phoenix, "~> 0.6.10", only: :test},
       {:espec, "~> 1.6", only: :test},
       {:ex_machina, "~> 2.2", only: :test},
-      {:faker, "~> 0.11.0", only: [:dev, :test], runtime: false},
+      {:faker, "~> 0.13.0", only: [:dev, :test], runtime: false},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:mix_test_watch, "~> 0.9.0", only: :dev, runtime: false},
