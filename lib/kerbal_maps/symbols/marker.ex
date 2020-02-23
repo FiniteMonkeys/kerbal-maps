@@ -154,30 +154,30 @@ defmodule KerbalMaps.Symbols.Marker do
   end
 
   defp marker_icon("ContractPacks/AnomalySurveyor/Icons/arch"),
-    do: ~S({"prefix":"fas","name":"question-circle"})
+    do: ~S({"prefix":"fas","name":"question-circle"})                                 # fas-archway?
 
   defp marker_icon("ContractPacks/AnomalySurveyor/Icons/monolith"),
-    do: ~S({"prefix":"fas","name":"question-circle"})
+    do: ~S({"prefix":"fas","name":"question-circle"})                                 # fas-monument?
 
   defp marker_icon("ContractPacks/AnomalySurveyor/Icons/pyramids"),
-    do: ~S({"prefix":"fas","name":"question-circle"})
+    do: ~S({"prefix":"fas","name":"question-circle"})                                 # fas-gopuram?
 
   defp marker_icon("ContractPacks/AnomalySurveyor/Icons/unknown"),
     do: ~S({"prefix":"fas","name":"question-circle"})
 
   defp marker_icon("ContractPacks/Tourism/Icons/Kerbal"),
-    do: ~S({"prefix":"fas","name":"question-circle"})
+    do: ~S({"prefix":"fas","name":"question-circle"})                                 # fas-meh?
 
-  defp marker_icon("balloon"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("balloon"), do: ~S({"prefix":"fas","name":"question-circle"})      # far-lightbulb?
   defp marker_icon("custom"), do: ~S({"prefix":"fas","name":"question-circle"})
   defp marker_icon("dish"), do: ~S({"prefix":"fas","name":"satellite-dish"})
   defp marker_icon("dmVessel"), do: ~S({"prefix":"fas","name":"question-circle"})
-  defp marker_icon("eva"), do: ~S({"prefix":"fas","name":"question-circle"})
-  defp marker_icon("gravity"), do: ~S({"prefix":"fas","name":"chevron-circle-up"})
-  defp marker_icon("pressure"), do: ~S({"prefix":"fas","name":"chevron-circle-up"})
-  defp marker_icon("report"), do: ~S({"prefix":"fas","name":"question-circle"})
-  defp marker_icon("seismic"), do: ~S({"prefix":"fas","name":"question-circle"})
-  defp marker_icon("thermometer"), do: ~S({"prefix":"fas","name":"question-circle"})
+  defp marker_icon("eva"), do: ~S({"prefix":"fas","name":"question-circle"})          # fas-info?
+  defp marker_icon("gravity"), do: ~S({"prefix":"fas","name":"chevron-circle-up"})    # fas-weight-hanging?
+  defp marker_icon("pressure"), do: ~S({"prefix":"fas","name":"chevron-circle-up"})   # fas-tachometer-alt?
+  defp marker_icon("report"), do: ~S({"prefix":"fas","name":"question-circle"})       # fas-clipboard?
+  defp marker_icon("seismic"), do: ~S({"prefix":"fas","name":"question-circle"})      # fas-globe?
+  defp marker_icon("thermometer"), do: ~S({"prefix":"fas","name":"question-circle"})  # fas-thermometer-half?
 
   defp marker_icon(icon) when is_binary(icon) do
     Logger.warn(fn -> "***** unknown waypoint icon: '#{icon}'" end)

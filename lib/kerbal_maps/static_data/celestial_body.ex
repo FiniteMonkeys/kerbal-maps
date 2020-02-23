@@ -7,7 +7,7 @@ defmodule KerbalMaps.StaticData.CelestialBody do
 
   import Ecto.Changeset
 
-  alias KerbalMaps.StaticData.{CelestialBody,PlanetPack}
+  alias KerbalMaps.StaticData.{CelestialBody, PlanetPack}
 
   schema "celestial_bodies" do
     field :name, :string

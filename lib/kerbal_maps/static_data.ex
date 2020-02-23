@@ -8,7 +8,7 @@ defmodule KerbalMaps.StaticData do
   import Ecto.Query, warn: false
 
   alias KerbalMaps.Repo
-  alias KerbalMaps.StaticData.{CelestialBody,PlanetPack}
+  alias KerbalMaps.StaticData.{CelestialBody, PlanetPack}
 
   @doc """
   Returns the list of celestial_bodies.
